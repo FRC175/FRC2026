@@ -4,45 +4,59 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
 public class Shooter extends SubsystemBase {
-    private final SparkFlex shooterLeader;
-    //private final SparkFlex shooterFollower;
-    private final RelativeEncoder leaderEncoder;
-    //private final RelativeEncoder followerEncoder;
-  /** Creates a new ExampleSubsystem. */
+  private final SparkFlex shooterLeader;
+  // private final SparkFlex shooterFollower;
+  private final RelativeEncoder leaderEncoder;
+  // private final RelativeEncoder followerEncoder;
+
+  /** Creates a new Shooter subsystem. */
   public Shooter() {
     shooterLeader = new SparkFlex(2, MotorType.kBrushless);
-    //shooterFollower = new SparkFlex(3, MotorType.kBrushless);
+    // shooterFollower = new SparkFlex(3, MotorType.kBrushless);
     leaderEncoder = shooterLeader.getEncoder();
-    //followerEncoder = shooterFollower.getEncoder();
+    // followerEncoder = shooterFollower.getEncoder();
   }
-  
+
   /**
-   * Sets the shooter motors to given speed (follower motor opposite direction of leader)
+   * Sets the shooter motors to given speed (follower motor opposite direction of
+   * leader)
+   * 
    * @param speed Speed to set shooter motors (-1 to 1)
    */
-  public void setShooterVelocity(double speed){
+  public void setShooterVelocity(double speed) {
     shooterLeader.set(speed);
-    //shooterFollower.set(-speed);
+    // shooterFollower.set(-speed);
   }
+
+  /**
+   * Stops the shooter motors
+   */
+  public void stopShooter() {
+    shooterLeader.set(0);
+    // shooterFollower.set(0);
+  }
+
   /**
    * Gets the average velocity of encoders
+   * 
    * @return avererage velocity(rpm)
-   */ 
-  public double getEncoderValue(){
-        double leaderReading = leaderEncoder.getVelocity();
-        //double followerReading = followerEncoder.getVelocity();
-        //followerReading *= -1;
-        return leaderReading; //(leaderReading + followerReading)/2;
-    } 
+   */
+  public double getEncoderValue() {
+    double leaderReading = leaderEncoder.getVelocity();
+    // double followerReading = followerEncoder.getVelocity();
+    // followerReading *= -1;
+    return leaderReading; // (leaderReading + followerReading)/2;
+  }
+
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
+   * An example method querying a boolean state of the subsystem (for example, a
+   * digital sensor).
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
    */
