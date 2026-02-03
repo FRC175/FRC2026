@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.DriverConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Climb;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,7 +25,7 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController m_driverController =
-      new XboxController(OperatorConstants.kDriverControllerPort);
+      new XboxController(DriverConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

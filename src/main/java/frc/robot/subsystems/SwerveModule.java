@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.CANcoder;
+import frc.robot.Constants.DriverConstants;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -29,7 +30,7 @@ public class SwerveModule extends SubsystemBase {
     private final PIDController turnPID;
 
     /** Creates a new SwerveModule. */
-    public SwerveModule(int driveMoterID, int turnMotorID, int absoluteEncoderID, CANBus canBus,
+    public SwerveModule(int driveMoterID, int turnMotorID, int absoluteEncoderID,
             boolean driveMotorReversed,
             boolean turningMotorReversed, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
 
@@ -48,7 +49,7 @@ public class SwerveModule extends SubsystemBase {
         // Initialize absolute encoder
         absoluteEncoderOffsetRad = absoluteEncoderOffset;
         this.absoluteEncoderReversed = absoluteEncoderReversed;
-        absoluteEncoder = new CANcoder(absoluteEncoderID, canBus);
+        absoluteEncoder = new CANcoder(absoluteEncoderID, new CANBus("CANivore_BUS"));
 
         // Initialize PID controller for turning motor (should only need P)
         turnPID = new PIDController(0.5, 0.0, 0.0);
@@ -135,7 +136,7 @@ public class SwerveModule extends SubsystemBase {
 
         state.optimize(getState().angle);
 
-        driveMotor.set(state.speedMetersPerSecond / DriveConstants.maxSpeed); // TODO: make drive constants
+        driveMotor.set(state.speedMetersPerSecond / DriverConstants.maxDriveSpeed);
         turnMotor.set(turnPID.calculate(getTurnPosition(), state.angle.getRadians()));
 
     }
