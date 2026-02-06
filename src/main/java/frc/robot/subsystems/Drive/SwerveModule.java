@@ -58,11 +58,9 @@ public class SwerveModule extends SubsystemBase {
         resetEncoders();
     }
 
-    // TODO: Add conversions
-
     /**
      * Retrieves the position of the drive motor
-     * @return Position of the drive motor (UNITS)
+     * @return Position of the drive motor (meters)
      */
     public double getDrivePosition() {
         return driveEncoder.getPosition() * DriveConstants.driveEncoderResolution;
@@ -73,7 +71,7 @@ public class SwerveModule extends SubsystemBase {
      * @return Position of the turn motor (radians)
      */
     public double getTurnPosition() {
-        return turnEncoder.getPosition();
+        return turnEncoder.getPosition() * DriveConstants.turnEncoderResolution;
     }
 
     /**
@@ -81,7 +79,7 @@ public class SwerveModule extends SubsystemBase {
      * @return Velocity of the drive motor (m/s)
      */
     public double getDriveVelocity() {
-        return driveEncoder.getVelocity();
+        return driveEncoder.getVelocity() * DriveConstants.driveSpeedResolution;
     }
 
     /**
@@ -89,7 +87,7 @@ public class SwerveModule extends SubsystemBase {
      * @return Velocity of the turn motor (rad/s)
      */
     public double getTurnVelocity() {
-        return turnEncoder.getVelocity();
+        return turnEncoder.getVelocity() * DriveConstants.turnSpeedResolution;
     }
 
     /**
@@ -98,6 +96,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public double getAbsoluteEncoderRad() {
         double angle = absoluteEncoder.getPosition().getValueAsDouble();
+        angle *= 2 * Math.PI;
         angle -= absoluteEncoderOffsetRad;
         if (absoluteEncoderReversed) {
             angle *= -1.0;
