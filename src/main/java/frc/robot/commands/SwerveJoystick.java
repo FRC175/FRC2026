@@ -2,24 +2,82 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Swerve;
+import frc.robot.Constants.DriverConstants;
+import frc.robot.subsystems.Drive.Swerve;
 
 public class SwerveJoystick extends Command {
 
     private final Swerve swerve;
     private final Supplier<Double> xSpeedFunction, ySpeedFunction, turnSpeedFunction;
     private final Supplier<Boolean> fieldOrientedFunction;
+    private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
 
+    public SwerveJoystick(Swerve swerve, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction,
+            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction) {
+        //Swerve subsystem
+        this.swerve = swerve;
 
-    public SwerveJoystick( Swerve swerve, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction, Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction) {
-         this.swerve = swerve;
-         this.xSpeedFunction = xSpeedFunction;
-         this.ySpeedFunction =  ySpeedFunction;
-         this.turnSpeedFunction = turnSpeedFunction;
-         this.fieldOrientedFunction = fieldOrientedFunction;
+        //Input functions
+        this.xSpeedFunction = xSpeedFunction;
+        this.ySpeedFunction = ySpeedFunction;
+        this.turnSpeedFunction = turnSpeedFunction;
+        this.fieldOrientedFunction = fieldOrientedFunction;
 
+        //Rate Limiters
+        this.xLimiter = new SlewRateLimiter(DriverConstants.maxSpeed);
+        this.yLimiter = new SlewRateLimiter(DriverConstants.maxSpeed);
+        this.turnLimiter = new SlewRateLimiter(DriverConstants.maxAngularVelocity);
+
+        addRequirements(swerve);
 
     }
-    
+
+    @Override
+    public void execute() {
+        //Gets the joystick inputs
+        double xSpeed = xSpeedFunction.get();
+        double ySpeed = ySpeedFunction.get();
+        double turnSpeed = turnSpeedFunction.get();
+
+        //Apply the Deadband
+        xSpeed = Math.abs(xSpeed) > .05 ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > .05 ? ySpeed : 0.0;
+        turnSpeed = Math.abs(turnSpeed) > .05 ? turnSpeed : 0.0;
+
+        //Rate Limiter on joysticks and scale to 1/2 of max speed for Teleop
+        xSpeed = xLimiter.calculate(xSpeed) * (DriverConstants.maxSpeed * .5);
+        ySpeed = yLimiter.calculate(ySpeed) * (DriverConstants.maxSpeed * .5);
+        turnSpeed = turnLimiter.calculate(turnSpeed) * (DriverConstants.maxSpeed * .5);
+
+        //Create chassis speeds
+        ChassisSpeeds chassisSpeeds;
+        if(fieldOrientedFunction.get()) {
+            //Field Relative Control
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerve.getRotation2d());
+        } else {
+            //Robot Relative Control
+            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+        }
+
+        //Convert to array of module states
+        SwerveModuleState[] moduleStates = DriverConstants.kinematics.toSwerveModuleStates(chassisSpeeds);
+
+        //Send states to modules
+        swerve.setModuleStates(moduleStates);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.stopModules();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
 }

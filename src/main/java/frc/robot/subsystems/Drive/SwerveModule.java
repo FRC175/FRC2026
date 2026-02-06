@@ -136,7 +136,7 @@ public class SwerveModule extends SubsystemBase {
 
         state.optimize(getState().angle);
 
-        driveMotor.set(state.speedMetersPerSecond / DriverConstants.maxDriveSpeed);
+        driveMotor.set(state.speedMetersPerSecond / DriverConstants.maxSpeed);
         turnMotor.set(turnPID.calculate(getTurnPosition(), state.angle.getRadians()));
 
     }
