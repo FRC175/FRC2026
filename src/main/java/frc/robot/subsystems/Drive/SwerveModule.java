@@ -14,7 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.CANcoder;
-import frc.robot.Constants.DriverConstants;
+import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -65,7 +65,7 @@ public class SwerveModule extends SubsystemBase {
      * @return Position of the drive motor (UNITS)
      */
     public double getDrivePosition() {
-        return driveEncoder.getPosition();
+        return driveEncoder.getPosition() * DriveConstants.driveEncoderResolution;
     }
 
     /**
@@ -136,7 +136,7 @@ public class SwerveModule extends SubsystemBase {
 
         state.optimize(getState().angle);
 
-        driveMotor.set(state.speedMetersPerSecond / DriverConstants.maxSpeed);
+        driveMotor.set(state.speedMetersPerSecond / DriveConstants.maxSpeed);
         turnMotor.set(turnPID.calculate(getTurnPosition(), state.angle.getRadians()));
 
     }

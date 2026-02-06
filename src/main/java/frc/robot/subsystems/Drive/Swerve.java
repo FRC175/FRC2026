@@ -5,7 +5,7 @@
 package frc.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriverConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drive.SwerveModule;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -72,7 +72,7 @@ public class Swerve extends SubsystemBase {
      *               backLeft, backRight])
      */
     public void setModuleStates(SwerveModuleState[] states) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, DriverConstants.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxSpeed);
         frontLeft.setDesiredState(states[0]);
         frontRight.setDesiredState(states[1]);
         backLeft.setDesiredState(states[2]);

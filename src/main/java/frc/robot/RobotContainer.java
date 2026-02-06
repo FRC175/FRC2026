@@ -4,8 +4,9 @@
 
 package frc.robot;
 
-import frc.robot.Constants.DriverConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.SwerveJoystick;
 import frc.robot.subsystems.Climb;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drive.Swerve;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -20,16 +22,20 @@ import frc.robot.subsystems.Shooter;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+
+  //The robot's subsystems
   private final Climb m_climb = new Climb();
   private final Shooter m_shooter = new Shooter();
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final XboxController m_driverController =
-      new XboxController(DriverConstants.kDriverControllerPort);
+  private final Swerve m_Drive = new Swerve();
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  //Drive team controllers
+  private final XboxController m_driverController =
+      new XboxController(DriveConstants.driverControllerPort);
+
+  
   public RobotContainer() {
     // Configure the trigger bindings
+    m_Drive.setDefaultCommand(new SwerveJoystick(m_Drive, () -> m_driverController.getLeftX(), () ->  m_driverController.getLeftY(), () -> m_driverController.getRightX(), () -> !m_driverController.getAButton()));
     configureBindings();
   }
 
@@ -57,8 +63,6 @@ public class RobotContainer {
     ).whileFalse(
       new InstantCommand(() -> m_subsystem.method())
     ));
-
-    //Todo (Low Priority): Add temlates for triggers and joysticks
 
     */
 

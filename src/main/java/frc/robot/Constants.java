@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -21,15 +22,23 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
  */
 public final class Constants {
 
-  public static class DriverConstants {
-    public static final int kDriverControllerPort = 1;
+  public static class DriveConstants {
+    public static final int driverControllerPort = 1;
     public static final double maxSpeed = 5;
     public static final double maxAngularVelocity = Math.PI;
 
-    private static final Translation2d frontLeftLocation = new Translation2d(0.381, 0.381);
-    private static final Translation2d frontRightLocation = new Translation2d(0.381, -0.381);
-    private static final Translation2d backLeftLocation = new Translation2d(-0.381, 0.381);
-    private static final Translation2d backRightLocation = new Translation2d(-0.381, -0.381);
+    public static final double wheelDiameter = Units.inchesToMeters(4);
+    public static final double driveGearRatio = 6.75;
+    public static final double turnGearRatio = 17;
+    public static final double driveEncoderResolution = driveGearRatio * Math.PI * wheelDiameter;
+    public static final double turnEncoderResolution = turnGearRatio * 2 * Math.PI;
+    public static final double driveSpeedResolution = driveEncoderResolution / 60;
+    public static final double turnSpeedResolution = turnEncoderResolution / 60;
+
+    public static final Translation2d frontLeftLocation = new Translation2d(0.381, 0.381);
+    public static final Translation2d frontRightLocation = new Translation2d(0.381, -0.381);
+    public static final Translation2d backLeftLocation = new Translation2d(-0.381, 0.381);
+    public static final Translation2d backRightLocation = new Translation2d(-0.381, -0.381);
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRightLocation, frontLeftLocation, backRightLocation, backLeftLocation);
   }
 

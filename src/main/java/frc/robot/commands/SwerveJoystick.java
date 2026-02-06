@@ -6,7 +6,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.DriverConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drive.Swerve;
 
 public class SwerveJoystick extends Command {
@@ -28,9 +28,9 @@ public class SwerveJoystick extends Command {
         this.fieldOrientedFunction = fieldOrientedFunction;
 
         //Rate Limiters
-        this.xLimiter = new SlewRateLimiter(DriverConstants.maxSpeed);
-        this.yLimiter = new SlewRateLimiter(DriverConstants.maxSpeed);
-        this.turnLimiter = new SlewRateLimiter(DriverConstants.maxAngularVelocity);
+        this.xLimiter = new SlewRateLimiter(DriveConstants.maxSpeed);
+        this.yLimiter = new SlewRateLimiter(DriveConstants.maxSpeed);
+        this.turnLimiter = new SlewRateLimiter(DriveConstants.maxAngularVelocity);
 
         addRequirements(swerve);
 
@@ -49,9 +49,9 @@ public class SwerveJoystick extends Command {
         turnSpeed = Math.abs(turnSpeed) > .05 ? turnSpeed : 0.0;
 
         //Rate Limiter on joysticks and scale to 1/2 of max speed for Teleop
-        xSpeed = xLimiter.calculate(xSpeed) * (DriverConstants.maxSpeed * .5);
-        ySpeed = yLimiter.calculate(ySpeed) * (DriverConstants.maxSpeed * .5);
-        turnSpeed = turnLimiter.calculate(turnSpeed) * (DriverConstants.maxSpeed * .5);
+        xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.maxSpeed * .5);
+        ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.maxSpeed * .5);
+        turnSpeed = turnLimiter.calculate(turnSpeed) * (DriveConstants.maxSpeed * .5);
 
         //Create chassis speeds
         ChassisSpeeds chassisSpeeds;
@@ -64,7 +64,7 @@ public class SwerveJoystick extends Command {
         }
 
         //Convert to array of module states
-        SwerveModuleState[] moduleStates = DriverConstants.kinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);
 
         //Send states to modules
         swerve.setModuleStates(moduleStates);
