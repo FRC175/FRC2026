@@ -11,7 +11,12 @@ import frc.robot.subsystems.Climb;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drive.Swerve;
@@ -28,14 +33,18 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Swerve m_Drive = new Swerve();
 
+ 
   //Drive team controllers
-  private final XboxController m_driverController =
-      new XboxController(DriveConstants.driverControllerPort);
+  private final CommandXboxController m_driverController =
+      new CommandXboxController(DriveConstants.driverControllerPort);
 
   
   public RobotContainer() {
+
+    
     // Configure the trigger bindings
-    m_Drive.setDefaultCommand(new SwerveJoystick(m_Drive, () -> m_driverController.getLeftX(), () ->  m_driverController.getLeftY(), () -> m_driverController.getRightX(), () -> !m_driverController.getAButton()));
+   
+    m_Drive.setDefaultCommand(new SwerveJoystick(m_Drive, () -> m_driverController.getLeftX(), () ->  m_driverController.getLeftY(), () -> m_driverController.getRightX(), () -> !m_driverController.a().getAsBoolean()));
     configureBindings();
   }
 
@@ -66,24 +75,25 @@ public class RobotContainer {
 
     */
 
-    //Hold B: Climb motor at 6.25% speed
-    new Trigger(() -> m_driverController.getBButton()).whileTrue(
-      new InstantCommand(() -> m_climb.setSpeed( .0625))
-    ).whileFalse(
-      new InstantCommand(() -> m_climb.setSpeed( 0))
-    );
+    // //Hold B: Climb motor at 6.25% speed
+    // new Trigger(() -> m_driverController.getLeftX() == 1).whileTrue(
+    //   new InstantCommand(() -> flt.set(.5))
+    // ).whileFalse(
+    //   new InstantCommand(() ->  flt.set(0))
+    // );
     //Hold A: To set shooter velocity at 5.50% clockwise
-    new Trigger(() -> m_driverController.getAButton()).whileTrue(
-      new InstantCommand(() -> m_shooter.setShooterVelocity( .0550 )) 
-    ).whileFalse(
-    new InstantCommand(() -> m_shooter.setShooterVelocity( 0))
-    );
-    //Hold X: To set shooter velocity at 5.50% counterclockwise
-    new Trigger(() -> m_driverController.getXButton()).whileTrue(
-      new InstantCommand(() -> m_shooter.setShooterVelocity( -.0550 )) 
-    ).whileFalse(
-    new InstantCommand(() -> m_shooter.setShooterVelocity( 0))
-    );
+    // new Trigger(() -> m_driverController.getAButton()).whileTrue(
+    //   new InstantCommand(() -> m_shooter.setShooterVelocity( .0550 )) 
+    // ).whileFalse(
+    // new InstantCommand(() -> m_shooter.setShooterVelocity( 0))
+    // );
+    // //Hold X: To set shooter velocity at 5.50% counterclockwise
+    // new Trigger(() -> m_driverController.getXButton()).whileTrue(
+    //   new InstantCommand(() -> m_shooter.setShooterVelocity( -.0550 )) 
+    // ).whileFalse(
+    // new InstantCommand(() -> m_shooter.setShooterVelocity( 0))
+    // );
+
     
   }
 
@@ -92,8 +102,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_climb);
-  }
+  // public Command getAutonomousCommand() {
+  //   // An example command will be run in autonomous
+  //   return Autos.exampleAuto(m_climb);
+  // }
 }

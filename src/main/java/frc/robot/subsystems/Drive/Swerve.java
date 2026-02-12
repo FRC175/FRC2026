@@ -11,14 +11,15 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 public class Swerve extends SubsystemBase {
 
-    private final SwerveModule frontLeft = new SwerveModule(4, 5, 6, false, false, 0, false);
-    private final SwerveModule frontRight = new SwerveModule(1, 2, 3, false, false, 0, false);
-    private final SwerveModule backLeft = new SwerveModule(10, 11, 12, false, false, 0, false);
-    private final SwerveModule backRight = new SwerveModule(7, 8, 9, false, false, 0, false);
+    private final SwerveModule frontLeft = new SwerveModule(7, 6, 13, false, true, 0, false);
+    private final SwerveModule frontRight = new SwerveModule(3, 2, 11, false, true, 0, false);
+    private final SwerveModule backLeft = new SwerveModule(9, 8, 14, false, true, 0, false);
+    private final SwerveModule backRight = new SwerveModule(5, 4, 12, false, true, 0, false);
 
     private final Pigeon2 gyro = new Pigeon2(10, "CANivore_BUS");
 
@@ -73,15 +74,18 @@ public class Swerve extends SubsystemBase {
      */
     public void setModuleStates(SwerveModuleState[] states) {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxSpeed);
-        frontLeft.setDesiredState(states[0]);
-        frontRight.setDesiredState(states[1]);
+        //frontLeft.setDesiredState(states[0]);
+        //frontRight.setDesiredState(states[1]);
         backLeft.setDesiredState(states[2]);
-        backRight.setDesiredState(states[3]);
+        //backRight.setDesiredState(states[3]);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        SmartDashboard.putNumber("angle pos", backLeft.getAbsoluteEncoderRad());
+       
+        
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drive.Swerve;
@@ -40,13 +41,16 @@ public class SwerveJoystick extends Command {
     public void execute() {
         //Gets the joystick inputs
         double xSpeed = xSpeedFunction.get();
+        SmartDashboard.putNumber("x", xSpeed);
         double ySpeed = ySpeedFunction.get();
+         SmartDashboard.putNumber("y", ySpeed);
         double turnSpeed = turnSpeedFunction.get();
+         SmartDashboard.putNumber("t", turnSpeed);
 
         //Apply the Deadband
-        xSpeed = Math.abs(xSpeed) > .05 ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > .05 ? ySpeed : 0.0;
-        turnSpeed = Math.abs(turnSpeed) > .05 ? turnSpeed : 0.0;
+        xSpeed = Math.abs(xSpeed) > .1 ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > .1 ? ySpeed : 0.0;
+        turnSpeed = Math.abs(turnSpeed) > .1 ? turnSpeed : 0.0;
 
         //Rate Limiter on joysticks and scale to 1/2 of max speed for Teleop
         xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.maxSpeed * .5);
@@ -62,6 +66,8 @@ public class SwerveJoystick extends Command {
             //Robot Relative Control
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
         }
+
+       // ChassisSpeeds.discretize(chassisSpeeds, .02);
 
         //Convert to array of module states
         SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);

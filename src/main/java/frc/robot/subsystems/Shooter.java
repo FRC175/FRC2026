@@ -17,7 +17,7 @@ public class Shooter extends SubsystemBase {
     //private final RelativeEncoder followerEncoder;
   /** Creates a new ExampleSubsystem. */
   public Shooter() {
-    shooterLeader = new SparkFlex(2, MotorType.kBrushless);
+    shooterLeader = new SparkFlex(22, MotorType.kBrushless);
     //shooterFollower = new SparkFlex(3, MotorType.kBrushless);
     leaderEncoder = shooterLeader.getEncoder();
     //followerEncoder = shooterFollower.getEncoder();

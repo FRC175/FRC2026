@@ -23,8 +23,8 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class DriveConstants {
-    public static final int driverControllerPort = 1;
-    public static final double maxSpeed = 5;
+    public static final int driverControllerPort = 0;
+    public static final double maxSpeed = 3;
     public static final double maxAngularVelocity = Math.PI;
 
     public static final double wheelDiameter = Units.inchesToMeters(4);
@@ -35,10 +35,10 @@ public final class Constants {
     public static final double driveSpeedResolution = driveEncoderResolution / 60;
     public static final double turnSpeedResolution = turnEncoderResolution / 60;
 
-    public static final Translation2d frontLeftLocation = new Translation2d(0.381, 0.381);
-    public static final Translation2d frontRightLocation = new Translation2d(0.381, -0.381);
-    public static final Translation2d backLeftLocation = new Translation2d(-0.381, 0.381);
-    public static final Translation2d backRightLocation = new Translation2d(-0.381, -0.381);
+    public static final Translation2d frontLeftLocation = new Translation2d(0.635, 0.635);
+    public static final Translation2d frontRightLocation = new Translation2d(0.635, -0.635);
+    public static final Translation2d backLeftLocation = new Translation2d(-0.635, 0.635);
+    public static final Translation2d backRightLocation = new Translation2d(-0.635, -0.635);
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRightLocation, frontLeftLocation, backRightLocation, backLeftLocation);
   }
 
