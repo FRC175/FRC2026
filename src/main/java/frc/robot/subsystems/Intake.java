@@ -12,7 +12,7 @@ import com.revrobotics.RelativeEncoder;
 public class Intake extends SubsystemBase {
     private final SparkMax intake;
     private final RelativeEncoder intakeEncoder;
- 
+ //defines intake motor.
     public Intake() {
    //Change deviceId to 1 for testing 6 is a place holder before testing
     intake = new SparkMax(2, MotorType.kBrushless);
