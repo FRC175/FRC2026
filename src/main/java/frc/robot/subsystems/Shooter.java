@@ -9,18 +9,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-
+import edu.wpi.first.wpilibj.Servo;
 public class Shooter extends SubsystemBase {
     private final SparkFlex shooterLeader;
     //private final SparkFlex shooterFollower;
     private final RelativeEncoder leaderEncoder;
+    private final Servo servoHood;
     //private final RelativeEncoder followerEncoder;
   /** Creates a new ExampleSubsystem. */
   public Shooter() {
-    shooterLeader = new SparkFlex(2, MotorType.kBrushless);
+    shooterLeader = new SparkFlex(10, MotorType.kBrushless);
     //shooterFollower = new SparkFlex(3, MotorType.kBrushless);
     leaderEncoder = shooterLeader.getEncoder();
-    //followerEncoder = shooterFollower.getEncoder();
+    //followerEncoder = shooterFollower.getEncoder()
+    servoHood = new Servo(9);
   }
   
   /**
@@ -50,10 +52,12 @@ public class Shooter extends SubsystemBase {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public double getPosition(){
+    double answer = servoHood.get();
+    return answer;
+  }
+  public void setServoHood(double value){
+    servoHood.set(value);
   }
 
   @Override

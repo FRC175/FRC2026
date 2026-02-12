@@ -17,6 +17,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Hopperfeeder;
+import frc.robot.subsystems.Intakedeploy;
+import frc.robot.subsystems.Intake;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -25,8 +29,11 @@ import frc.robot.subsystems.Shooter;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Climb m_climb = new Climb();
+  //private final Climb m_climb = new Climb();
   private final Shooter m_shooter = new Shooter();
+  //private final Hopperfeeder m_hopper = new Hopperfeeder();
+  //private final Intakedeploy m_deploy = new Intakedeploy();
+  private final Intake m_intake = new Intake();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController m_driverController =
       new XboxController(OperatorConstants.kDriverControllerPort);
@@ -52,32 +59,45 @@ public class RobotContainer {
         .onTrue(new ExampleCommand(m_exampleSubsystem));*/
 
     //Hold B: Climb motor at 6.25% speed
-    new Trigger(() -> m_driverController.getBButton()).whileTrue(
-      new InstantCommand(() -> m_climb.setSpeed( .0625))
-    ).whileFalse(
-      new InstantCommand(() -> m_climb.setSpeed( 0))
-    );
+    
     //Hold A: To set shooter velocity at 5.50% clockwise
-    new Trigger(() -> m_driverController.getAButton()).whileTrue(
+   new Trigger(() -> m_driverController.getAButton()).whileTrue(
       new InstantCommand(() -> m_shooter.setShooterVelocity( .0550 )) 
     ).whileFalse(
     new InstantCommand(() -> m_shooter.setShooterVelocity( 0))
     );
-    //Hold X: To set shooter velocity at 5.50% counterclockwise
-    new Trigger(() -> m_driverController.getXButton()).whileTrue(
-      new InstantCommand(() -> m_shooter.setShooterVelocity( -.0550 )) 
+
+    //Hold Y: To set Hopperfeeder velocity at 5.50% clockwise
+    new Trigger(() -> m_driverController.getYButton()).whileTrue(
+      new InstantCommand(() -> m_intake.setIntakeVelocity( .1500 )) 
     ).whileFalse(
-    new InstantCommand(() -> m_shooter.setShooterVelocity( 0))
+    new InstantCommand(() -> m_intake.setIntakeVelocity( 0))
+    );
+    //Press Up on Dpad: set servoHood postition
+     new Trigger(() -> m_driverController.getPOV() ==0).whileTrue(
+      new InstantCommand(() -> m_shooter.setServoHood( .750 )) 
+    ).whileFalse(
+    new InstantCommand(() -> m_shooter.setServoHood( 0))
+    );
+new Trigger(() -> m_driverController.getPOV() ==90).whileTrue(
+      new InstantCommand(() -> m_shooter.setServoHood( .250 )) 
+    ).whileFalse(
+    new InstantCommand(() -> m_shooter.setServoHood( 0))
+    );
+    new Trigger(() -> m_driverController.getPOV() ==180).whileTrue(
+      new InstantCommand(() -> m_shooter.setServoHood( .550 )) 
+    ).whileFalse(
+    new InstantCommand(() -> m_shooter.setServoHood( 0))
+    );
+     new Trigger(() -> m_driverController.getPOV() ==270).whileTrue(
+      new InstantCommand(() -> m_shooter.setServoHood( 999 )) 
+    ).whileFalse(
+    new InstantCommand(() -> m_shooter.setServoHood( 0))
     );
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
+  //public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_climb);
-  }
+    //return Autos.exampleAuto(m_climb);
+  //}
 }
