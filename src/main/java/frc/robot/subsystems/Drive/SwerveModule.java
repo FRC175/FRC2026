@@ -9,13 +9,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+//import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -23,12 +24,12 @@ import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule extends SubsystemBase {
 
-    private final SparkMax driveMotor;
-    private final SparkMax turnMotor;
+    private final SparkFlex driveMotor;
+    private final SparkFlex turnMotor;
     private final RelativeEncoder driveEncoder;
     private final RelativeEncoder turnEncoder;
 
-    private final CANcoder absoluteEncoder;
+    private final AbsoluteEncoder absoluteEncoder;
     private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
 
@@ -40,8 +41,8 @@ public class SwerveModule extends SubsystemBase {
             boolean turningMotorReversed, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
 
         // Initialize motors
-        driveMotor = new SparkMax(driveMoterID, MotorType.kBrushless);
-        turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
+        driveMotor = new SparkFlex(driveMoterID, MotorType.kBrushless);
+        turnMotor = new SparkFlex(turnMotorID, MotorType.kBrushless);
 
         // Set motor inversion if needed
         driveMotor.setInverted(driveMotorReversed); // TODO: Why that funky?
@@ -54,7 +55,7 @@ public class SwerveModule extends SubsystemBase {
         // Initialize absolute encoder
         absoluteEncoderOffsetRad = absoluteEncoderOffset;
         this.absoluteEncoderReversed = absoluteEncoderReversed;
-        absoluteEncoder = new CANcoder(absoluteEncoderID, new CANBus("CANivore_BUS"));
+        absoluteEncoder = turnMotor.getAbsoluteEncoder();
 
         // Initialize PID controller for turning motor (should only need P)
         turnPID = new PIDController(.5, 0.0, 0.0);
@@ -71,9 +72,12 @@ public class SwerveModule extends SubsystemBase {
         return driveEncoder.getPosition() * DriveConstants.driveEncoderResolution;
     }
 
-    public double getAbsPosition() {
-        return absoluteEncoder.getPosition().getValueAsDouble();
-    }
+    // public double getAbsPosition() {
+    //     return absoluteEncoder.getPosition().getValueAsDouble();
+    // }
+    // public double getAbsAbsPosition() {
+    //     return absoluteEncoder.getAbsolutePosition().getValueAsDouble();
+    // }
 
     /**
      * Retrieves the position of the turn motor
@@ -100,7 +104,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public double getAbsVelocity() {
-        return absoluteEncoder.getVelocity().getValueAsDouble() * DriveConstants.turnSpeedResolution;
+        return absoluteEncoder.getVelocity() * DriveConstants.turnSpeedResolution;
     }
 
     /**
@@ -108,7 +112,7 @@ public class SwerveModule extends SubsystemBase {
      * @return Position of the absolute encoder (radians)
      */
     public double getAbsoluteEncoderRad() {
-        double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble();
+        double angle = absoluteEncoder.getPosition();
         angle *= Math.PI;
         angle -= absoluteEncoderOffsetRad;
         if (absoluteEncoderReversed) {
@@ -124,8 +128,8 @@ public class SwerveModule extends SubsystemBase {
      */
     public void resetEncoders() {
         driveEncoder.setPosition(0.0);
-        turnEncoder.setPosition(getAbsPosition());
-        SmartDashboard.putNumber("resetting turn encoder to", getAbsPosition());
+        turnEncoder.setPosition(absoluteEncoder.getPosition());
+        SmartDashboard.putNumber("resetting turn encoder to", absoluteEncoder.getPosition());
     }
 
     /**

@@ -74,16 +74,16 @@ public class Swerve extends SubsystemBase {
      */
     public void setModuleStates(SwerveModuleState[] states) {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxSpeed);
-        //frontLeft.setDesiredState(states[0]);
-        //frontRight.setDesiredState(states[1]);
+        frontLeft.setDesiredState(states[0]);
+        frontRight.setDesiredState(states[1]);
         backLeft.setDesiredState(states[2]);
-        //backRight.setDesiredState(states[3]);
+        backRight.setDesiredState(states[3]);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("angle pos", backLeft.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("angle pos", backRight.getAbsAbsPosition());
        
         
     }

@@ -29,16 +29,16 @@ public final class Constants {
 
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveGearRatio = 6.75;
-    public static final double turnGearRatio = 17;
+    public static final double turnGearRatio = 21.43;
     public static final double driveEncoderResolution = driveGearRatio * Math.PI * wheelDiameter;
     public static final double turnEncoderResolution = turnGearRatio * 2 * Math.PI;
     public static final double driveSpeedResolution = driveEncoderResolution / 60;
     public static final double turnSpeedResolution = turnEncoderResolution / 60;
 
-    public static final Translation2d frontLeftLocation = new Translation2d(0.635, 0.635);
-    public static final Translation2d frontRightLocation = new Translation2d(0.635, -0.635);
-    public static final Translation2d backLeftLocation = new Translation2d(-0.635, 0.635);
-    public static final Translation2d backRightLocation = new Translation2d(-0.635, -0.635);
+    public static final Translation2d frontLeftLocation = new Translation2d(0.282575, 0.282575);
+    public static final Translation2d frontRightLocation = new Translation2d(0.282575, -0.282575);
+    public static final Translation2d backLeftLocation = new Translation2d(-0.282575, 0.282575);
+    public static final Translation2d backRightLocation = new Translation2d(-0.282575, -0.282575);
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRightLocation, frontLeftLocation, backRightLocation, backLeftLocation);
   }
 
