@@ -24,7 +24,7 @@ public final class Constants {
 
   public static class DriveConstants {
     public static final int driverControllerPort = 0;
-    public static final double maxSpeed = 3;
+    public static final double maxSpeed = .05;
     public static final double maxAngularVelocity = Math.PI;
 
     public static final double wheelDiameter = Units.inchesToMeters(4);
