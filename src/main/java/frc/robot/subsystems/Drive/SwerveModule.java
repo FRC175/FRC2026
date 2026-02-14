@@ -140,6 +140,10 @@ public class SwerveModule extends SubsystemBase {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRad()));
     }
 
+    public SwerveModulePosition getPosition() {
+       return new SwerveModulePosition(getDrivePosition(), new Rotation2d(absoluteEncoder.getPosition()));
+    }
+
     
 
     /**

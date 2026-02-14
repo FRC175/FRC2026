@@ -29,9 +29,9 @@ public class SwerveJoystick extends Command {
         this.fieldOrientedFunction = fieldOrientedFunction;
 
         //Rate Limiters
-        this.xLimiter = new SlewRateLimiter(DriveConstants.maxSpeed);
-        this.yLimiter = new SlewRateLimiter(DriveConstants.maxSpeed);
-        this.turnLimiter = new SlewRateLimiter(DriveConstants.maxAngularVelocity);
+        this.xLimiter = new SlewRateLimiter(DriveConstants.maxDriveAcceleration);
+        this.yLimiter = new SlewRateLimiter(DriveConstants.maxDriveAcceleration);
+        this.turnLimiter = new SlewRateLimiter(DriveConstants.maxAngularAcceleration);
 
         addRequirements(swerve);
 
@@ -41,11 +41,11 @@ public class SwerveJoystick extends Command {
     public void execute() {
         //Gets the joystick inputs
         double xSpeed = xSpeedFunction.get();
-        SmartDashboard.putNumber("x", xSpeed);
+        SmartDashboard.putNumber("x-Stick", xSpeed);
         double ySpeed = ySpeedFunction.get();
-         SmartDashboard.putNumber("y", ySpeed);
+         SmartDashboard.putNumber("y-Stick", ySpeed);
         double turnSpeed = turnSpeedFunction.get();
-         SmartDashboard.putNumber("t", turnSpeed);
+         SmartDashboard.putNumber("t-Stick", turnSpeed);
 
         //Apply the Deadband
         xSpeed = Math.abs(xSpeed) > .1 ? xSpeed : 0.0;
@@ -53,9 +53,12 @@ public class SwerveJoystick extends Command {
         turnSpeed = Math.abs(turnSpeed) > .1 ? turnSpeed : 0.0;
 
         //Rate Limiter on joysticks and scale to 1/2 of max speed for Teleop
-        xSpeed = xLimiter.calculate(xSpeed) * (DriveConstants.maxSpeed * .5);
-        ySpeed = yLimiter.calculate(ySpeed) * (DriveConstants.maxSpeed * .5);
+        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.maxTeleopSpeed;
+        SmartDashboard.putNumber("Converted X Speed", xSpeed);
+        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;
+        SmartDashboard.putNumber("Converted Y Speed", ySpeed);
         turnSpeed = turnLimiter.calculate(turnSpeed) * (DriveConstants.maxSpeed * .5);
+        SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
 
         //Create chassis speeds
         ChassisSpeeds chassisSpeeds;

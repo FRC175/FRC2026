@@ -25,11 +25,15 @@ public final class Constants {
   public static class DriveConstants {
     public static final int driverControllerPort = 0;
     public static final double maxSpeed = 3;
+    public static final double maxTeleopSpeed = maxSpeed / 4;
+    public static final double maxDriveAcceleration = 3;
     public static final double maxAngularVelocity = Math.PI;
+    public static final double maxTeleopAngularSpeed = maxAngularVelocity / 4;
+    public static final double maxAngularAcceleration = 3;
 
     public static final double wheelDiameter = Units.inchesToMeters(4);
-    public static final double driveGearRatio = 6.75;
-    public static final double turnGearRatio = 21.43;
+    public static final double driveGearRatio = 1 / 6.75;
+    public static final double turnGearRatio = 1 / 21.43;
     public static final double driveEncoderResolution = driveGearRatio * Math.PI * wheelDiameter;
     public static final double turnEncoderResolution = turnGearRatio * 2 * Math.PI;
     public static final double driveSpeedResolution = driveEncoderResolution / 60;
@@ -40,6 +44,10 @@ public final class Constants {
     public static final Translation2d backLeftLocation = new Translation2d(-0.282575, 0.282575);
     public static final Translation2d backRightLocation = new Translation2d(-0.282575, -0.282575);
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRightLocation, frontLeftLocation, backRightLocation, backLeftLocation);
+  }
+
+  public static class IntakeConstants {
+    public static final double setEncoderPosition = 300;
   }
 
 }
