@@ -10,21 +10,43 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
 public class Intake extends SubsystemBase {
-    private final SparkMax intake;
-    private final RelativeEncoder intakeEncoder;
- //defines intake motor.
-    public Intake() {
-   //Change deviceId to 1 for testing 6 is a place holder before testing
-    intake = new SparkMax(2, MotorType.kBrushless);
-    intakeEncoder = intake.getEncoder();
+  private final SparkMax intakeDeployLeader;
+  private final RelativeEncoder leaderDeployEncoder;
+  // private final SparkMax intakeDeployFollower;
+  // private final RelativeEncoder followerDeployEncoder;
+
+  public Intake() {
+    // Change deviceId to 1 for testing 6 is a place holder before testing
+    intakeDeployLeader = new SparkMax(2, MotorType.kBrushless);
+    leaderDeployEncoder = intakeDeployLeader.getEncoder();
+    // Change deviceId to 2 for testing 7 is place holder before testing
+    // intakeDeployFollower = new SparkMax(7, MotorType.kBrushless);
+    // followerDeployEncoder = intakeDeployFollower.getEncoder();
   }
-public void setIntakeVelocity(double speed) {
-    intake.set(speed);
+
+  public void setDeployVelocity(double speed) {
+    intakeDeployLeader.set(speed);
+    // intakeDeployFollower.set(speed);
+
   }
-public double getEncoderValue(){
-        double leaderDeployReading = intakeEncoder.getVelocity();
-        return leaderDeployReading; 
-    } 
+
+  public void setEncoderPosition(double position) {
+    intakeDeployLeader.set(position);
+  }
+
+  public double getEncoderVelocity() {
+    double leaderDeployReading = leaderDeployEncoder.getVelocity();
+    // double followerDeployReading = followerDeployEncoder.getVelocity();
+    // followerDeployReading *= -1;
+    return leaderDeployReading; // (leaderDeployReading + followerDeployReading)/2;
+  }
+
+  public double getEncoderPosition() {
+    double leaderDeployReading = leaderDeployEncoder.getPosition();
+    // double followerDeployReading = followerDeployEncoder.getVelocity();
+    // followerDeployReading *= -1;
+    return leaderDeployReading; // (leaderDeployReading + followerDeployReading)/2;
+  }
 
   @Override
   public void periodic() {

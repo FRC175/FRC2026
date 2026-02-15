@@ -16,4 +16,9 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static class IntakeConstants{
+    //300 is a dummy value, not the actual encoder value//
+    public static final double intakeDeployPosition = 300;
+    public static final double intakeRetractPosition = -300;
+  }
 }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Hopperfeeder;
-import frc.robot.subsystems.Intakedeploy;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake;
 
 /**
@@ -69,9 +69,9 @@ public class RobotContainer {
 
     //Hold Y: To set Hopperfeeder velocity at 5.50% clockwise
     new Trigger(() -> m_driverController.getYButton()).whileTrue(
-      new InstantCommand(() -> m_intake.setIntakeVelocity( .1500 )) 
+      new InstantCommand(() -> m_intake.setDeployVelocity( .1500 )) 
     ).whileFalse(
-    new InstantCommand(() -> m_intake.setIntakeVelocity( 0))
+    new InstantCommand(() -> m_intake.setDeployVelocity( 0))
     );
     //Press Up on Dpad: set servoHood postition
      new Trigger(() -> m_driverController.getPOV() ==0).whileTrue(
