@@ -20,6 +20,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Hopperfeeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,10 +31,13 @@ import frc.robot.subsystems.Intake;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   //private final Climb m_climb = new Climb();
-  private final Shooter m_shooter = new Shooter();
+  //private final Shooter m_shooter = new Shooter();
   //private final Hopperfeeder m_hopper = new Hopperfeeder();
   //private final Intakedeploy m_deploy = new Intakedeploy();
-  private final Intake m_intake = new Intake();
+  //private final Intake m_intake = new Intake();
+  private final Limelight m_limelight;
+
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController m_driverController =
       new XboxController(OperatorConstants.kDriverControllerPort);
@@ -41,6 +45,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    m_limelight = new Limelight();
     configureBindings();
   }
 
@@ -60,6 +65,8 @@ public class RobotContainer {
 
     //Hold B: Climb motor at 6.25% speed
     
+    /*
+
     //Hold A: To set shooter velocity at 5.50% clockwise
    new Trigger(() -> m_driverController.getAButton()).whileTrue(
       new InstantCommand(() -> m_shooter.setShooterVelocity( .0550 )) 
@@ -94,6 +101,7 @@ new Trigger(() -> m_driverController.getPOV() ==90).whileTrue(
     ).whileFalse(
     new InstantCommand(() -> m_shooter.setServoHood( 0))
     );
+    */
   }
 
   //public Command getAutonomousCommand() {
