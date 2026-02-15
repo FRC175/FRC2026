@@ -15,8 +15,8 @@ public class Climb extends SubsystemBase {
   private final RelativeEncoder climbEncoder;
 
   public Climb() {
-    climbMotor = new SparkMax(1, MotorType.kBrushless);
-
+    climbMotor = new SparkMax(6, MotorType.kBrushless);
+    
     climbEncoder = climbMotor.getEncoder();
   }
 

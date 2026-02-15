@@ -8,19 +8,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.wpilibj.Servo;
 
 public class Shooter extends SubsystemBase {
   private final SparkFlex shooterLeader;
   // private final SparkFlex shooterFollower;
   private final RelativeEncoder leaderEncoder;
-  // private final RelativeEncoder followerEncoder;
+  private final Servo servoHood;
 
-  /** Creates a new Shooter subsystem. */
+  // private final RelativeEncoder followerEncoder;
+  /** Creates a new ExampleSubsystem. */
   public Shooter() {
-    shooterLeader = new SparkFlex(2, MotorType.kBrushless);
+    shooterLeader = new SparkFlex(10, MotorType.kBrushless);
     // shooterFollower = new SparkFlex(3, MotorType.kBrushless);
     leaderEncoder = shooterLeader.getEncoder();
-    // followerEncoder = shooterFollower.getEncoder();
+    // followerEncoder = shooterFollower.getEncoder()
+    servoHood = new Servo(9);
   }
 
   /**
@@ -53,21 +56,41 @@ public class Shooter extends SubsystemBase {
     // followerReading *= -1;
     return leaderReading; // (leaderReading + followerReading)/2;
   }
-
   /**
-   * An example method querying a boolean state of the subsystem (for example, a
-   * digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
+   * Sets the servo position and the shooter speed
+   * @param speed speed of the shooter
+   * @param angle position of the hood/servo
    */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public void setShooter(double speed, double angle) {
+    double servoPose = angle; // with conversion
+    setServoHood(servoPose);
+    setShooterVelocity(speed);
   }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+/**
+ * Checks if flywheel speed is at the goal speed. 
+ * @param goalSpeed The intended speed of the flywheel
+ * @return true if goal speed is greater thn or equal to flywheel speed, else false
+ */
+  public boolean flywheelAtSpeed(double goalSpeed) {
+    if (getEncoderValue() >= goalSpeed) {
+      return true;
+    } else
+      return false;
+  }
+/**
+ * Getting the servo hood position
+ * @return returning the servo hood position
+ */
+  public double getPosition() {
+    double answer = servoHood.get();
+    return answer;
+  }
+/**
+ * setting the servo hood value
+ * @param value returning the servo hood value
+ */
+  public void setServoHood(double value) {
+    servoHood.set(value);
   }
 
   @Override
