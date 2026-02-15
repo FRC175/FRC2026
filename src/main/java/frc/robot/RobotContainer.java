@@ -6,11 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.HoldClimb;
-import frc.robot.commands.ClimbUp;
 import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -54,9 +50,24 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    /*new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));*/
+
+    /** Button Binding Templates **
+    
+    //Press Button: Do action once when the button is pressed
+    new Trigger(() -> m_driverController.getAButton()).onTrue(
+      new InstantCommand(() -> m_subsystem.method())
+    );
+    
+    //Hold Button: Do action while held, optional other action when not held
+    new Trigger(() -> m_driverController.getAButton()).whileTrue(
+      new InstantCommand(() -> m_subsystem.method())
+    ).whileFalse(
+      new InstantCommand(() -> m_subsystem.method())
+    ));
+
+    //Todo (Low Priority): Add temlates for triggers and joysticks
+
+    */
 
     //Hold B: Climb motor at 6.25% speed
     
@@ -94,6 +105,7 @@ new Trigger(() -> m_driverController.getPOV() ==90).whileTrue(
     ).whileFalse(
     new InstantCommand(() -> m_shooter.setServoHood( 0))
     );
+    
   }
 
   //public Command getAutonomousCommand() {

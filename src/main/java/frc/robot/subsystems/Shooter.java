@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -36,6 +35,14 @@ public class Shooter extends SubsystemBase {
   public void setShooterVelocity(double speed) {
     shooterLeader.set(speed);
     // shooterFollower.set(-speed);
+  }
+
+  /**
+   * Stops the shooter motors
+   */
+  public void stopShooter() {
+    shooterLeader.set(0);
+    // shooterFollower.set(0);
   }
 
   /**

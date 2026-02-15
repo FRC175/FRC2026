@@ -4,35 +4,95 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  public Limelight() {}
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+  private final NetworkTable table;
+
+  /** Creates a new ExampleSubsystem. */
+  public Limelight() {
+    table = NetworkTableInstance.getDefault().getTable("limelight");
   }
 
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
+   * Method to retrieve the horizontal offset from the crosshair to the target.
+   * 
+   * @return the horizontal offset in degrees
    */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  private double getTx() {
+    return table.getEntry("tx").getDouble(0.0);
+  }
+
+  /**
+   * Method to retrieve the vertical offset from the crosshair to the target.
+   * 
+   * @return the vertical offset in degrees
+   */
+  private double getTy() {
+    return table.getEntry("ty").getDouble(0.0);
+  }
+
+  /**
+   * Method to retrieve the target area.
+   * 
+   * @return the target area as a percentage of the image
+   */
+  private double getTa() {
+    return table.getEntry("ta").getDouble(0.0);
+  }
+
+  /**
+   * Method to determine if the limelight has found a target.
+   * 
+   * @return true if a target is found, false otherwise
+   */
+  private boolean foundTarget() {
+
+    return (table.getEntry("tv").getDouble(0.0) == 1);
+
+  }
+
+  /**
+   * Method to determine if the limelight has found a target, and returns its 2D
+   * pose if so.
+   * 
+   * @return an array of doubles representing [tx, ty, ta] if a target is found,
+   *         null otherwise
+   */
+  public double[] findAprilTag2D() {
+
+    if (foundTarget() == false) {
+
+      return null;
+
+    } else {
+
+      double tX = getTx();
+      double tY = getTy();
+      double tA = getTa();
+
+      return new double[] { tX, tY, tA };
+    }
+  }
+
+  /**
+   * Method to determine if the limelight has found a target, and returns its 3D
+   * pose in robot space if so.
+   * 
+   * @return an array of doubles representing the 3D pose [x, y, z, roll, pitch,
+   *         yaw] in robot space if a target is found, null otherwise
+   */
+  public double[] findAprilTag3D() {
+
+    if (foundTarget() == false)
+      return null;
+
+    else
+      return table.getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
+
   }
 
   @Override
