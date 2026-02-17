@@ -42,8 +42,6 @@ public class Swerve extends SubsystemBase {
         gyro.reset();
     }
 
-    
-
     /**
      * Gets the heading of the robot in radians
      * 
@@ -52,8 +50,6 @@ public class Swerve extends SubsystemBase {
     public double getHeading() {
         return Math.IEEEremainder(gyro.getRotation2d().getRadians(), 2 * Math.PI);
     }
-
-    
 
     /**
      * Gets the current heading of the robot as a rotation2d
@@ -91,9 +87,9 @@ public class Swerve extends SubsystemBase {
     public void setModuleStates(SwerveModuleState[] states) {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxSpeed);
         frontLeft.setDesiredState(states[0]);
-        //frontRight.setDesiredState(states[1]);
-        //backLeft.setDesiredState(states[2]);
-        //backRight.setDesiredState(states[3]);
+        frontRight.setDesiredState(states[1]);
+        backLeft.setDesiredState(states[2]);
+        backRight.setDesiredState(states[3]);
     }
 
     @Override
