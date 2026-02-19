@@ -60,6 +60,7 @@ public class Swerve extends SubsystemBase {
         return gyro.getRotation2d();
     }
 
+    
     public Pose2d getPose() {
         return odometer.getPoseMeters();
     }
@@ -86,9 +87,9 @@ public class Swerve extends SubsystemBase {
      */
     public void setModuleStates(SwerveModuleState[] states) {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxSpeed);
-        frontLeft.setDesiredState(states[0]);
-        frontRight.setDesiredState(states[1]);
-        backLeft.setDesiredState(states[2]);
+        //frontLeft.setDesiredState(states[0]);
+        //frontRight.setDesiredState(states[1]);
+        //backLeft.setDesiredState(states[2]);
         backRight.setDesiredState(states[3]);
     }
 

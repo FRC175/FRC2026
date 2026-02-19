@@ -29,8 +29,8 @@ import frc.robot.subsystems.Drive.Swerve;
 public class RobotContainer {
 
   //The robot's subsystems
-  private final Climb m_climb = new Climb();
-  private final Shooter m_shooter = new Shooter();
+  //private final Climb m_climb = new Climb();
+  //private final Shooter m_shooter = new Shooter();
   private final Swerve m_Drive = new Swerve();
 
  
