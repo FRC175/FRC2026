@@ -74,7 +74,10 @@ public class SwerveJoystick extends Command {
 
         //Convert to array of module states
         SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);
-
+           
+        //SmartDashboard.putNumber("desiredWangle", moduleStates[3].angle.getRadians());
+          
+       
         //Send states to modules
         swerve.setModuleStates(moduleStates);
     }

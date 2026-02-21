@@ -31,6 +31,16 @@ public final class Constants {
     public static final double maxTeleopAngularSpeed = maxAngularVelocity / 4;
     public static final double maxAngularAcceleration = 3;
 
+    //Motor ID's
+    public static final int frTurnID = 2;
+    public static final int frDriveID = 3;
+    public static final int flTurnID = 4;
+    public static final int flDriveID = 5;
+    public static final int blTurnID = 6;
+    public static final int blDriveID = 7;
+    public static final int brTurnID = 8;
+    public static final int brDriveID = 9;
+
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveGearRatio = 1 / 6.75;
     public static final double turnGearRatio = 1 / 21.43;

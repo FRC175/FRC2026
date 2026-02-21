@@ -17,13 +17,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import frc.robot.Constants.DriveConstants;
 
 public class Swerve extends SubsystemBase {
 
-    private final SwerveModule frontLeft = new SwerveModule(7, 6, 13, false, true, 0, false);
-    private final SwerveModule frontRight = new SwerveModule(3, 2, 11, false, true, 0, false);
-    private final SwerveModule backLeft = new SwerveModule(9, 8, 14, false, true, 0, false);
-    private final SwerveModule backRight = new SwerveModule(5, 4, 12, false, true, 0, false);
+    private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, false, true, 0, false);
+    private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, false, true, 0, false);
+    private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, false, true, 0, false);
+    private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, false, false, 0, false);
 
     private final Pigeon2 gyro = new Pigeon2(10);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(0), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()} );
@@ -31,7 +32,7 @@ public class Swerve extends SubsystemBase {
     /** Creates a new Swerve System. */
     public Swerve() {
 
-        resetGyro();
+        gyro.setYaw(270);
 
     }
 
