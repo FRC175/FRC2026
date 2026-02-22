@@ -8,44 +8,86 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
-  private final SparkMax intakeDeployLeader;
-  private final RelativeEncoder leaderDeployEncoder;
-  // private final SparkMax intakeDeployFollower;
-  // private final RelativeEncoder followerDeployEncoder;
+  private static Intake instance;
+  private final SparkMax intakeDeploy;
+  private final RelativeEncoder deployEncoder;
+  private final SparkMax intakeRoller;
+  private final RelativeEncoder rollerEncoder;
 
+  /**
+   * Creates a new intake subsystem
+   */
   public Intake() {
-    // Change deviceId to 1 for testing 6 is a place holder before testing
-    intakeDeployLeader = new SparkMax(2, MotorType.kBrushless);
-    leaderDeployEncoder = intakeDeployLeader.getEncoder();
-    // Change deviceId to 2 for testing 7 is place holder before testing
-    // intakeDeployFollower = new SparkMax(7, MotorType.kBrushless);
-    // followerDeployEncoder = intakeDeployFollower.getEncoder();
+    intakeDeploy = new SparkMax(IntakeConstants.deployID, MotorType.kBrushless);
+    deployEncoder = intakeDeploy.getEncoder();
+    intakeRoller = new SparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
+    rollerEncoder = intakeRoller.getEncoder();
   }
 
+  /**
+   * Returns the initialized intake subsystem, or creates an intake if there is not one already
+   * @return The current intake instance
+   */
+  public static Intake getInstance() {
+    if(instance == null) {
+      instance = new Intake();
+    }
+    return instance;
+  }
+
+  /**
+   * Sets the motor velocity of the deploy motor
+   * @param speed Motor velocity
+   */
   public void setDeployVelocity(double speed) {
-    intakeDeployLeader.set(speed);
-    // intakeDeployFollower.set(speed);
+    intakeDeploy.set(speed);
 
   }
 
-  public void setEncoderPosition(double position) {
-    intakeDeployLeader.set(position);
+  /**
+   * Sets the deploy encoder reading
+   * @param position Desired encoder reading
+   */
+  public void setDeployPosition(double position) {
+    intakeDeploy.set(position);
   }
 
-  public double getEncoderVelocity() {
-    double leaderDeployReading = leaderDeployEncoder.getVelocity();
-    // double followerDeployReading = followerDeployEncoder.getVelocity();
-    // followerDeployReading *= -1;
-    return leaderDeployReading; // (leaderDeployReading + followerDeployReading)/2;
+  /**
+   * Sets the speed of the intake rollers
+   * @param speed
+   */
+  public void setRollerSpeed(double speed) {
+    intakeRoller.set(speed);
   }
 
-  public double getEncoderPosition() {
-    double leaderDeployReading = leaderDeployEncoder.getPosition();
-    // double followerDeployReading = followerDeployEncoder.getVelocity();
-    // followerDeployReading *= -1;
-    return leaderDeployReading; // (leaderDeployReading + followerDeployReading)/2;
+  /**
+   * Retrieves the current velocity of the deploy motor
+   * @return Deploy motor velocity
+   */
+  public double getDeployVelocity() {
+    double deployReading = deployEncoder.getVelocity();
+    return deployReading;
+  }
+
+  /**
+   * Retrieves the current deploy encoder reading
+   * @return Current deploy encoder reading
+   */
+  public double getDeployPosition() {
+    double deployReading = deployEncoder.getPosition();
+    return deployReading;
+  }
+
+  /**
+   * Retrieves the current velocity of the rollers
+   * @return Current roller velocity
+   */
+  public double getRollerVelocity() {
+    double rollerVelocity = rollerEncoder.getVelocity();
+    return rollerVelocity;
   }
 
   @Override

@@ -24,7 +24,7 @@ public class IntakeRetract extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Intake.setEncoderPosition(0);
+    m_Intake.setDeployPosition(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +42,7 @@ public class IntakeRetract extends Command {
   // 300 is a dummy value.
   @Override
   public boolean isFinished() {
-    if(m_Intake.getEncoderPosition() <= IntakeConstants.intakeRetractPosition) {
+    if(m_Intake.getDeployPosition() <= IntakeConstants.intakeRetractPosition) {
     return true;
    } else return false;
   }

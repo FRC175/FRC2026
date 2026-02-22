@@ -9,21 +9,40 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.Servo;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
+  private static Shooter instance;
   private final SparkFlex shooterLeader;
-  // private final SparkFlex shooterFollower;
+  private final SparkFlex shooterFollower;
   private final RelativeEncoder leaderEncoder;
-  private final Servo servoHood;
+  private final RelativeEncoder followerEncoder;
+  private final Servo leftServoHood;
+  private final Servo rightServoHood;
 
-  // private final RelativeEncoder followerEncoder;
-  /** Creates a new ExampleSubsystem. */
+  /** 
+   * Creates a new Shooter Subsystem 
+   * */
   public Shooter() {
-    shooterLeader = new SparkFlex(10, MotorType.kBrushless);
-    // shooterFollower = new SparkFlex(3, MotorType.kBrushless);
+    shooterLeader = new SparkFlex(ShooterConstants.shooterLeaderID, MotorType.kBrushless);
+    shooterFollower = new SparkFlex(ShooterConstants.shooterFollowID, MotorType.kBrushless);
+
     leaderEncoder = shooterLeader.getEncoder();
-    // followerEncoder = shooterFollower.getEncoder()
-    servoHood = new Servo(9);
+    followerEncoder = shooterFollower.getEncoder();
+
+    leftServoHood = new Servo(ShooterConstants.leftHoodServo);
+    rightServoHood = new Servo(ShooterConstants.rightHoodServo);
+  }
+
+  /**
+   * Returns the initialized shooter subsystem, or creates a shooter if there is not one already
+   * @return The current shooter instance
+   */
+  public static Shooter getInstance() {
+    if(instance == null) {
+      instance = new Shooter();
+    }
+    return instance;
   }
 
   /**
@@ -78,19 +97,21 @@ public class Shooter extends SubsystemBase {
       return false;
   }
 /**
- * Getting the servo hood position
+ * Getting the angle of the shooter hood, as the average of the two controlling servo positiongs
  * @return returning the servo hood position
  */
-  public double getPosition() {
-    double answer = servoHood.get();
-    return answer;
+  public double getHoodPosition() {
+    double left = leftServoHood.get();
+    double right = rightServoHood.get();
+    return (left + right) / 2;
   }
 /**
  * setting the servo hood value
  * @param value returning the servo hood value
  */
   public void setServoHood(double value) {
-    servoHood.set(value);
+    leftServoHood.set(value);
+    rightServoHood.set(value);
   }
 
   @Override
