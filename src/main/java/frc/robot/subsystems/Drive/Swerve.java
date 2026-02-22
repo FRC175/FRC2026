@@ -21,10 +21,10 @@ import frc.robot.Constants.DriveConstants;
 
 public class Swerve extends SubsystemBase {
 
-    private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, false, true, 0, false);
-    private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, false, true, 0, false);
-    private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, false, true, 0, false);
-    private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, false, false, 0, false);
+    private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, false, false,  false);
+    private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, false, false,  false);
+    private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, false, false, false);
+    private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, false, false,  false);
 
     private final Pigeon2 gyro = new Pigeon2(10);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(0), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()} );
@@ -32,15 +32,15 @@ public class Swerve extends SubsystemBase {
     /** Creates a new Swerve System. */
     public Swerve() {
 
-        gyro.setYaw(270);
+        resetGyro();
 
     }
 
     /**
-     * Resets the gyro to 0 for all readings
+     * Offsets the Gyro by 90 degrees to the left (adjust for mounting)
      */
     public void resetGyro() {
-        gyro.reset();
+        gyro.setYaw(270);
     }
 
     /**

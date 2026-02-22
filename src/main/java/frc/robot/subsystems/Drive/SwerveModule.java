@@ -45,7 +45,7 @@ public class SwerveModule extends SubsystemBase {
     /** Creates a new SwerveModule. */
     public SwerveModule(int driveMoterID, int turnMotorID,
             boolean driveMotorReversed,
-            boolean turnMotorReversed, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
+            boolean turnMotorReversed, boolean absoluteEncoderReversed) {
 
         // Initialize motors
         driveMotor = new SparkFlex(driveMoterID, MotorType.kBrushless);
@@ -63,7 +63,7 @@ public class SwerveModule extends SubsystemBase {
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = turnMotor.getEncoder();
         // Initialize absolute encoder
-        absoluteEncoderOffsetRad = absoluteEncoderOffset;
+        absoluteEncoderOffsetRad = 0;
         this.absoluteEncoderReversed = absoluteEncoderReversed;
         absoluteEncoder = turnMotor.getAbsoluteEncoder();
 
@@ -198,7 +198,7 @@ public class SwerveModule extends SubsystemBase {
         //if(this.turnMotorReversed) turnMotor.set(-1 * turnPID.calculate(getAbsoluteEncoderRad(), state.angle.getRadians()));
         //else 
           SmartDashboard.putNumber("desiredAngle", state.angle.getRadians());
-           SmartDashboard.putNumber("desiredBangle", getAbsoluteEncoderRad());
+           //SmartDashboard.putNumber("desiredBangle", getAbsoluteEncoderRad());
           SmartDashboard.putNumber("tpid", turnPID.calculate(getAbsoluteEncoderRad(), state.angle.getRadians()));
          
          
