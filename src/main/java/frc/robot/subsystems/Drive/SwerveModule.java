@@ -52,12 +52,12 @@ public class SwerveModule extends SubsystemBase {
         turnMotor = new SparkFlex(turnMotorID, MotorType.kBrushless);
 
         
-
+        
         // Set motor inversion if needed
-        driveMotor.setInverted(driveMotorReversed); // TODO: Why that funky?
-        turnMotor.setInverted(turnMotorReversed);
         this.driveMotorReversed = driveMotorReversed;
         this.turnMotorReversed = turnMotorReversed;
+
+        configureFlexes();
 
         // Initialize encoders
         driveEncoder = driveMotor.getEncoder();
@@ -149,11 +149,15 @@ public class SwerveModule extends SubsystemBase {
         SparkFlexConfig driveConfig = new SparkFlexConfig();
         driveConfig.signals.primaryEncoderVelocityPeriodMs(15);
         driveConfig.signals.primaryEncoderPositionPeriodMs(15);
+        driveConfig.inverted(driveMotorReversed);
+    
         
         SparkFlexConfig turnConfig = new SparkFlexConfig();
         turnConfig.signals.absoluteEncoderPositionPeriodMs(15);
-        driveConfig.signals.primaryEncoderVelocityPeriodMs(15);
-        driveConfig.signals.primaryEncoderPositionPeriodMs(15);
+        turnConfig.signals.primaryEncoderVelocityPeriodMs(15);
+        turnConfig.signals.primaryEncoderPositionPeriodMs(15);
+        turnConfig.inverted(turnMotorReversed);
+        
         
         driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
