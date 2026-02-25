@@ -66,6 +66,9 @@ public class Shooter extends SubsystemBase {
     setServoHood(servoPose);
     setShooterVelocity(speed);
   }
+  public double getServoPose() {
+    return servoHood.getAngle();
+  }
 /**
  * Checks if flywheel speed is at the goal speed. 
  * @param goalSpeed The intended speed of the flywheel
