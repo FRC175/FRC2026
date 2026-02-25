@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -54,6 +55,13 @@ public final class Constants {
     public static final Translation2d backLeftLocation = new Translation2d(-0.282575, 0.282575);
     public static final Translation2d backRightLocation = new Translation2d(-0.282575, -0.282575);
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRightLocation, frontLeftLocation, backRightLocation, backLeftLocation);
+
+    public static final double kPXController = 1.5;
+    public static final double kPYController = 1.5;
+    public static final double kPThetaController = 3;
+
+    public static final TrapezoidProfile.Constraints kThetaControllerContraints = 
+      new TrapezoidProfile.Constraints(maxTeleopAngularSpeed, maxTeleopAngularSpeed/10);
   }
 
   public static class IntakeConstants {
