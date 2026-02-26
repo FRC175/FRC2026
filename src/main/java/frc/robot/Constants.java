@@ -13,10 +13,14 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  
+  //Constants that pertain to the Drive Team/Robot Control
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
     public static final int operatorControllerPort = 1;
   }
+
+  //Constants that pertain to the Intake subsystem
   public static class IntakeConstants{
     //Motor ID's
     public static final int deployID = 16;
@@ -27,6 +31,7 @@ public final class Constants {
     public static final double intakeRetractPosition = -300;
   }
 
+  //Constants that pertain to the Shooter subsystem
   public static class ShooterConstants{
     //Motor ID's
     public static final int shooterLeaderID = 11;
@@ -40,6 +45,7 @@ public final class Constants {
     public static final double flyWheelEffort = .75;
   }
 
+  //Constants that pertain to the Hopper subsystem
   public static class HopperConstants{
     //Motor ID's
     public static final int feederWheelID = 13; //Smaller green gummy wheel above fuel as enters shooter
@@ -48,7 +54,8 @@ public final class Constants {
     
   }
 
+  //Constants that pertain to the Climb subsystem
   public static class ClimbConstants{
-    public static final int climbID = 16;
+    public static final int climbID = 20;
   }
 }
