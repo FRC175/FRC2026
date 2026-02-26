@@ -24,7 +24,7 @@ public class IntakeDeploy extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Deploy.setEncoderPosition(0);
+    m_Deploy.setDeployPosition(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +42,7 @@ public class IntakeDeploy extends Command {
   // 300 is a dummy value.
   @Override
   public boolean isFinished() {
-    if(m_Deploy.getEncoderPosition() >= IntakeConstants.intakeDeployPosition) {
+    if(m_Deploy.getDeployPosition() >= IntakeConstants.intakeDeployPosition) {
     return true;
    } else return false;
   }

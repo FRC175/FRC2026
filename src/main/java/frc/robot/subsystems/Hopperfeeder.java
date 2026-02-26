@@ -8,28 +8,52 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import frc.robot.Constants.HopperConstants;
 
 public class Hopperfeeder extends SubsystemBase {
-    private final SparkFlex rotary;
-    private final RelativeEncoder rotaryEncoder;
-    private final SparkMax feeder;
-    private final RelativeEncoder feederEncoder;
+  private static Hopperfeeder instance;
+  private final SparkFlex rotary;
+  private final RelativeEncoder rotaryEncoder;
+  private final SparkMax feederTrack;
+  private final RelativeEncoder feederTrackEncoder;
+  private final SparkFlex feederWheel;
+  private final RelativeEncoder feederWheelEncoder;
 
+  /**
+   * Creates a new Hopperfeeder Subsystem
+   */
   public Hopperfeeder() {
-   // Change deviceId to 1 for testing 4 is a place holder before testing
-    rotary = new SparkFlex(3, MotorType.kBrushless);
+    rotary = new SparkFlex(HopperConstants.spinDexerID, MotorType.kBrushless);
     rotaryEncoder = rotary.getEncoder();
-  //Change deviceId to 2 for testing 5 is a place holder before testing
-    feeder = new SparkMax(4, MotorType.kBrushless);
-    feederEncoder = feeder.getEncoder();
+
+    feederTrack = new SparkMax(HopperConstants.feederTrackID, MotorType.kBrushless);
+    feederTrackEncoder = feederTrack.getEncoder();
+
+    feederWheel = new SparkFlex(HopperConstants.feederWheelID, MotorType.kBrushless);
+    feederWheelEncoder = feederWheel.getEncoder();
   }
 
+  /**
+   * Returns the initialized Hopperfeeder subsystem, or creates a Hopperfeeder if there is not one already
+   * @return The current Hopperfeeder instance
+   */
+  public static Hopperfeeder getInstance() {
+    if (instance == null) {
+      instance = new Hopperfeeder();
+    }
+    return instance;
+  }
 
- //Sets speed for rotary
-  public void setRotaryVelocity(double speed){
+  /**
+   * Sets the motor speeds for the three sections of the Hopperfeeder
+   * @param speed Desired motor speed (0-1)
+   */
+  public void setVelocity(double speed) {
     rotary.set(speed);
-    feeder.set(speed);
-  }  
+    feederTrack.set(speed);
+    feederWheel.set(speed);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -38,6 +62,6 @@ public class Hopperfeeder extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
-  
+
   }
-}  
+}
