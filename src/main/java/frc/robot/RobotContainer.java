@@ -113,8 +113,11 @@ new Trigger(() -> m_driverController.getPOV() ==90).whileTrue(
     ).whileFalse(
     new InstantCommand(() -> shooter.setServoHood( 0))
     );
+    // when setRotaryVelocity() is called outside of shoot command, shooter motors are run instead of feeder,
+    // Aim then shoot only runs shoot motors, actuator does not actuate
     new Trigger(() -> m_driverController.getAButton()).whileTrue (
       new AimThenShoot(shooter, limelight, hopper)
+      //new InstantCommand(() -> hopper.setRotaryVelocity(.4))
     ).onFalse(
       new SequentialCommandGroup(
         new InstantCommand(() -> shooter.flywheelAtSpeed(0)),

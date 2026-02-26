@@ -17,10 +17,10 @@ public class Hopperfeeder extends SubsystemBase {
 
   public Hopperfeeder() {
    // Change deviceId to 1 for testing 4 is a place holder before testing
-    rotary = new SparkFlex(3, MotorType.kBrushless);
+    rotary = new SparkFlex(15, MotorType.kBrushless);
     rotaryEncoder = rotary.getEncoder();
   //Change deviceId to 2 for testing 5 is a place holder before testing
-    feeder = new SparkMax(4, MotorType.kBrushless);
+    feeder = new SparkMax(14, MotorType.kBrushless);
     feederEncoder = feeder.getEncoder();
   }
 

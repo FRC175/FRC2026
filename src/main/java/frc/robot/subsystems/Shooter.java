@@ -12,18 +12,18 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class Shooter extends SubsystemBase {
   private final SparkFlex shooterLeader;
-  // private final SparkFlex shooterFollower;
+   private final SparkFlex shooterFollower;
   private final RelativeEncoder leaderEncoder;
   private final Servo servoHood;
 
   // private final RelativeEncoder followerEncoder;
   /** Creates a new ExampleSubsystem. */
   public Shooter() {
-    shooterLeader = new SparkFlex(10, MotorType.kBrushless);
-    // shooterFollower = new SparkFlex(3, MotorType.kBrushless);
+    shooterLeader = new SparkFlex(11, MotorType.kBrushless);
+    shooterFollower = new SparkFlex(12, MotorType.kBrushless);
     leaderEncoder = shooterLeader.getEncoder();
     // followerEncoder = shooterFollower.getEncoder()
-    servoHood = new Servo(9);
+    servoHood = new Servo(0);
   }
 
   /**
@@ -33,8 +33,8 @@ public class Shooter extends SubsystemBase {
    * @param speed Speed to set shooter motors (-1 to 1)
    */
   public void setShooterVelocity(double speed) {
-    shooterLeader.set(speed);
-    // shooterFollower.set(-speed);
+    shooterLeader.set(-speed);
+    shooterFollower.set(speed);
   }
 
   /**
@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
    */
   public void stopShooter() {
     shooterLeader.set(0);
-    // shooterFollower.set(0);
+    shooterFollower.set(0);
   }
 
   /**
