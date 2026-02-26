@@ -68,7 +68,7 @@ public class SwerveModule extends SubsystemBase {
         absoluteEncoder = turnMotor.getAbsoluteEncoder();
 
         // Initialize PID controller for turning motor (should only need P)
-        turnPID = new PIDController(0.1, 0.0, 0.0);
+        turnPID = new PIDController(0.2, 0.0, 0.0);
         turnPID.enableContinuousInput(-1*Math.PI, Math.PI);
 
         resetEncoders();
@@ -197,7 +197,7 @@ public class SwerveModule extends SubsystemBase {
         //if(this.driveMotorReversed) driveMotor.set((state.speedMetersPerSecond / DriveConstants.maxSpeed) * -1);
         //else 
         //driveMotor.set(state.speedMetersPerSecond / DriveConstants.maxSpeed);
-        driveMotor.set(0);
+        driveMotor.set(state.speedMetersPerSecond / DriveConstants.maxSpeed);
 
         //if(this.turnMotorReversed) turnMotor.set(-1 * turnPID.calculate(getAbsoluteEncoderRad(), state.angle.getRadians()));
         //else 

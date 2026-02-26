@@ -41,7 +41,7 @@ public class Swerve extends SubsystemBase {
      * Offsets the Gyro by 90 degrees to the left (adjust for mounting)
      */
     public void resetGyro() {
-        gyro.setYaw(0);
+        gyro.setYaw(270);
     }
 
     /**
@@ -91,7 +91,7 @@ public class Swerve extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxSpeed);
         //frontLeft.setDesiredState(states[0]);
         //frontRight.setDesiredState(states[1]);
-        //backLeft.setDesiredState(states[2]);
+        backLeft.setDesiredState(states[2]);
         backRight.setDesiredState(states[3]);
     }
 
