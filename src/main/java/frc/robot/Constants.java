@@ -4,12 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This csass should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -18,6 +27,48 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
     public static final int operatorControllerPort = 1;
+  }
+
+  //Constants that pertain to the Swerve Drivebase
+  public static class DriveConstants {
+    public static final int driverControllerPort = 0;
+    public static final double maxSpeed = 3;
+    public static final double maxTeleopSpeed = maxSpeed / 4;
+    public static final double maxDriveAcceleration = 3;
+    public static final double maxAngularVelocity = Math.PI;
+    public static final double maxTeleopAngularSpeed = maxAngularVelocity / 4;
+    public static final double maxAngularAcceleration = 3;
+
+    //Motor ID's
+    public static final int frTurnID = 2;
+    public static final int frDriveID = 3;
+    public static final int flTurnID = 4;
+    public static final int flDriveID = 5;
+    public static final int blTurnID = 6;
+    public static final int blDriveID = 7;
+    public static final int brTurnID = 8;
+    public static final int brDriveID = 9;
+
+    public static final double wheelDiameter = Units.inchesToMeters(4);
+    public static final double driveGearRatio = 1 / 6.75;
+    public static final double turnGearRatio = 1 / 21.43;
+    public static final double driveEncoderResolution = driveGearRatio * Math.PI * wheelDiameter;
+    public static final double turnEncoderResolution = turnGearRatio * 2 * Math.PI;
+    public static final double driveSpeedResolution = driveEncoderResolution / 60;
+    public static final double turnSpeedResolution = turnEncoderResolution / 60;
+
+    public static final Translation2d frontLeftLocation = new Translation2d(0.282575, 0.282575);
+    public static final Translation2d frontRightLocation = new Translation2d(0.282575, -0.282575);
+    public static final Translation2d backLeftLocation = new Translation2d(-0.282575, 0.282575);
+    public static final Translation2d backRightLocation = new Translation2d(-0.282575, -0.282575);
+    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRightLocation, frontLeftLocation, backRightLocation, backLeftLocation);
+
+    public static final double kPXController = 1.5;
+    public static final double kPYController = 1.5;
+    public static final double kPThetaController = 3;
+
+    public static final TrapezoidProfile.Constraints kThetaControllerContraints = 
+      new TrapezoidProfile.Constraints(maxTeleopAngularSpeed, maxTeleopAngularSpeed/10);
   }
 
   //Constants that pertain to the Intake subsystem
@@ -58,4 +109,5 @@ public final class Constants {
   public static class ClimbConstants{
     public static final int climbID = 20;
   }
+
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -39,7 +40,7 @@ public class Shooter extends SubsystemBase {
     leftServoHood = new Servo(ShooterConstants.leftHoodServo);
     rightServoHood = new Servo(ShooterConstants.rightHoodServo);
   }
-
+  
   /**
    * Returns the initialized shooter subsystem, or creates a shooter if there is not one already
    * @return The current shooter instance
@@ -59,7 +60,7 @@ public class Shooter extends SubsystemBase {
    * 
    * @param speed Speed to set shooter motors (-1 to 1)
    */
-  public void setShooterVelocity(double speed) {
+  public void setShooterVelocity(double speed){
     shooterLeader.set(speed);
     //shooterFollower.set(speed);
   }
@@ -71,10 +72,8 @@ public class Shooter extends SubsystemBase {
     shooterLeader.set(0);
     //shooterFollower.set(0);
   }
-
   /**
    * Gets the average velocity of encoders
-   * 
    * @return avererage velocity(rpm)
    */
   public double getEncoderValue() {
