@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight extends SubsystemBase {
 
@@ -95,9 +96,44 @@ public class Limelight extends SubsystemBase {
 
   }
 
+  public double d3X() {
+    if (foundTarget()) {
+      double[] d3Location = findAprilTag3D();
+      double findX = d3Location[0];
+      findX = 0.15 * findX - 0.03742;
+      return findX;
+    } else
+      return -9999;
+  }
+
+  public double d3Y() {
+    if (foundTarget()) {
+      double[] d3Location = findAprilTag3D();
+      double findY = d3Location[1];
+      findY = -0.1191 * findY + 0.6512;
+      return findY;
+    } else
+      return -9999;
+  }
+
+  public double d3Z() {
+    if (foundTarget()) {
+      double[] d3Location = findAprilTag3D();
+      double findZ = d3Location[2];
+      findZ = 0.1636 * findZ - 0.02290;
+      findZ = 1.005 * findZ + 0.04104;
+      return findZ;
+    } else
+      return -999;
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    double x = d3X();
+    double z = d3Z();
+    SmartDashboard.putNumber("reportedX", x);
+    SmartDashboard.putNumber("reportedY", d3Y());
+    SmartDashboard.putNumber("reportedZ", z);
   }
 
   @Override
