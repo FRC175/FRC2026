@@ -1,26 +1,23 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.HopperConstants;
 
-public class Hopperfeeder extends SubsystemBase {
-    private final Hopperfeeder instance;
+public class Hopper extends SubsystemBase {
+    private static Hopper instance;
     private final SparkFlex rotary, feederWheel;
     private final RelativeEncoder rotaryEncoder, feederTrackEncoder, feederWheelEncoder;
     private final SparkMax feederTrack;
 
   /**
-   * Creates a new Hopperfeeder Subsystem
+   * Creates a new Hopper Subsystem
    */
-  public Hopperfeeder() {
+  public Hopper() {
     rotary = new SparkFlex(HopperConstants.spinDexerID, MotorType.kBrushless);
     rotaryEncoder = rotary.getEncoder();
 
@@ -32,17 +29,17 @@ public class Hopperfeeder extends SubsystemBase {
   }
 
   /**
-   * Returns the initialized Hopperfeeder subsystem, or creates a Hopperfeeder if there is not one already
-   * @return The current Hopperfeeder instance
+   * Returns the initialized Hopper subsystem, or creates a Hopper if there is not one already
+   * @return The current Hopper instance
    */
-  public static Hopperfeeder getInstance() {
+  public static Hopper getInstance() {
     if (instance == null) {
-      instance = new Hopperfeeder();
+      instance = new Hopper();
     }
     return instance;
   }
 
- //Sets speed for rotary
+ //TODO: Rework this method so it sets each motor to the same angular velocity (calculate based on motor free speeds and gear ratios)
   public void setHopperVelocity(double speed){
     rotary.set(speed);
     feederTrack.set(speed);

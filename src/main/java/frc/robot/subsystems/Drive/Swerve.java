@@ -6,6 +6,7 @@ package frc.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drive.SwerveModule;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -20,6 +21,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import frc.robot.Constants.DriveConstants;
 
 public class Swerve extends SubsystemBase {
+
+    private static Swerve instance;
 
     private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, false, false,  false);
     private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, false, false,  false);
@@ -36,6 +39,17 @@ public class Swerve extends SubsystemBase {
         
 
     }
+
+    /**
+   * Returns the initialized shooter subsystem, or creates a shooter if there is not one already
+   * @return The current shooter instance
+   */
+  public static Swerve getInstance() {
+    if(instance == null) {
+      instance = new Swerve();
+    }
+    return instance;
+  }
 
     /**
      * Offsets the Gyro by 90 degrees to the left (adjust for mounting)

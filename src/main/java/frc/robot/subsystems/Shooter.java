@@ -52,17 +52,14 @@ public class Shooter extends SubsystemBase {
     return instance;
   }
 
-
-
   /**
    * Sets the shooter motors to given speed (follower motor opposite direction of
    * leader)
    * 
    * @param speed Speed to set shooter motors (-1 to 1)
    */
-  public void setShooterVelocity(double speed){
+  public void setVelocity(double speed){
     shooterLeader.set(speed);
-    //shooterFollower.set(speed);
   }
 
   /**
@@ -70,49 +67,47 @@ public class Shooter extends SubsystemBase {
    */
   public void stopShooter() {
     shooterLeader.set(0);
-    //shooterFollower.set(0);
   }
+
   /**
    * Gets the average velocity of encoders
    * @return avererage velocity(rpm)
    */
-  public double getEncoderValue() {
-    double leaderReading = leaderEncoder.getVelocity();
-    double followerReading = followerEncoder.getVelocity();
-    leaderReading *= -1;
-    return Math.abs((leaderReading + followerReading)/2);
-  }
-  /**
-   * Sets the servo position and the shooter speed
-   * @param speed speed of the shooter
-   * @param angle position of the hood/servo
-   */
-  public void setShooter(double speed, double angle) {
-    double servoPose = angle; // with conversion
-    setServoHood(servoPose);
-    setShooterVelocity(speed);
-  }
-  public double getServoPose() {
-    return servoHood.getAngle();
+  public double getVelocity() {
+    return Math.abs((leaderEncoder.getVelocity() + followerEncoder.getVelocity()) / 2);
   }
 
+  /**
+   * Returns the pose of the hood-servo
+   * @return The hood-servo pose
+   */
+  public double getServoPose() {
+    return leftServoHood.get();
+  }
+
+  /**
+   * Configures the motor controllers for the shooter.
+   * We use default configuration other than the one motor being a follower, but more can be added
+   */
   public void configureFlexes() {
     SparkFlexConfig followConfig = new SparkFlexConfig();
-    followConfig.follow(DriveConstants.shooterLeaderID, true);
+    followConfig.follow(ShooterConstants.shooterLeaderID, true);
     
     shooterFollower.configure(followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
+
 /**
  * Checks if flywheel speed is at the goal speed. 
  * @param goalSpeed The intended speed of the flywheel
  * @return true if goal speed is greater thn or equal to flywheel speed, else false
  */
   public boolean flywheelAtSpeed(double goalSpeed) {
-    if (getEncoderValue() >= goalSpeed) {
+    if (getVelocity() >= goalSpeed) {
       return true;
     } else
       return false;
   }
+
 /**
  * Getting the angle of the shooter hood, as the average of the two controlling servo positiongs
  * @return returning the servo hood position
@@ -122,6 +117,7 @@ public class Shooter extends SubsystemBase {
     double right = rightServoHood.get();
     return (left + right) / 2;
   }
+
 /**
  * setting the servo hood value
  * @param value returning the servo hood value

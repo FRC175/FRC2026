@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Hopperfeeder;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,11 +22,11 @@ public class AimThenShoot extends SequentialCommandGroup  {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AimThenShoot(Shooter shooter, Limelight limelight, Hopperfeeder hopperfeeder) {
+  public AimThenShoot(Shooter shooter, Limelight limelight, Hopper hopper) {
     addCommands(
-   // new Aim(shooter, limelight),
+    new Aim(shooter, limelight),
     new Shoot(shooter, .3),
-    new InstantCommand(() -> hopperfeeder.setHopperVelocity(.3))
+    new InstantCommand(() -> hopper.setHopperVelocity(.3))
     );
   }
 

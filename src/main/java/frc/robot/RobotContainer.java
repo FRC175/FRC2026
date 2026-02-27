@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drive.Swerve;
-import frc.robot.subsystems.Hopperfeeder;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Intake;
@@ -54,18 +54,11 @@ public class RobotContainer {
   private final Swerve m_Drive = new Swerve(); //TODO: MIKE FIX
   private final Climb climb;
   private final Shooter shooter;
-  private final Hopperfeeder hopper;
+  private final Hopper hopper;
   private final Intake intake;
   private final Limelight limelight;
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final XboxController m_driverController =
-      new XboxController(OperatorConstants.driverControllerPort);
 
-  private final Climb climb;
-  private final Shooter shooter;
-  private static Hopperfeeder hopper;
-  private static Intake intake;
-
+  //The drive team controllers are defined
   private final XboxController driverController = new XboxController(OperatorConstants.driverControllerPort);
   private final XboxController operatorController = new XboxController(OperatorConstants.operatorControllerPort);
 
@@ -75,17 +68,23 @@ public class RobotContainer {
   public RobotContainer() {
     this.climb = Climb.getInstance();
     this.shooter = Shooter.getInstance();
-    this.hopper = Hopperfeeder.getInstance();
+    this.hopper = Hopper.getInstance();
     this.intake = Intake.getInstance();
     this.limelight = new Limelight();
     
+    /**
+     * Setting default commands for each subsystem that 
+     * -Must ambiently run in some way, such as a mechanism resisting being pushed either direction
+     * -Teleop controls that require more than a Trigger can 
+     */
     m_Drive.setDefaultCommand(new SwerveJoystick(
-      m_Drive, 
-      () -> m_driverController.getLeftX(), 
-      () ->  m_driverController.getLeftY(), 
-      () -> m_driverController.getRightX(), 
-      () -> !m_driverController.a().getAsBoolean())
+        m_Drive, 
+        () -> driverController.getLeftX(), 
+        () ->  driverController.getLeftY(), 
+        () -> driverController.getRightX(), 
+        () -> !driverController.getAButton())
     );
+
     configureBindings();
   }
 
@@ -128,48 +127,48 @@ public class RobotContainer {
 
     // Hold A: To set shooter velocity at 5.50% clockwise
     new Trigger(() -> driverController.getAButton()).whileTrue(
-        new InstantCommand(() -> shooter.setShooterVelocity(.0550))).whileFalse(
-            new InstantCommand(() -> shooter.setShooterVelocity(0)));
+        new InstantCommand(() -> shooter.setVelocity(.0550))).whileFalse(
+            new InstantCommand(() -> shooter.setVelocity(0)));
 
     //Hold B: Climb motor at 6.25% speed
     
     //Hold A: To set shooter velocity at 5.50% clockwise
-   new Trigger(() -> m_driverController.getAButton()).whileTrue(
-      new InstantCommand(() -> shooter.setShooterVelocity( .0550 )) 
+   new Trigger(() -> driverController.getAButton()).whileTrue(
+      new InstantCommand(() -> shooter.setVelocity( .0550 )) 
     ).whileFalse(
-    new InstantCommand(() -> shooter.setShooterVelocity( 0))
+    new InstantCommand(() -> shooter.setVelocity( 0))
     );
 
-    //Hold Y: To set Hopperfeeder velocity at 5.50% clockwise
-    new Trigger(() -> m_driverController.getYButton()).whileTrue(
+    //Hold Y: To set Hopper velocity at 5.50% clockwise
+    new Trigger(() -> driverController.getYButton()).whileTrue(
       new InstantCommand(() -> intake.setDeployVelocity( .1500 )) 
     ).whileFalse(
     new InstantCommand(() -> intake.setDeployVelocity( 0))
     );
     //Press Up on Dpad: set servoHood postition
-     new Trigger(() -> m_driverController.getPOV() ==0).whileTrue(
+     new Trigger(() -> driverController.getPOV() ==0).whileTrue(
       new InstantCommand(() -> shooter.setServoHood( .750 )) 
     ).whileFalse(
     new InstantCommand(() -> shooter.setServoHood( 0))
     );
-new Trigger(() -> m_driverController.getPOV() ==90).whileTrue(
+new Trigger(() -> driverController.getPOV() ==90).whileTrue(
       new InstantCommand(() -> shooter.setServoHood( .250 )) 
     ).whileFalse(
     new InstantCommand(() -> shooter.setServoHood( 0))
     );
-    new Trigger(() -> m_driverController.getPOV() ==180).whileTrue(
+    new Trigger(() -> driverController.getPOV() ==180).whileTrue(
       new InstantCommand(() -> shooter.setServoHood( .550 )) 
     ).whileFalse(
     new InstantCommand(() -> shooter.setServoHood( 0))
     );
-     new Trigger(() -> m_driverController.getPOV() ==270).whileTrue(
-      new InstantCommand(() -> shooter.setShooterVelocity(.3)) 
+     new Trigger(() -> driverController.getPOV() ==270).whileTrue(
+      new InstantCommand(() -> shooter.setVelocity(.3)) 
     ).whileFalse(
-    new InstantCommand(() -> shooter.setShooterVelocity(0))
+    new InstantCommand(() -> shooter.setVelocity(0))
     );
     // when setRotaryVelocity() is called outside of shoot command, shooter motors are run instead of feeder,
     // Aim then shoot only runs shoot motors, actuator does not actuate
-    new Trigger(() -> m_driverController.getAButton()).whileTrue (
+    new Trigger(() -> driverController.getAButton()).whileTrue (
       new AimThenShoot(shooter, limelight, hopper)
       //new InstantCommand(() -> hopper.setRotaryVelocity(.4))
     ).onFalse(
