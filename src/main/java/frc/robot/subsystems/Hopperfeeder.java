@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
@@ -11,13 +12,10 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.HopperConstants;
 
 public class Hopperfeeder extends SubsystemBase {
-  private static Hopperfeeder instance;
-  private final SparkFlex rotary;
-  private final RelativeEncoder rotaryEncoder;
-  private final SparkMax feederTrack;
-  private final RelativeEncoder feederTrackEncoder;
-  private final SparkFlex feederWheel;
-  private final RelativeEncoder feederWheelEncoder;
+    private final Hopperfeeder instance;
+    private final SparkFlex rotary, feederWheel;
+    private final RelativeEncoder rotaryEncoder, feederTrackEncoder, feederWheelEncoder;
+    private final SparkMax feederTrack;
 
   /**
    * Creates a new Hopperfeeder Subsystem
@@ -44,16 +42,12 @@ public class Hopperfeeder extends SubsystemBase {
     return instance;
   }
 
-  /**
-   * Sets the motor speeds for the three sections of the Hopperfeeder
-   * @param speed Desired motor speed (0-1)
-   */
-  public void setVelocity(double speed) {
+ //Sets speed for rotary
+  public void setHopperVelocity(double speed){
     rotary.set(speed);
     feederTrack.set(speed);
     feederWheel.set(speed);
-  }
-
+  }  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
