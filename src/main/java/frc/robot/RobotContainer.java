@@ -51,7 +51,7 @@ import frc.robot.subsystems.Limelight;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Swerve m_Drive = new Swerve(); //TODO: MIKE FIX
+  private final Swerve drive;
   private final Climb climb;
   private final Shooter shooter;
   private final Hopper hopper;
@@ -66,6 +66,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    this.drive = Swerve.getInstance();
     this.climb = Climb.getInstance();
     this.shooter = Shooter.getInstance();
     this.hopper = Hopper.getInstance();
@@ -77,8 +78,8 @@ public class RobotContainer {
      * -Must ambiently run in some way, such as a mechanism resisting being pushed either direction
      * -Teleop controls that require more than a Trigger can 
      */
-    m_Drive.setDefaultCommand(new SwerveJoystick(
-        m_Drive, 
+    drive.setDefaultCommand(new SwerveJoystick(
+        drive, 
         () -> driverController.getLeftX(), 
         () ->  driverController.getLeftY(), 
         () -> driverController.getRightX(), 
@@ -206,13 +207,13 @@ new Trigger(() -> driverController.getPOV() ==90).whileTrue(
           DriveConstants.kPThetaController, 0, 0, DriveConstants.kThetaControllerContraints
           );
           thetaController.enableContinuousInput(-Math.PI, Math.PI);
-          SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, m_Drive::getPose, DriveConstants.kinematics, xController, yController, thetaController, m_Drive::setModuleStates, m_Drive);
+          SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, drive::getPose, DriveConstants.kinematics, xController, yController, thetaController, drive::setModuleStates, drive);
 
     
     return new SequentialCommandGroup(
-      new InstantCommand(() -> m_Drive.resetPose(trajectory.getInitialPose())), 
+      new InstantCommand(() -> drive.resetPose(trajectory.getInitialPose())), 
       swerveControllerCommand, 
-      new InstantCommand(() -> m_Drive.stopModules())
+      new InstantCommand(() -> drive.stopModules())
     );
   }
 }
