@@ -7,13 +7,19 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkParameters;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
+
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
   private final SparkFlex shooterLeader;
    private final SparkFlex shooterFollower;
-  private final RelativeEncoder leaderEncoder;
+  private final RelativeEncoder leaderEncoder, followerEncoder;
   private final Servo servoHood;
 
   // private final RelativeEncoder followerEncoder;
@@ -22,9 +28,19 @@ public class Shooter extends SubsystemBase {
     shooterLeader = new SparkFlex(11, MotorType.kBrushless);
     shooterFollower = new SparkFlex(12, MotorType.kBrushless);
     leaderEncoder = shooterLeader.getEncoder();
-    // followerEncoder = shooterFollower.getEncoder()
+    followerEncoder = shooterFollower.getEncoder();
     servoHood = new Servo(0);
+
+    configureFlexes();
   }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("leader", shooterLeader.getAppliedOutput());
+    SmartDashboard.putNumber("follower", shooterFollower.getAppliedOutput());
+  }
+
+
 
   /**
    * Sets the shooter motors to given speed (follower motor opposite direction of
@@ -33,8 +49,8 @@ public class Shooter extends SubsystemBase {
    * @param speed Speed to set shooter motors (-1 to 1)
    */
   public void setShooterVelocity(double speed) {
-    shooterLeader.set(-speed);
-    shooterFollower.set(speed);
+    shooterLeader.set(speed);
+    //shooterFollower.set(speed);
   }
 
   /**
@@ -42,7 +58,7 @@ public class Shooter extends SubsystemBase {
    */
   public void stopShooter() {
     shooterLeader.set(0);
-    shooterFollower.set(0);
+    //shooterFollower.set(0);
   }
 
   /**
@@ -52,9 +68,9 @@ public class Shooter extends SubsystemBase {
    */
   public double getEncoderValue() {
     double leaderReading = leaderEncoder.getVelocity();
-    // double followerReading = followerEncoder.getVelocity();
-    // followerReading *= -1;
-    return leaderReading; // (leaderReading + followerReading)/2;
+    double followerReading = followerEncoder.getVelocity();
+    leaderReading *= -1;
+    return Math.abs((leaderReading + followerReading)/2);
   }
   /**
    * Sets the servo position and the shooter speed
@@ -68,6 +84,13 @@ public class Shooter extends SubsystemBase {
   }
   public double getServoPose() {
     return servoHood.getAngle();
+  }
+
+  public void configureFlexes() {
+    SparkFlexConfig followConfig = new SparkFlexConfig();
+    followConfig.follow(11, true);
+    
+    shooterFollower.configure(followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 /**
  * Checks if flywheel speed is at the goal speed. 

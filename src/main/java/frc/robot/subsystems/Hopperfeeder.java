@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
@@ -10,25 +11,28 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
 public class Hopperfeeder extends SubsystemBase {
-    private final SparkFlex rotary;
-    private final RelativeEncoder rotaryEncoder;
-    private final SparkMax feeder;
-    private final RelativeEncoder feederEncoder;
+    private final SparkFlex rotary, feederWheel;
+    private final RelativeEncoder rotaryEncoder, feederTrackEncoder, feederWheelEncoder;
+    private final SparkMax feederTrack;
 
   public Hopperfeeder() {
-   // Change deviceId to 1 for testing 4 is a place holder before testing
     rotary = new SparkFlex(15, MotorType.kBrushless);
     rotaryEncoder = rotary.getEncoder();
-  //Change deviceId to 2 for testing 5 is a place holder before testing
-    feeder = new SparkMax(14, MotorType.kBrushless);
-    feederEncoder = feeder.getEncoder();
+  
+    feederTrack = new SparkMax(14, MotorType.kBrushless);
+    feederTrackEncoder = feederTrack.getEncoder();
+
+    feederWheel = new SparkFlex(16, MotorType.kBrushless);
+    feederWheelEncoder = feederWheel.getEncoder();
   }
 
 
  //Sets speed for rotary
-  public void setRotaryVelocity(double speed){
+  public void setHopperVelocity(double speed){
+    SmartDashboard.putString("setting?", "YEP :)");
     rotary.set(speed);
-    feeder.set(speed);
+    feederTrack.set(speed);
+    feederWheel.set(speed);
   }  
   @Override
   public void periodic() {

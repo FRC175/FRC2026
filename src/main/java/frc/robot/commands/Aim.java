@@ -46,7 +46,7 @@ public class Aim extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooter.getServoPose() == 19) {
+    if (shooter.getServoPose() == 0) {
       return true;
     } else return false; 
   }
