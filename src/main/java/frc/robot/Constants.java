@@ -22,7 +22,14 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  
+  //Constants that pertain to the Drive Team/Robot Control
+  public static class OperatorConstants {
+    public static final int driverControllerPort = 0;
+    public static final int operatorControllerPort = 1;
+  }
 
+  //Constants that pertain to the Swerve Drivebase
   public static class DriveConstants {
     public static final int driverControllerPort = 0;
     public static final double maxSpeed = 3;
@@ -64,8 +71,43 @@ public final class Constants {
       new TrapezoidProfile.Constraints(maxTeleopAngularSpeed, maxTeleopAngularSpeed/10);
   }
 
-  public static class IntakeConstants {
-    public static final double setEncoderPosition = 300;
+  //Constants that pertain to the Intake subsystem
+  public static class IntakeConstants{
+    //Motor ID's
+    public static final int deployID = 16;
+    public static final int rollerID = 17;
+
+    //Encoder position for deploying or retracting intake (in reference to previous position)
+    public static final double intakeDeployPosition = 300;
+    public static final double intakeRetractPosition = -300;
+  }
+
+  //Constants that pertain to the Shooter subsystem
+  public static class ShooterConstants{
+    //Motor ID's
+    public static final int shooterLeaderID = 11;
+    public static final int shooterFollowID = 12;
+
+    //Hood Servos
+    public static final int leftHoodServo = 9;
+    public static final int rightHoodServo = 8;
+
+    //Nominal flywheel speed at 75% of full power
+    public static final double flyWheelEffort = .75;
+  }
+
+  //Constants that pertain to the Hopper subsystem
+  public static class HopperConstants{
+    //Motor ID's
+    public static final int feederWheelID = 13; //Smaller green gummy wheel above fuel as enters shooter
+    public static final int feederTrackID = 14; //Gummy and mechanum wheels in feeder floor
+    public static final int spinDexerID = 15; //Central rotor at bottom of hopper
+    
+  }
+
+  //Constants that pertain to the Climb subsystem
+  public static class ClimbConstants{
+    public static final int climbID = 20;
   }
 
 }

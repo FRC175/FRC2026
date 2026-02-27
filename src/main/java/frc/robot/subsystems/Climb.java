@@ -8,16 +8,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import frc.robot.Constants.ClimbConstants;
 
 public class Climb extends SubsystemBase {
 
+  private static Climb instance;
   private final SparkMax climbMotor;
   private final RelativeEncoder climbEncoder;
 
+  /**
+   * Creates a new Climb subsytem
+   */
   public Climb() {
-    climbMotor = new SparkMax(23, MotorType.kBrushless);
-
+    climbMotor = new SparkMax(ClimbConstants.climbID, MotorType.kBrushless);
+    
     climbEncoder = climbMotor.getEncoder();
+  }
+
+  /**
+   * Returns the initialized climb subsystem, or creates a climb if there is not one already
+   * @return The current climb instance
+   */
+  public static Climb getInstance() {
+    if(instance == null) {
+      instance = new Climb();
+    }
+    return instance;
   }
 
   /**
