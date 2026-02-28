@@ -40,11 +40,18 @@ public class Hopper extends SubsystemBase {
   }
 
  //TODO: Rework this method so it sets each motor to the same angular velocity (calculate based on motor free speeds and gear ratios)
-  public void setHopperVelocity(double speed){
-    rotary.set(speed);
-    feederTrack.set(speed);
-    feederWheel.set(speed);
-  }  
+  public void run(){
+    rotary.set(.125);
+    feederTrack.set(.3);
+    feederWheel.set(.3);
+  }
+
+  public void stop(){
+    rotary.set(0);
+    feederTrack.set(0);
+    feederWheel.set(0);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

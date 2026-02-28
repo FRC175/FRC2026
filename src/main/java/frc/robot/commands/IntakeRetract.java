@@ -11,12 +11,10 @@ import frc.robot.Constants.IntakeConstants;
 /** A command that deploys the Intake */
 public class IntakeRetract extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final Intake m_Intake; 
-   private final double speed;
+  private final Intake intake; 
  
-  public IntakeRetract(Intake intake, double speed) {
-    m_Intake = intake;
-    this.speed = speed;
+  public IntakeRetract(Intake intake) {
+    this.intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }
@@ -24,25 +22,25 @@ public class IntakeRetract extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Intake.setDeployPosition(0);
+    intake.setDeployPosition(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.setDeployVelocity(speed);
+    intake.setDeployVelocity(.01);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Intake.setDeployVelocity(0);
+    intake.setDeployVelocity(0);
   }
 
   // 300 is a dummy value.
   @Override
   public boolean isFinished() {
-    if(m_Intake.getDeployPosition() <= IntakeConstants.intakeRetractPosition) {
+    if(intake.getDeployPosition() <= IntakeConstants.intakeRetractPosition) {
     return true;
    } else return false;
   }

@@ -26,7 +26,7 @@ public class AimThenShoot extends SequentialCommandGroup  {
     addCommands(
     new Aim(shooter, limelight),
     new Shoot(shooter),
-    new InstantCommand(() -> hopper.setHopperVelocity(.3))
+    new InstantCommand(() -> hopper.run())
     );
   }
 

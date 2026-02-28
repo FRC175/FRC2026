@@ -74,10 +74,10 @@ public class Intake extends SubsystemBase {
 
   /**
    * Retrieves the current deploy encoder reading
-   * @return Current deploy encoder reading
+   * @return Current deploy encoder reading (units of rotations)
    */
   public double getDeployPosition() {
-    double deployReading = deployEncoder.getPosition();
+    double deployReading = deployEncoder.getPosition() / 25;
     return deployReading;
   }
 

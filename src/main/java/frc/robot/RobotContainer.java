@@ -168,7 +168,7 @@ new Trigger(() -> driverController.getPOV() ==90).whileTrue(
     ).onFalse(
       new SequentialCommandGroup(
         new InstantCommand(() -> shooter.flywheelAtSpeed(0)),
-      new InstantCommand(() -> hopper.setHopperVelocity(0)))
+      new InstantCommand(() -> hopper.stop()))
       
     );
     
