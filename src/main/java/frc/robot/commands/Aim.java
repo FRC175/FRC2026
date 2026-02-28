@@ -16,7 +16,7 @@ public class Aim extends Command  {
   private final Limelight limelight;
   
   private double distance;
-  private double angle;
+  private double hoodPosition;
   /**
    * Creates a new ExampleCommand.
    *
@@ -31,7 +31,10 @@ public class Aim extends Command  {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    distance = limelight.getZ();
+    hoodPosition = distance; //Add calculation here eventually
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

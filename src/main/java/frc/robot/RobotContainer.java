@@ -123,55 +123,24 @@ public class RobotContainer {
      * //Todo (Low Priority): Add temlates for triggers and joysticks
      * 
      */
-
-    // Hold B: Climb motor at 6.25% speed
-
-    // Hold A: To set shooter velocity at 5.50% clockwise
-    new Trigger(() -> driverController.getAButton()).whileTrue(
-        new InstantCommand(() -> shooter.setVelocity(.0550))
-      ).whileFalse(
-      new InstantCommand(() -> shooter.setVelocity(0))
-      );
-
-    //Hold Y: To set Hopper velocity at 5.50% clockwise
-    new Trigger(() -> driverController.getYButton()).whileTrue(
-      new InstantCommand(() -> intake.setDeployVelocity( .1500 )) 
-    ).whileFalse(
-    new InstantCommand(() -> intake.setDeployVelocity( 0))
-    );
-    //Press Up on Dpad: set servoHood postition
-     new Trigger(() -> driverController.getPOV() ==0).whileTrue(
-      new InstantCommand(() -> shooter.setServoHood( .750 )) 
-    ).whileFalse(
-    new InstantCommand(() -> shooter.setServoHood( 0))
-    );
-new Trigger(() -> driverController.getPOV() ==90).whileTrue(
-      new InstantCommand(() -> shooter.setServoHood( .250 )) 
-    ).whileFalse(
-    new InstantCommand(() -> shooter.setServoHood( 0))
-    );
-    new Trigger(() -> driverController.getPOV() ==180).whileTrue(
-      new InstantCommand(() -> shooter.setServoHood( .550 )) 
-    ).whileFalse(
-    new InstantCommand(() -> shooter.setServoHood( 0))
-    );
-     new Trigger(() -> driverController.getPOV() ==270).whileTrue(
-      new InstantCommand(() -> shooter.setVelocity(.3)) 
-    ).whileFalse(
-    new InstantCommand(() -> shooter.setVelocity(0))
-    );
-    // when setRotaryVelocity() is called outside of shoot command, shooter motors are run instead of feeder,
-    // Aim then shoot only runs shoot motors, actuator does not actuate
+    
     new Trigger(() -> driverController.getAButton()).whileTrue (
       new AimThenShoot(shooter, limelight, hopper)
-      //new InstantCommand(() -> hopper.setRotaryVelocity(.4))
     ).onFalse(
       new SequentialCommandGroup(
         new InstantCommand(() -> shooter.flywheelAtSpeed(0)),
       new InstantCommand(() -> hopper.stop()))
-      
+    );
+
+    new Trigger(() -> driverController.getBButton()).whileTrue(
+      new InstantCommand(() -> shooter.setVelocity(.3))
+    ).onFalse(
+      new InstantCommand(() -> shooter.stop())
     );
     
+    new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
+      new InstantCommand(() -> intake.setDeployPosition(0))
+    );
   }
 
   /**

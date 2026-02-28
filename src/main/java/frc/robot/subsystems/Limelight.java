@@ -96,7 +96,7 @@ public class Limelight extends SubsystemBase {
 
   }
 
-  public double d3X() {
+  public double getX() {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
       double findX = d3Location[0];
@@ -106,7 +106,7 @@ public class Limelight extends SubsystemBase {
       return -9999;
   }
 
-  public double d3Y() {
+  public double getY() {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
       double findY = d3Location[1];
@@ -116,7 +116,7 @@ public class Limelight extends SubsystemBase {
       return -9999;
   }
 
-  public double d3Z() {
+  public double getZ() {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
       double findZ = d3Location[2];
@@ -124,16 +124,11 @@ public class Limelight extends SubsystemBase {
       findZ = 1.005 * findZ + 0.04104;
       return findZ;
     } else
-      return -999;
+      return -9999;
   }
 
   @Override
   public void periodic() {
-    double x = d3X();
-    double z = d3Z();
-    SmartDashboard.putNumber("reportedX", x);
-    SmartDashboard.putNumber("reportedY", d3Y());
-    SmartDashboard.putNumber("reportedZ", z);
   }
 
   @Override

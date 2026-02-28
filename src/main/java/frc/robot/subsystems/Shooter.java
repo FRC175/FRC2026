@@ -62,19 +62,20 @@ public class Shooter extends SubsystemBase {
   /**
    * Sets to shooting state and sets motor to effort calculated by PID
    */
-  public void runShooter(){
+  public void run(){
     this.shooterRunning = true;
     shooterLeader.set(flywheelEffort);
   }
 
   public void setVelocity(double speed) {
     shooterLeader.set(speed);
+    SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
   }
 
   /**
    * Stops the shooter motors
    */
-  public void stopShooter() {
+  public void stop() {
     this.shooterRunning = false;
     shooterLeader.set(0);
   }
