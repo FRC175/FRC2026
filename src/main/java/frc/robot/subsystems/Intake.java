@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
    * @param position Desired encoder reading
    */
   public void setDeployPosition(double position) {
-    intakeDeploy.set(position);
+    deployEncoder.setPosition(position);
   }
 
   /**

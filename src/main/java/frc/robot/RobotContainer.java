@@ -128,18 +128,29 @@ public class RobotContainer {
       new AimThenShoot(shooter, limelight, hopper)
     ).onFalse(
       new SequentialCommandGroup(
-        new InstantCommand(() -> shooter.flywheelAtSpeed(0)),
-      new InstantCommand(() -> hopper.stop()))
+      new InstantCommand(() -> shooter.stop()),
+      new InstantCommand(() -> hopper.stop()),
+      new InstantCommand(() -> shooter.setServoHood(0)))
+    );
+
+    new Trigger(() -> driverController.getYButton()).onTrue(
+      new InstantCommand(() -> shooter.setServoHood(.1))
     );
 
     new Trigger(() -> driverController.getBButton()).whileTrue(
-      new InstantCommand(() -> shooter.setVelocity(.3))
+      new InstantCommand(() -> shooter.setVelocity(-.3))
     ).onFalse(
       new InstantCommand(() -> shooter.stop())
     );
     
     new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
       new InstantCommand(() -> intake.setDeployPosition(0))
+    );
+
+    new Trigger(() -> driverController.getRightBumperButton()).whileTrue(
+      new InstantCommand(() -> shooter.setServoHood(.5))
+    ).onFalse(
+      new InstantCommand(() -> shooter.setServoHood(0))
     );
   }
 

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 
@@ -17,6 +18,8 @@ public class Aim extends Command  {
   
   private double distance;
   private double hoodPosition;
+
+  private Timer timer;
   /**
    * Creates a new ExampleCommand.
    *
@@ -25,6 +28,7 @@ public class Aim extends Command  {
   public Aim(Shooter shooter, Limelight limelight) {
     this.shooter = shooter;
     this.limelight = limelight;
+    timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -34,6 +38,8 @@ public class Aim extends Command  {
   public void initialize() {
     distance = limelight.getZ();
     hoodPosition = distance; //Add calculation here eventually
+    timer.start();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,8 +55,10 @@ public class Aim extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooter.getServoPose() >= .5) {
+    if (timer.get() > 1) {
       return true;
-    } else return false; 
-  }
+    } else{
+      return false;
+    }
+}
 }

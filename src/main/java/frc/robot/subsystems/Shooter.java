@@ -27,7 +27,7 @@ public class Shooter extends SubsystemBase {
   private final Servo rightServoHood;
   private final PIDController velocityController;
 
-  private Boolean shooterRunning;
+  public Boolean shooterRunning;
   private double flywheelEffort;
 
   /** 
@@ -41,11 +41,13 @@ public class Shooter extends SubsystemBase {
     followerEncoder = shooterFollower.getEncoder();
 
     leftServoHood = new Servo(ShooterConstants.leftHoodServo);
+    leftServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
     rightServoHood = new Servo(ShooterConstants.rightHoodServo);
+    rightServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(.25, .1, 0);
+    velocityController = new PIDController(.75, 0.05, 0);
   }
   
   /**
@@ -64,12 +66,12 @@ public class Shooter extends SubsystemBase {
    */
   public void run(){
     this.shooterRunning = true;
-    shooterLeader.set(flywheelEffort);
+    shooterLeader.set(-flywheelEffort);
   }
 
   public void setVelocity(double speed) {
-    shooterLeader.set(speed);
-    SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
+    shooterLeader.set(-speed);
+    
   }
 
   /**
@@ -85,7 +87,7 @@ public class Shooter extends SubsystemBase {
    * @return avererage velocity(rpm)
    */
   public double getVelocity() {
-    return Math.abs((leaderEncoder.getVelocity() + followerEncoder.getVelocity()) / 2);
+    return leaderEncoder.getVelocity();
   }
 
   /**
@@ -105,6 +107,9 @@ public class Shooter extends SubsystemBase {
     followConfig.follow(ShooterConstants.shooterLeaderID, true);
     
     shooterFollower.configure(followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    SparkFlexConfig leaderConfig = new SparkFlexConfig();
+    shooterLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
 /**
@@ -113,7 +118,7 @@ public class Shooter extends SubsystemBase {
  * @return true if goal speed is greater thn or equal to flywheel speed, else false
  */
   public boolean flywheelAtSpeed(double goalSpeed) {
-    if (getVelocity() >= goalSpeed) {
+    if (Math.abs(getVelocity()) >= Math.abs(goalSpeed)) {
       return true;
     } else
       return false;
@@ -140,11 +145,18 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+    SmartDashboard.putNumber("servoPose", getServoPose());
     if(shooterRunning) {
-      flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity);
-      SmartDashboard.putNumber("Flywheel Velocity", (flywheelEffort * ShooterConstants.baseVelocity));
+      flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity); //In percent of duty cycle
+      if(flywheelEffort > 1) flywheelEffort = 1.05;
+      if(flywheelEffort < -1) flywheelEffort = -1.05;
+      flywheelEffort *= ShooterConstants.baseEffort;
+    } else {
+      flywheelEffort = 0;
     }
+    SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
+    SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
+    shooterLeader.set(-flywheelEffort);
 
   }
 }

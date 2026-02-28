@@ -39,7 +39,6 @@ public class Hopper extends SubsystemBase {
     return instance;
   }
 
- //TODO: Rework this method so it sets each motor to the same angular velocity (calculate based on motor free speeds and gear ratios)
   public void run(){
     rotary.set(.125);
     feederTrack.set(.3);
