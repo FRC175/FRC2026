@@ -4,17 +4,16 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkParameters;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ShooterConstants;
 
@@ -26,6 +25,10 @@ public class Shooter extends SubsystemBase {
   private final RelativeEncoder followerEncoder;
   private final Servo leftServoHood;
   private final Servo rightServoHood;
+  private final PIDController velocityController;
+
+  private Boolean shooterRunning;
+  private double flywheelEffort;
 
   /** 
    * Creates a new Shooter Subsystem 
@@ -39,6 +42,10 @@ public class Shooter extends SubsystemBase {
 
     leftServoHood = new Servo(ShooterConstants.leftHoodServo);
     rightServoHood = new Servo(ShooterConstants.rightHoodServo);
+
+    shooterRunning = false;
+    flywheelEffort = 0;
+    velocityController = new PIDController(.25, .1, 0);
   }
   
   /**
@@ -53,12 +60,14 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Sets the shooter motors to given speed (follower motor opposite direction of
-   * leader)
-   * 
-   * @param speed Speed to set shooter motors (-1 to 1)
+   * Sets to shooting state and sets motor to effort calculated by PID
    */
-  public void setVelocity(double speed){
+  public void runShooter(){
+    this.shooterRunning = true;
+    shooterLeader.set(flywheelEffort);
+  }
+
+  public void setVelocity(double speed) {
     shooterLeader.set(speed);
   }
 
@@ -66,6 +75,7 @@ public class Shooter extends SubsystemBase {
    * Stops the shooter motors
    */
   public void stopShooter() {
+    this.shooterRunning = false;
     shooterLeader.set(0);
   }
 
@@ -128,7 +138,12 @@ public class Shooter extends SubsystemBase {
   }
 
   @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
+  public void periodic() {
+    
+    if(shooterRunning) {
+      flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity);
+      SmartDashboard.putNumber("Flywheel Velocity", (flywheelEffort * ShooterConstants.baseVelocity));
+    }
+
   }
 }

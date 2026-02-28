@@ -36,7 +36,7 @@ public class Aim extends Command  {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setServoHood(0);
+    shooter.setServoHood(.55);
   }
   //0 is just a placeholder//
   // Called once the command ends or is interrupted.
@@ -46,9 +46,8 @@ public class Aim extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (shooter.getServoPose() == 0) {
+    if (shooter.getServoPose() >= .5) {
       return true;
     } else return false; 
   }
 }
-//19 is a placeholder//

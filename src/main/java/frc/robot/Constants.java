@@ -93,7 +93,7 @@ public final class Constants {
     public static final int rightHoodServo = 8;
 
     //Nominal flywheel speed at 75% of full power
-    public static final double flyWheelEffort = .75;
+    public static final double baseVelocity = 200;
   }
 
   //Constants that pertain to the Hopper subsystem

@@ -128,17 +128,10 @@ public class RobotContainer {
 
     // Hold A: To set shooter velocity at 5.50% clockwise
     new Trigger(() -> driverController.getAButton()).whileTrue(
-        new InstantCommand(() -> shooter.setVelocity(.0550))).whileFalse(
-            new InstantCommand(() -> shooter.setVelocity(0)));
-
-    //Hold B: Climb motor at 6.25% speed
-    
-    //Hold A: To set shooter velocity at 5.50% clockwise
-   new Trigger(() -> driverController.getAButton()).whileTrue(
-      new InstantCommand(() -> shooter.setVelocity( .0550 )) 
-    ).whileFalse(
-    new InstantCommand(() -> shooter.setVelocity( 0))
-    );
+        new InstantCommand(() -> shooter.setVelocity(.0550))
+      ).whileFalse(
+      new InstantCommand(() -> shooter.setVelocity(0))
+      );
 
     //Hold Y: To set Hopper velocity at 5.50% clockwise
     new Trigger(() -> driverController.getYButton()).whileTrue(
