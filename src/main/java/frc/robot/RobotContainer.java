@@ -4,22 +4,33 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AimThenShoot;
-import frc.robot.commands.Autos;
+
 import frc.robot.commands.SwerveJoystick;
+import frc.robot.commands.climb.ClimbDown;
+import frc.robot.commands.climb.ClimbUp;
+import frc.robot.commands.intake.IntakeDeploy;
+import frc.robot.commands.shooter.Aim;
+import frc.robot.commands.shooter.AimThenShoot;
+import frc.robot.commands.shooter.Shoot;
+
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drive.Swerve;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import java.util.List;
-
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -29,16 +40,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Drive.Swerve;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Limelight;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -61,6 +63,7 @@ public class RobotContainer {
   //The drive team controllers are defined
   private final XboxController driverController = new XboxController(OperatorConstants.driverControllerPort);
   private final XboxController operatorController = new XboxController(OperatorConstants.operatorControllerPort);
+  private final XboxController climbController = new XboxController(OperatorConstants.climbControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -124,7 +127,7 @@ public class RobotContainer {
      * 
      */
     
-    new Trigger(() -> driverController.getAButton()).whileTrue (
+    new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue (
       new AimThenShoot(shooter, limelight, hopper)
     ).onFalse(
       new SequentialCommandGroup(
@@ -133,25 +136,55 @@ public class RobotContainer {
       new InstantCommand(() -> shooter.setServoHood(0)))
     );
 
-    new Trigger(() -> driverController.getYButton()).onTrue(
-      new InstantCommand(() -> shooter.setServoHood(.1))
+    new Trigger(() -> operatorController.getBButton()).onTrue(
+     new IntakeDeploy(intake)
     );
 
-    new Trigger(() -> driverController.getBButton()).whileTrue(
-      new InstantCommand(() -> shooter.setVelocity(-.3))
+    new Trigger(() -> operatorController.getAButton()).whileTrue(
+     new InstantCommand(() -> intake.setRollerSpeed(.4))
     ).onFalse(
-      new InstantCommand(() -> shooter.stop())
-    );
-    
-    new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
-      new InstantCommand(() -> intake.setDeployPosition(0))
+      new InstantCommand(() -> intake.setRollerSpeed(0))
     );
 
-    new Trigger(() -> driverController.getRightBumperButton()).whileTrue(
-      new InstantCommand(() -> shooter.setServoHood(.5))
+    new Trigger(() -> operatorController.getXButton()).whileTrue(
+     new InstantCommand(() -> intake.setRollerSpeed(-.4))
     ).onFalse(
-      new InstantCommand(() -> shooter.setServoHood(0))
+      new InstantCommand(() -> intake.setRollerSpeed(0))
     );
+
+    new Trigger(() -> operatorController.getPOV() == 0).onTrue(
+      new ClimbUp(climb, .5)
+    );
+
+    new Trigger(() -> operatorController.getPOV() == 180).onTrue(
+      new ClimbDown(climb, -.5)
+    );
+
+    new Trigger(() -> operatorController.getLeftBumperButton()).onTrue(
+      new SequentialCommandGroup(
+       new Aim(shooter, limelight),
+       new Shoot(shooter)
+      )
+    ).onFalse(
+      new SequentialCommandGroup(
+      new InstantCommand(() -> shooter.stop()),
+      new InstantCommand(() -> shooter.setServoHood(0)))
+    );
+
+     new Trigger(() -> operatorController.getRightBumperButton()).onTrue(
+      new SequentialCommandGroup(
+       new InstantCommand(() -> hopper.run())
+      )
+    ).onFalse(
+      new InstantCommand(() -> hopper.stop())
+    );
+  
+    new Trigger(() -> climbController.getPOV() == 270).whileTrue(
+      new InstantCommand(() -> climb.setSpeed(-.1))
+    ).whileFalse(
+      new InstantCommand(() -> climb.setSpeed(0))
+    );
+
   }
 
   /**
@@ -160,33 +193,40 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
+    //trajectory settings
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
       DriveConstants.maxSpeed, 
       DriveConstants.maxDriveAcceleration)
       .setKinematics(DriveConstants.kinematics);
 
-      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+    // create trajectory
+    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
         new Pose2d(0, 0, new Rotation2d(0)),
         List.of(
           new Translation2d(1, 0),
           new Translation2d(1, -1)
         ),
-        new Pose2d(2, -1, Rotation2d.fromDegrees(100)), trajectoryConfig
+        new Pose2d(2, -1, Rotation2d.fromDegrees(180)), trajectoryConfig
         );
-
-        PIDController xController = new PIDController(DriveConstants.kPXController, 0, 0);
-        PIDController yController = new PIDController(DriveConstants.kPXController, 0, 0);
-        ProfiledPIDController thetaController = new ProfiledPIDController(
+    //create PID controllers
+      PIDController xController = new PIDController(DriveConstants.kPXController, 0, 0);
+      PIDController yController = new PIDController(DriveConstants.kPXController, 0, 0);
+      ProfiledPIDController thetaController = new ProfiledPIDController(
           DriveConstants.kPThetaController, 0, 0, DriveConstants.kThetaControllerContraints
           );
-          thetaController.enableContinuousInput(-Math.PI, Math.PI);
-          SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(trajectory, drive::getPose, DriveConstants.kinematics, xController, yController, thetaController, drive::setModuleStates, drive);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    // create command
+      SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        trajectory, drive::getPose, DriveConstants.kinematics, xController, yController, thetaController, drive::setModuleStates, drive
+        );
+
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> drive.resetPose(trajectory.getInitialPose())), 
+        swerveControllerCommand, 
+        new InstantCommand(() -> drive.stopModules())
+        );
 
     
-    return new SequentialCommandGroup(
-      new InstantCommand(() -> drive.resetPose(trajectory.getInitialPose())), 
-      swerveControllerCommand, 
-      new InstantCommand(() -> drive.stopModules())
-    );
   }
 }

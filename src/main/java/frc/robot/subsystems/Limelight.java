@@ -5,9 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight extends SubsystemBase {
 
@@ -95,7 +95,12 @@ public class Limelight extends SubsystemBase {
       return table.getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
 
   }
-
+/**
+   * Method to get the X-value, in meters, from the first visible AprilTag.
+   * 
+   * @return the distance in meters if a tag is found, -9999 if otherwise
+   */
+ 
   public double getX() {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
@@ -106,6 +111,12 @@ public class Limelight extends SubsystemBase {
       return -9999;
   }
 
+  /**
+   * Method to get the Y-value, in meters, from the first visible AprilTag.
+   * 
+   * @return the distance in meters if a tag is found, -9999 if otherwise
+   */
+
   public double getY() {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
@@ -115,6 +126,12 @@ public class Limelight extends SubsystemBase {
     } else
       return -9999;
   }
+
+  /**
+   * Method to get the distance, in meters, from the first visible AprilTag.
+   * 
+   * @return the distance in meters if a tag is found, -9999 if otherwise
+   */
 
   public double getZ() {
     if (foundTarget()) {

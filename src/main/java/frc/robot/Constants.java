@@ -27,6 +27,8 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
     public static final int operatorControllerPort = 1;
+    public static final int climbControllerPort = 2;
+
   }
 
   //Constants that pertain to the Swerve Drivebase
@@ -109,6 +111,7 @@ public final class Constants {
   //Constants that pertain to the Climb subsystem
   public static class ClimbConstants{
     public static final int climbID = 20;
+    public static final double climbPos = .3;
   }
 
 }

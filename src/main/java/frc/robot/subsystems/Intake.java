@@ -1,15 +1,13 @@
 package frc.robot.subsystems;
 
+import frc.robot.Constants.IntakeConstants;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.spark.SparkFlex;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
-import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
   private static Intake instance;
@@ -17,6 +15,8 @@ public class Intake extends SubsystemBase {
   private final RelativeEncoder deployEncoder;
   private final SparkMax intakeRoller;
   private final RelativeEncoder rollerEncoder;
+
+  public boolean isDeployed;
 
   /**
    * Creates a new intake subsystem
@@ -26,6 +26,8 @@ public class Intake extends SubsystemBase {
     deployEncoder = intakeDeploy.getEncoder();
     intakeRoller = new SparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
     rollerEncoder = intakeRoller.getEncoder();
+
+    isDeployed = false;
   }
 
   /**
@@ -48,6 +50,7 @@ public class Intake extends SubsystemBase {
 
   }
 
+  
   /**
    * Sets the deploy encoder reading
    * @param position Desired encoder reading

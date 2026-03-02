@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -13,16 +13,18 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import edu.wpi.first.math.controller.PIDController;
+
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   private static Shooter instance;
   private final SparkFlex shooterLeader;
   private final SparkFlex shooterFollower;
-  private final RelativeEncoder leaderEncoder;
-  private final RelativeEncoder followerEncoder;
+  private final RelativeEncoder leaderEncoder, followerEncoder;
   private final Servo leftServoHood;
   private final Servo rightServoHood;
   private final PIDController velocityController;
@@ -67,11 +69,6 @@ public class Shooter extends SubsystemBase {
   public void run(){
     this.shooterRunning = true;
     shooterLeader.set(-flywheelEffort);
-  }
-
-  public void setVelocity(double speed) {
-    shooterLeader.set(-speed);
-    
   }
 
   /**

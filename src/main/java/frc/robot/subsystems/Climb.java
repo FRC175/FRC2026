@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants.ClimbConstants;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import frc.robot.Constants.ClimbConstants;
+
 
 public class Climb extends SubsystemBase {
 
@@ -23,6 +26,7 @@ public class Climb extends SubsystemBase {
     climbMotor = new SparkMax(ClimbConstants.climbID, MotorType.kBrushless);
     
     climbEncoder = climbMotor.getEncoder();
+    zeroEncoder();
   }
 
   /**
@@ -53,6 +57,20 @@ public class Climb extends SubsystemBase {
   public double getMotorRPM() {
     double motorSpeed = climbEncoder.getVelocity();
     return motorSpeed;
+  }
+
+  /**
+   * Method to get the relative encoder position of the climb motor
+   * 
+   * @return 
+   */
+
+  public double getPosition() {
+    return climbMotor.getEncoder().getPosition();
+  }
+
+  public void zeroEncoder() {
+    climbMotor.set(0);
   }
 
   /**

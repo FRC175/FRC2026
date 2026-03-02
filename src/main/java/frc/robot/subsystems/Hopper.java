@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.HopperConstants;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
-import frc.robot.Constants.HopperConstants;
+
 
 public class Hopper extends SubsystemBase {
     private static Hopper instance;
@@ -38,12 +40,19 @@ public class Hopper extends SubsystemBase {
     }
     return instance;
   }
+  /**
+   * Run the rotary motor, the motor for the feeder track, and the motor for the feeder wheel.
+   */
 
   public void run(){
     rotary.set(.125);
     feederTrack.set(.3);
     feederWheel.set(.3);
   }
+
+  /**
+   * Set the rotary motor speed, the feeder track speed, and the feeder wheel speed to 0.
+   */
 
   public void stop(){
     rotary.set(0);

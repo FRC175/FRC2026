@@ -1,0 +1,61 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.climb;
+
+import frc.robot.subsystems.ExampleSubsystem;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Climb;
+import edu.wpi.first.wpilibj.Timer;
+
+
+/** An example command that uses an example subsystem. */
+public class ClimbDown extends Command {
+  @SuppressWarnings("PMD.UnusedPrivateField")
+  private final Climb m_Climb;
+  private final Timer timer;
+  private final double speed;
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public ClimbDown(Climb climb, double speed) {
+    m_Climb = climb;
+    this.speed = speed;
+    timer = new Timer();
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(climb);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    
+    m_Climb.climbSpeed(false, speed);
+
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    m_Climb.climbSpeed(false, 0);
+
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    if(m_Climb.getPosition() <= -.3) {
+        return true;
+    } else return false;
+  }
+}
