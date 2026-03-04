@@ -1,20 +1,22 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants.IntakeConstants;
-
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 
 public class Intake extends SubsystemBase {
   private static Intake instance;
   private final SparkMax intakeDeploy;
-  private final RelativeEncoder deployEncoder;
+  private final AbsoluteEncoder deployEncoder;
   private final SparkMax intakeRoller;
   private final RelativeEncoder rollerEncoder;
+  public final PIDController pid;
 
   public boolean isDeployed;
 
@@ -23,11 +25,14 @@ public class Intake extends SubsystemBase {
    */
   public Intake() {
     intakeDeploy = new SparkMax(IntakeConstants.deployID, MotorType.kBrushless);
-    deployEncoder = intakeDeploy.getEncoder();
+    deployEncoder = intakeDeploy.getAbsoluteEncoder();
     intakeRoller = new SparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
     rollerEncoder = intakeRoller.getEncoder();
 
-    isDeployed = false;
+    pid = new PIDController(.5, 0, 0);
+    pid.setTolerance(1);
+
+    if (getAbsolutePosition() >= 145) isDeployed = true; else isDeployed = false;
   }
 
   /**
@@ -55,9 +60,9 @@ public class Intake extends SubsystemBase {
    * Sets the deploy encoder reading
    * @param position Desired encoder reading
    */
-  public void setDeployPosition(double position) {
-    deployEncoder.setPosition(position);
-  }
+  // public void setDeployPosition(double position) {
+  //   deployEncoder.reset;
+  // }
 
   /**
    * Sets the speed of the intake rollers
@@ -85,6 +90,10 @@ public class Intake extends SubsystemBase {
     return deployReading;
   }
 
+  public double getAbsolutePosition() {
+    return deployEncoder.getPosition();
+  }
+
   /**
    * Retrieves the current velocity of the rollers
    * @return Current roller velocity
@@ -97,7 +106,8 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Deploy Position", getDeployPosition());
+    SmartDashboard.putNumber("Position", getAbsolutePosition());
+    SmartDashboard.putBoolean("deployed?", isDeployed);
   }
 
   @Override

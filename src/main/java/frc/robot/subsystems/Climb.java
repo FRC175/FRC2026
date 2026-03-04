@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants.ClimbConstants;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.SparkMax;
@@ -82,14 +82,14 @@ public class Climb extends SubsystemBase {
    */
   public void climbSpeed(boolean up, double speed) {
     if (up)
-      setSpeed(speed);
-    else
       setSpeed(-speed);
+    else
+      setSpeed(speed);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("climbEncoder", getPosition());
   }
 
   @Override

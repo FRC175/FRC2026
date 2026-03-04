@@ -7,6 +7,7 @@ package frc.robot.commands.climb;
 import frc.robot.subsystems.ExampleSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -54,7 +55,7 @@ public class ClimbDown extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_Climb.getPosition() <= -.3) {
+    if(m_Climb.getPosition() >= Constants.ClimbConstants.climbMin) {
         return true;
     } else return false;
   }

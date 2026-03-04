@@ -80,8 +80,12 @@ public final class Constants {
     public static final int rollerID = 17;
 
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
-    public static final double intakeDeployPosition = .3;
-    public static final double intakeRetractPosition = -.3;
+    public static final double intakeRetractPosition = 15;
+    public static final double intakeMiddlePosition = 61.5;
+    public static final double intakeDeployPosition = 148;
+
+    public static final double intakeSpeed = -.4;
+
   }
 
   //Constants that pertain to the Shooter subsystem
@@ -95,8 +99,8 @@ public final class Constants {
     public static final int rightHoodServo = 1;
 
     //Nominal flywheel speed (currently duty cycle, gonna change to the target rpm)
-    public static final double baseVelocity = 2075;
-    public static final double baseEffort = .3;
+    public static final double baseVelocity = 3000;
+    public static final double baseEffort = .45;
   }
 
   //Constants that pertain to the Hopper subsystem
@@ -111,7 +115,10 @@ public final class Constants {
   //Constants that pertain to the Climb subsystem
   public static class ClimbConstants{
     public static final int climbID = 20;
-    public static final double climbPos = .3;
+    public static final double climbPos = -108;
+    public static final double climbMin = -4.76;
+
+    
   }
 
 }

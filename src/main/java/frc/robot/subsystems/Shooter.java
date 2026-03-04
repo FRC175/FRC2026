@@ -15,7 +15,7 @@ import com.revrobotics.ResetMode;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
 import frc.robot.Constants.ShooterConstants;
@@ -144,9 +144,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("servoPose", getServoPose());
     if(shooterRunning) {
-      flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity); //In percent of duty cycle
-      if(flywheelEffort > 1) flywheelEffort = 1.05;
-      if(flywheelEffort < -1) flywheelEffort = -1.05;
+      flywheelEffort = MathUtil.clamp(
+        velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity), -1.075, 1.075);
       flywheelEffort *= ShooterConstants.baseEffort;
     } else {
       flywheelEffort = 0;

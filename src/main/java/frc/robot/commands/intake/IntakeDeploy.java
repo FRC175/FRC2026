@@ -5,41 +5,49 @@
 package frc.robot.commands.intake;
 
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
+
 
 /** A command that deploys the Intake */
 public class IntakeDeploy extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake; 
+  private double deployEffort;
+  
  
   public IntakeDeploy(Intake intake) {
     this.intake = intake;
-    // Use addRequirements() here to declare subsystem dependencies.
+    deployEffort = 0;
+  
     addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setDeployPosition(0);
+    intake.pid.setSetpoint(IntakeConstants.intakeDeployPosition);
+    //intake.setDeployPosition(0);
+    deployEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.isDeployed){
-      intake.setDeployVelocity(-.01);
-    } else {
-      intake.setDeployVelocity(.01);
-    }
+    deployEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+
+    //deployEffort *= IntakeConstants.intakeSpeed;
+
+    intake.setDeployVelocity(deployEffort);
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.isDeployed = !intake.isDeployed;
     intake.setDeployVelocity(0);
     
   }
@@ -47,14 +55,6 @@ public class IntakeDeploy extends Command {
   // 300 is a dummy value.
   @Override
   public boolean isFinished() {
-    if (intake.isDeployed) {
-    if(intake.getDeployPosition() >= IntakeConstants.intakeDeployPosition) {
-    return true;
-   } else return false;
-  } else {
-    if(intake.getDeployPosition() <= IntakeConstants.intakeRetractPosition) {
-    return true;
-   } else return false;
-  }
-  }
+   return intake.pid.atSetpoint();
+}
 }

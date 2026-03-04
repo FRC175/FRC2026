@@ -45,7 +45,7 @@ public class Hopper extends SubsystemBase {
    */
 
   public void run(){
-    rotary.set(.125);
+    rotary.set(.35);
     feederTrack.set(.3);
     feederWheel.set(.3);
   }
