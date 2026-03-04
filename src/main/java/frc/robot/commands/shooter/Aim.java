@@ -25,9 +25,10 @@ public class Aim extends Command  {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Aim(Shooter shooter, Limelight limelight) {
+  public Aim(Shooter shooter, Limelight limelight, double distance) {
     this.shooter = shooter;
     this.limelight = limelight;
+    this.distance = distance;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
@@ -36,8 +37,8 @@ public class Aim extends Command  {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    distance = limelight.getZ();
-    hoodPosition = distance; //Add calculation here eventually
+    //distance = limelight.getZ();
+    hoodPosition = .59 - (.0144* distance) + (.0000973 * (distance * distance)); //Add calculation here eventually
     timer.start();
 
   }
@@ -45,7 +46,7 @@ public class Aim extends Command  {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setServoHood(.55);
+    shooter.setServoHood(hoodPosition);
   }
   //0 is just a placeholder//
   // Called once the command ends or is interrupted.

@@ -15,7 +15,8 @@ import frc.robot.commands.SwerveJoystick;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
 import frc.robot.commands.intake.IntakeDeploy;
-//import frc.robot.commands.intake.IntakeaMiddle;
+import frc.robot.commands.intake.IntakeMiddle;
+import frc.robot.commands.intake.IntakeRetract;
 import frc.robot.commands.shooter.Aim;
 import frc.robot.commands.shooter.AimThenShoot;
 import frc.robot.commands.shooter.Shoot;
@@ -130,7 +131,7 @@ public class RobotContainer {
      */
 
     new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue(
-        new AimThenShoot(shooter, limelight, hopper)).onFalse(
+        new AimThenShoot(shooter, limelight, hopper, 155)).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
                 new InstantCommand(() -> hopper.stop()),
@@ -166,7 +167,7 @@ public class RobotContainer {
 
     new Trigger(() -> operatorController.getLeftBumperButton()).onTrue(
         new SequentialCommandGroup(
-            new Aim(shooter, limelight),
+            new Aim(shooter, limelight, 75),
             new Shoot(shooter)))
         .onFalse(
             new SequentialCommandGroup(
@@ -193,6 +194,17 @@ public class RobotContainer {
             new InstantCommand(() -> climb.setSpeed(0)));
 
 
+    new Trigger(() -> climbController.getAButton()).onTrue(
+      new IntakeDeploy(intake)
+    );
+
+    new Trigger(() -> climbController.getBButton()).onTrue(
+      new IntakeMiddle(intake)
+    );
+
+    new Trigger(() -> climbController.getYButton()).onTrue(
+      new IntakeRetract(intake)
+    );
 
   }
 

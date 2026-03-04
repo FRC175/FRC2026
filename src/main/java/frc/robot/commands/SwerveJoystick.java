@@ -44,7 +44,7 @@ public class SwerveJoystick extends Command {
         SmartDashboard.putNumber("x-Stick", xSpeed);
         double ySpeed = ySpeedFunction.get();
          SmartDashboard.putNumber("y-Stick", ySpeed);
-        double turnSpeed = turnSpeedFunction.get();
+        double turnSpeed = turnSpeedFunction.get() * -1;
          SmartDashboard.putNumber("t-Stick", turnSpeed);
 
         //Apply the Deadband

@@ -27,7 +27,7 @@ public class Shooter extends SubsystemBase {
   private final RelativeEncoder leaderEncoder, followerEncoder;
   private final Servo leftServoHood;
   private final Servo rightServoHood;
-  private final PIDController velocityController;
+  public final PIDController velocityController;
 
   public Boolean shooterRunning;
   private double flywheelEffort;
@@ -49,7 +49,10 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(.75, 0.05, 0);
+    velocityController = new PIDController(.00000375, 0.0000005, 0);
+    velocityController.setSetpoint(ShooterConstants.baseVelocity);
+    velocityController.setIZone(200);
+
   }
   
   /**
@@ -144,9 +147,11 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("servoPose", getServoPose());
     if(shooterRunning) {
-      flywheelEffort = MathUtil.clamp(
-        velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity), -1.075, 1.075);
-      flywheelEffort *= ShooterConstants.baseEffort;
+      flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity);
+      //flywheelEffort *= ShooterConstants.baseEffort;
+      double error = velocityController.getError();
+      flywheelEffort += .000075 * error;
+      flywheelEffort = MathUtil.clamp(flywheelEffort, -1, 1);
     } else {
       flywheelEffort = 0;
     }

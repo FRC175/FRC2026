@@ -33,7 +33,6 @@ public final class Constants {
 
   //Constants that pertain to the Swerve Drivebase
   public static class DriveConstants {
-    public static final int driverControllerPort = 0;
     public static final double maxSpeed = 3;
     public static final double maxTeleopSpeed = maxSpeed / 4;
     public static final double maxDriveAcceleration = 3;
@@ -79,8 +78,14 @@ public final class Constants {
     public static final int deployID = 16;
     public static final int rollerID = 17;
 
+    public static enum intakeState {
+      Stowed,
+      Travel,
+      Deployed
+    }
+
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
-    public static final double intakeRetractPosition = 15;
+    public static final double intakeRetractPosition = 20;
     public static final double intakeMiddlePosition = 61.5;
     public static final double intakeDeployPosition = 148;
 
@@ -99,7 +104,7 @@ public final class Constants {
     public static final int rightHoodServo = 1;
 
     //Nominal flywheel speed (currently duty cycle, gonna change to the target rpm)
-    public static final double baseVelocity = 3000;
+    public static final double baseVelocity = 4000;
     public static final double baseEffort = .45;
   }
 

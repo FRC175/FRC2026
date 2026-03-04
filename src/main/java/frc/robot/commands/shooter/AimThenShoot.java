@@ -22,9 +22,9 @@ public class AimThenShoot extends SequentialCommandGroup  {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AimThenShoot(Shooter shooter, Limelight limelight, Hopper hopper) {
+  public AimThenShoot(Shooter shooter, Limelight limelight, Hopper hopper, double distance) {
     addCommands(
-    new Aim(shooter, limelight),
+    new Aim(shooter, limelight, distance),
     //new InstantCommand(() -> shooter.setServoHood(.55)),
     new Shoot(shooter),
     new InstantCommand(() -> hopper.run())
