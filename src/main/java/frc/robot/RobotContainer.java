@@ -14,9 +14,9 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.commands.SwerveJoystick;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
-import frc.robot.commands.intake.IntakeDeploy;
+import frc.robot.commands.intake.IntakeForewards;
 import frc.robot.commands.intake.IntakeMiddle;
-import frc.robot.commands.intake.IntakeRetract;
+import frc.robot.commands.intake.IntakeBackwards;
 import frc.robot.commands.shooter.Aim;
 import frc.robot.commands.shooter.AimThenShoot;
 import frc.robot.commands.shooter.Shoot;
@@ -77,7 +77,7 @@ public class RobotContainer {
     this.shooter = Shooter.getInstance();
     this.hopper = Hopper.getInstance();
     this.intake = Intake.getInstance();
-    this.limelight = new Limelight();
+    this.limelight = Limelight.getInstance();
 
     /**
      * Setting default commands for each subsystem that
@@ -87,8 +87,8 @@ public class RobotContainer {
      */
     drive.setDefaultCommand(new SwerveJoystick(
         drive,
-        () -> driverController.getLeftX(),
         () -> driverController.getLeftY(),
+        () -> driverController.getLeftX(),
         () -> driverController.getRightX(),
         () -> !driverController.getAButton()));
 
@@ -130,28 +130,32 @@ public class RobotContainer {
      * 
      */
 
+    
     new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue(
-        new AimThenShoot(shooter, limelight, hopper, 155)).onFalse(
+        new AimThenShoot(shooter, limelight, hopper)).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
                 new InstantCommand(() -> hopper.stop()),
                 new InstantCommand(() -> shooter.setServoHood(0))));
 
+    new Trigger(() -> operatorController.getXButton()).onTrue(
+        new IntakeForewards(intake));
+
+     new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
+        new InstantCommand(() -> drive.resetGyro()));
+
+
     new Trigger(() -> operatorController.getBButton()).onTrue(
-        new IntakeDeploy(intake));
-
-    //new Trigger(() -> operatorController.getYButton()).onTrue(
-        //new IntakeaMiddle(intake)
-    //);
-        // new InstantCommand(() -> intake.setDeployVelocity(.1))).whileFalse(new InstantCommand(() -> intake.setDeployVelocity(0)));
-
-    new Trigger(() -> operatorController.getAButton()).whileTrue(
+        new IntakeBackwards(intake));
+        
+    new Trigger(() -> operatorController.getYButton()).whileTrue(
         new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
             new InstantCommand(() -> intake.setRollerSpeed(0)));
 
-    new Trigger(() -> operatorController.getXButton()).whileTrue(
-        new InstantCommand(() -> intake.setRollerSpeed(-.25))).onFalse(
+    new Trigger(() -> operatorController.getAButton()).whileTrue(
+        new InstantCommand(() -> intake.setRollerSpeed(-IntakeConstants.intakeSpeed))).onFalse(
             new InstantCommand(() -> intake.setRollerSpeed(0)));
+            
 
     new Trigger(() -> operatorController.getPOV() == 0).onTrue(
         //new ClimbUp(climb, .1));
@@ -167,7 +171,7 @@ public class RobotContainer {
 
     new Trigger(() -> operatorController.getLeftBumperButton()).onTrue(
         new SequentialCommandGroup(
-            new Aim(shooter, limelight, 75),
+            new Aim(shooter, limelight),
             new Shoot(shooter)))
         .onFalse(
             new SequentialCommandGroup(
@@ -195,7 +199,7 @@ public class RobotContainer {
 
 
     new Trigger(() -> climbController.getAButton()).onTrue(
-      new IntakeDeploy(intake)
+      new IntakeForewards(intake)
     );
 
     new Trigger(() -> climbController.getBButton()).onTrue(
@@ -203,9 +207,10 @@ public class RobotContainer {
     );
 
     new Trigger(() -> climbController.getYButton()).onTrue(
-      new IntakeRetract(intake)
+      new IntakeBackwards(intake)
     );
-
+//ay int rev
+// a and b <- -> 1 position
   }
 
   /**
@@ -213,8 +218,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-
+  /*public Command getAutonomousCommand() {
+  
     // trajectory settings
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
         DriveConstants.maxSpeed,
@@ -243,6 +248,6 @@ public class RobotContainer {
         new InstantCommand(() -> drive.resetPose(trajectory.getInitialPose())),
         swerveControllerCommand,
         new InstantCommand(() -> drive.stopModules()));
-
-  }
+    
+  }*/
 }

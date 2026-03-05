@@ -87,9 +87,9 @@ public final class Constants {
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
     public static final double intakeRetractPosition = 20;
     public static final double intakeMiddlePosition = 61.5;
-    public static final double intakeDeployPosition = 148;
+    public static final double intakeDeployPosition = 140;
 
-    public static final double intakeSpeed = -.4;
+    public static final double intakeSpeed = -.45;
 
   }
 
@@ -104,7 +104,7 @@ public final class Constants {
     public static final int rightHoodServo = 1;
 
     //Nominal flywheel speed (currently duty cycle, gonna change to the target rpm)
-    public static final double baseVelocity = 4000;
+    public static final double baseVelocity = 3500;
     public static final double baseEffort = .45;
   }
 

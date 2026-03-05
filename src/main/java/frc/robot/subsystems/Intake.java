@@ -69,7 +69,7 @@ public class Intake extends SubsystemBase {
   private void correctState() {
     double currPosition = getAbsolutePosition();
 
-    if(currPosition >= 140) state = intakeState.Deployed;
+    if(currPosition >= 130) state = intakeState.Deployed;
     else if(currPosition <= 25) state = intakeState.Stowed;
     else state = intakeState.Travel;
     

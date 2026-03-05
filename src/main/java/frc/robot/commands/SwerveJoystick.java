@@ -40,24 +40,24 @@ public class SwerveJoystick extends Command {
     @Override
     public void execute() {
         //Gets the joystick inputs
-        double xSpeed = xSpeedFunction.get();
+        double xSpeed = ySpeedFunction.get();
         SmartDashboard.putNumber("x-Stick", xSpeed);
-        double ySpeed = ySpeedFunction.get();
+        double ySpeed = xSpeedFunction.get();
          SmartDashboard.putNumber("y-Stick", ySpeed);
-        double turnSpeed = turnSpeedFunction.get() * -1;
+        double turnSpeed = turnSpeedFunction.get();
          SmartDashboard.putNumber("t-Stick", turnSpeed);
 
         //Apply the Deadband
         xSpeed = Math.abs(xSpeed) > .1 ? xSpeed : 0.0;
         ySpeed = Math.abs(ySpeed) > .1 ? ySpeed : 0.0;
-        turnSpeed = Math.abs(turnSpeed) > .1 ? turnSpeed : 0.0;
+        turnSpeed = Math.abs(turnSpeed) > .15 ? turnSpeed : 0.0;
 
         //Rate Limiter on joysticks and scale to 1/2 of max speed for Teleop
         xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.maxTeleopSpeed;
         SmartDashboard.putNumber("Converted X Speed", xSpeed);
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;
         SmartDashboard.putNumber("Converted Y Speed", ySpeed);
-        turnSpeed = turnLimiter.calculate(turnSpeed) * (DriveConstants.maxSpeed * .5);
+        turnSpeed = turnLimiter.calculate(turnSpeed) * (DriveConstants.maxSpeed * .5) * -1;
         SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
 
         //Create chassis speeds
@@ -70,7 +70,7 @@ public class SwerveJoystick extends Command {
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
         }
 
-       // ChassisSpeeds.discretize(chassisSpeeds, .02);
+        ChassisSpeeds.discretize(chassisSpeeds, .02);
 
         //Convert to array of module states
         SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);

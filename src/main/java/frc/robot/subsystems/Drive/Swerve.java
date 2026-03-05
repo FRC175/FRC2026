@@ -111,10 +111,9 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("angle pos", backRight.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Gyro Heading", getHeading());
         odometer.update(getRotation2d(), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()});
        
-        
     }
 
     @Override

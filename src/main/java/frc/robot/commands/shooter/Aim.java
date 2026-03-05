@@ -7,6 +7,7 @@ package frc.robot.commands.shooter;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 
@@ -25,10 +26,9 @@ public class Aim extends Command  {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Aim(Shooter shooter, Limelight limelight, double distance) {
+  public Aim(Shooter shooter, Limelight limelight) {
     this.shooter = shooter;
     this.limelight = limelight;
-    this.distance = distance;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
@@ -37,8 +37,10 @@ public class Aim extends Command  {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //distance = limelight.getZ();
-    hoodPosition = .59 - (.0144* distance) + (.0000973 * (distance * distance)); //Add calculation here eventually
+    distance = limelight.getZ();
+    SmartDashboard.putNumber("Limelight distance", distance);
+    hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
+    SmartDashboard.putNumber("hood Position", hoodPosition);
     timer.start();
 
   }

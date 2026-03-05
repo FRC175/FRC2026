@@ -8,14 +8,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight extends SubsystemBase {
 
   private final NetworkTable table;
+  public static Limelight instance;
 
   /** Creates a new ExampleSubsystem. */
   public Limelight() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
+  }
+
+  /**
+   * Returns the initialized limelight subsystem, or creates a limelight if there is not one already
+   * @return The current limelight instance
+   */
+  public static Limelight getInstance() {
+    if(instance == null) {
+      instance = new Limelight();
+    }
+    return instance;
   }
 
   /**
@@ -105,7 +118,7 @@ public class Limelight extends SubsystemBase {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
       double findX = d3Location[0];
-      findX = 0.15 * findX - 0.03742;
+      //findX = 0.15 * findX - 0.03742;
       return findX;
     } else
       return -9999;
@@ -121,7 +134,7 @@ public class Limelight extends SubsystemBase {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
       double findY = d3Location[1];
-      findY = -0.1191 * findY + 0.6512;
+      //findY = -0.1191 * findY + 0.6512;
       return findY;
     } else
       return -9999;
@@ -137,15 +150,20 @@ public class Limelight extends SubsystemBase {
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
       double findZ = d3Location[2];
-      findZ = 0.1636 * findZ - 0.02290;
-      findZ = 1.005 * findZ + 0.04104;
-      return findZ;
+      //findZ = 0.1636 * findZ - 0.02290;
+      //findZ = 1.005 * findZ + 0.04104;
+      return findZ + .35;
     } else
       return -9999;
   }
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("Z Distance", getZ());
+    SmartDashboard.putNumber("X Distance", getX());
+    SmartDashboard.putNumber("Y Distance", getY());
+
   }
 
   @Override

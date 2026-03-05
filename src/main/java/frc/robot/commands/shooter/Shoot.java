@@ -6,6 +6,7 @@ package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.ShooterConstants;
@@ -29,13 +30,15 @@ public class Shoot extends Command  {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.velocityController.reset();
+    //shooter.velocityController.reset();
+    shooter.velocityController.setSetpoint(ShooterConstants.baseVelocity);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     shooter.run();
+    SmartDashboard.putBoolean("atSetpoint", shooter.velocityController.atSetpoint());
   }
   //0 is just a placeholder//
   // Called once the command ends or is interrupted.
@@ -45,7 +48,7 @@ public class Shoot extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.flywheelAtSpeed(ShooterConstants.baseVelocity);
+    return shooter.velocityController.atSetpoint();
   }
 }
 //19 is a placeholder//

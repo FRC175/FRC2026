@@ -12,50 +12,51 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakeState;
 
-
 /** A command that deploys the Intake */
-public class IntakeDeploy extends Command {
+public class IntakeBackwards extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final Intake intake; 
-  private double deployEffort;
-  
+  private final Intake intake;
+  private double retractEffort;
  
-  public IntakeDeploy(Intake intake) {
+  public IntakeBackwards(Intake intake) {
     this.intake = intake;
-    deployEffort = 0;
-  
+
+    retractEffort = 0;
+    
     addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.pid.setSetpoint(IntakeConstants.intakeDeployPosition);  
-  }
+    //if (intake.getState() == intakeState.Travel) {
+      intake.pid.setSetpoint(IntakeConstants.intakeRetractPosition); 
+    // } else if (intake.getState() == intakeState.Deployed) {
+    //   intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
+    // }
+      
+    }
+  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    deployEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
-
-    deployEffort *= .175;
-
-    SmartDashboard.putNumber("DeployEffort", deployEffort);
-
-    intake.setDeployVelocity(deployEffort);
-    
+    retractEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+    retractEffort *= .175;
+    SmartDashboard.putNumber("Retract Effort", retractEffort);
+    intake.setDeployVelocity(retractEffort);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     intake.setDeployVelocity(0);
-    intake.setState(intakeState.Deployed);
+    intake.setState(intakeState.Stowed);
   }
 
   // 300 is a dummy value.
   @Override
   public boolean isFinished() {
-   return intake.pid.atSetpoint();
-}
+    return intake.pid.atSetpoint();
+  }
 }
