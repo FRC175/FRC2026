@@ -40,9 +40,9 @@ public class SwerveJoystick extends Command {
     @Override
     public void execute() {
         //Gets the joystick inputs
-        double xSpeed = ySpeedFunction.get();
+        double xSpeed = xSpeedFunction.get();
         SmartDashboard.putNumber("x-Stick", xSpeed);
-        double ySpeed = xSpeedFunction.get();
+        double ySpeed = ySpeedFunction.get();
          SmartDashboard.putNumber("y-Stick", ySpeed);
         double turnSpeed = turnSpeedFunction.get();
          SmartDashboard.putNumber("t-Stick", turnSpeed);

@@ -10,7 +10,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -54,7 +54,7 @@ public class Swerve extends SubsystemBase {
      * Offsets the Gyro by 90 degrees to the left (adjust for mounting)
      */
     public void resetGyro() {
-        gyro.setYaw(90);
+        gyro.setYaw(180);
     }
 
     /**
@@ -63,7 +63,7 @@ public class Swerve extends SubsystemBase {
      * @return The current robot heading (radians)
      */
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getRotation2d().getRadians(), 2 * Math.PI);
+        return MathUtil.angleModulus(gyro.getRotation2d().getRadians());
     }
 
     /**
@@ -112,6 +112,7 @@ public class Swerve extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("Gyro Heading", getHeading());
+        SmartDashboard.putNumber("Gyro", gyro.getRotation2d().getDegrees());
         odometer.update(getRotation2d(), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()});
        
     }

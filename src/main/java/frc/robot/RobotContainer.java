@@ -87,9 +87,9 @@ public class RobotContainer {
      */
     drive.setDefaultCommand(new SwerveJoystick(
         drive,
-        () -> driverController.getLeftY(),
-        () -> driverController.getLeftX(),
-        () -> driverController.getRightX(),
+        () -> -driverController.getLeftY(),
+        () -> -driverController.getLeftX(),
+        () -> -driverController.getRightX(),
         () -> !driverController.getAButton()));
 
     configureBindings();
