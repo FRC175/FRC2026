@@ -57,7 +57,7 @@ public class SwerveJoystick extends Command {
         SmartDashboard.putNumber("Converted X Speed", xSpeed);
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;
         SmartDashboard.putNumber("Converted Y Speed", ySpeed);
-        turnSpeed = turnLimiter.calculate(turnSpeed) * (DriveConstants.maxSpeed * .5) * -1;
+        turnSpeed = turnLimiter.calculate(turnSpeed) * Math.PI ;
         SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
 
         //Create chassis speeds
@@ -70,7 +70,7 @@ public class SwerveJoystick extends Command {
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
         }
 
-        ChassisSpeeds.discretize(chassisSpeeds, .02);
+        //ChassisSpeeds.discretize(chassisSpeeds, .02);
 
         //Convert to array of module states
         SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);

@@ -33,7 +33,7 @@ public final class Constants {
 
   //Constants that pertain to the Swerve Drivebase
   public static class DriveConstants {
-    public static final double maxSpeed = 3;
+    public static final double maxSpeed = 5;
     public static final double maxTeleopSpeed = maxSpeed / 4;
     public static final double maxDriveAcceleration = 3;
     public static final double maxAngularVelocity = Math.PI;
@@ -62,7 +62,7 @@ public final class Constants {
     public static final Translation2d frontRightLocation = new Translation2d(0.282575, -0.282575);
     public static final Translation2d backLeftLocation = new Translation2d(-0.282575, 0.282575);
     public static final Translation2d backRightLocation = new Translation2d(-0.282575, -0.282575);
-    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRightLocation, frontLeftLocation, backRightLocation, backLeftLocation);
+    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
     public static final double kPXController = 1.5;
     public static final double kPYController = 1.5;
@@ -87,7 +87,7 @@ public final class Constants {
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
     public static final double intakeRetractPosition = 20;
     public static final double intakeMiddlePosition = 61.5;
-    public static final double intakeDeployPosition = 140;
+    public static final double intakeDeployPosition = 145;
 
     public static final double intakeSpeed = -.45;
 

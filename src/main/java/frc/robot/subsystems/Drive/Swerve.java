@@ -23,10 +23,10 @@ public class Swerve extends SubsystemBase {
 
     private static Swerve instance;
 
-    private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, false, false,  false);
-    private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, false, false,  false);
-    private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, false, false, false);
-    private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, false, false,  false);
+    private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, true, true,  true);
+    private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, true, true,  true);
+    private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, true, true, true);
+    private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, true, true,  true);
 
     private final Pigeon2 gyro = new Pigeon2(10);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(0), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()} );
@@ -54,7 +54,7 @@ public class Swerve extends SubsystemBase {
      * Offsets the Gyro by 90 degrees to the left (adjust for mounting)
      */
     public void resetGyro() {
-        gyro.setYaw(180);
+        gyro.setYaw(0);
     }
 
     /**
@@ -63,7 +63,7 @@ public class Swerve extends SubsystemBase {
      * @return The current robot heading (radians)
      */
     public double getHeading() {
-        return MathUtil.angleModulus(gyro.getRotation2d().getRadians());
+        return -MathUtil.angleModulus(gyro.getRotation2d().getRadians());
     }
 
     /**
@@ -111,7 +111,7 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Gyro Heading", getHeading());
+        //SmartDashboard.putNumber("Gyro Heading", getHeading());
         SmartDashboard.putNumber("Gyro", gyro.getRotation2d().getDegrees());
         odometer.update(getRotation2d(), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()});
        
