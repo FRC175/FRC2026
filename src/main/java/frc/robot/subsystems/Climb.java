@@ -66,7 +66,7 @@ public class Climb extends SubsystemBase {
    */
 
   public double getPosition() {
-    return climbMotor.getEncoder().getPosition();
+    return climbEncoder.getPosition();
   }
 
   public void zeroEncoder() {
@@ -90,6 +90,7 @@ public class Climb extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("climbEncoder", getPosition());
+    if(getPosition() <= ClimbConstants.climbPos) setSpeed(0);
   }
 
   @Override

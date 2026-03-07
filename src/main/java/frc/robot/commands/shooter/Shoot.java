@@ -14,14 +14,16 @@ import frc.robot.Constants.ShooterConstants;
 public class Shoot extends Command  {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
+  private final double setpoint;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Shoot(Shooter shooter) {
+  public Shoot(Shooter shooter, double setpoint) {
     this.shooter = shooter;
+    this.setpoint = setpoint;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -30,7 +32,7 @@ public class Shoot extends Command  {
   @Override
   public void initialize() {
     shooter.velocityController.reset();
-    shooter.velocityController.setSetpoint(ShooterConstants.baseVelocity);
+    shooter.velocityController.setSetpoint(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +49,7 @@ public class Shoot extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(shooter.getVelocity()) >= ShooterConstants.baseVelocity - 50);
+    return (Math.abs(shooter.getVelocity()) >= setpoint - 50);
   }
 }
 //19 is a placeholder//

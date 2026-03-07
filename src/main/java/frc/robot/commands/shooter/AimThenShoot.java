@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
@@ -26,7 +27,7 @@ public class AimThenShoot extends SequentialCommandGroup  {
     addCommands(
     new Aim(shooter, limelight),
     //new InstantCommand(() -> shooter.setServoHood(.55)),
-    new Shoot(shooter),
+    new Shoot(shooter, ShooterConstants.baseVelocity),
     new InstantCommand(() -> hopper.run())
     );
   }

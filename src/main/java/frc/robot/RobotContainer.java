@@ -9,6 +9,7 @@ import java.util.List;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ClimbConstants;
 
 import frc.robot.commands.SwerveJoystick;
@@ -29,10 +30,14 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -68,6 +73,8 @@ public class RobotContainer {
   private final XboxController operatorController = new XboxController(OperatorConstants.operatorControllerPort);
   private final XboxController climbController = new XboxController(OperatorConstants.climbControllerPort);
 
+  private final SendableChooser<Command> autoChooser;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -78,6 +85,9 @@ public class RobotContainer {
     this.hopper = Hopper.getInstance();
     this.intake = Intake.getInstance();
     this.limelight = Limelight.getInstance();
+
+    autoChooser = new SendableChooser<>();
+
 
     /**
      * Setting default commands for each subsystem that
@@ -93,6 +103,9 @@ public class RobotContainer {
         () -> !driverController.getAButton()));
 
     configureBindings();
+    configureAutoChooser();
+
+    
   }
 
   /**
@@ -138,6 +151,41 @@ public class RobotContainer {
                 new InstantCommand(() -> hopper.stop()),
                 new InstantCommand(() -> shooter.setServoHood(0))));
 
+     new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
+        new SequentialCommandGroup (
+            new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
+            new Shoot(shooter, ShooterConstants.FrontHubSpeed),
+            new InstantCommand(() -> hopper.run())
+        )).onFalse(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.stop()),
+                new InstantCommand(() -> hopper.stop()),
+                new InstantCommand(() -> shooter.setServoHood(0)))
+                );
+
+
+     new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
+        new SequentialCommandGroup(
+            new InstantCommand(() -> shooter.setServoHood(.9)),
+            new Shoot(shooter, ShooterConstants.passingVelocity))
+        
+        ).onFalse (
+            new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.stop()),
+                new InstantCommand(() -> shooter.setServoHood(0))));
+    
+                
+    new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
+            new InstantCommand(() -> hopper.run())
+        
+        ).onFalse (
+                new InstantCommand(() -> hopper.stop())
+        );
+     
+
+     
+
+
     new Trigger(() -> operatorController.getXButton()).onTrue(
         new IntakeForewards(intake));
 
@@ -169,22 +217,6 @@ public class RobotContainer {
           new InstantCommand(() -> climb.setSpeed(0))
         );
 
-    new Trigger(() -> operatorController.getLeftBumperButton()).onTrue(
-        new SequentialCommandGroup(
-            new Aim(shooter, limelight),
-            new Shoot(shooter)))
-        .onFalse(
-            new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> shooter.setServoHood(0))));
-
-    new Trigger(() -> operatorController.getRightBumperButton()).onTrue(
-        new SequentialCommandGroup(
-            new InstantCommand(() -> hopper.run())))
-        .onFalse(
-            new InstantCommand(() -> hopper.stop()));
-
-
 
     new Trigger(() -> climbController.getPOV() == 270).whileTrue(
         new InstantCommand(() -> climb.setSpeed(-.1))).whileFalse(
@@ -206,11 +238,19 @@ public class RobotContainer {
       new IntakeMiddle(intake)
     );
 
-    new Trigger(() -> climbController.getYButton()).onTrue(
-      new IntakeBackwards(intake)
-    );
+    // new Trigger(() -> climbController.getYButton()).onTrue(
+    //   new IntakeBackwards(intake)
+    // );
 //ay int rev
 // a and b <- -> 1 position
+  }
+
+  private void configureAutoChooser() {
+    //autoChooser.setDefaultOption("Preload", new ShootPreload());
+    autoChooser.setDefaultOption("Nothing", new ParallelCommandGroup(new WaitCommand(0), new InstantCommand(() -> drive.resetGyro())));
+   
+   
+    SmartDashboard.putData(autoChooser);
   }
 
   /**
@@ -218,36 +258,38 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  /*public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() {
+
+    return autoChooser.getSelected();
   
     // trajectory settings
-    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-        DriveConstants.maxSpeed,
-        DriveConstants.maxDriveAcceleration)
-        .setKinematics(DriveConstants.kinematics);
+    // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+    //     DriveConstants.maxSpeed,
+    //     DriveConstants.maxDriveAcceleration)
+    //     .setKinematics(DriveConstants.kinematics);
 
-    // create trajectory
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(
-            new Translation2d(1, 0),
-            new Translation2d(1, -1)),
-        new Pose2d(2, -1, Rotation2d.fromDegrees(180)), trajectoryConfig);
-    // create PID controllers
-    PIDController xController = new PIDController(DriveConstants.kPXController, 0, 0);
-    PIDController yController = new PIDController(DriveConstants.kPXController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-        DriveConstants.kPThetaController, 0, 0, DriveConstants.kThetaControllerContraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    // create command
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        trajectory, drive::getPose, DriveConstants.kinematics, xController, yController, thetaController,
-        drive::setModuleStates, drive);
+    // // create trajectory
+    // Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     List.of(
+    //         new Translation2d(1, 0),
+    //         new Translation2d(1, -1)),
+    //     new Pose2d(2, -1, Rotation2d.fromDegrees(180)), trajectoryConfig);
+    // // create PID controllers
+    // PIDController xController = new PIDController(DriveConstants.kPXController, 0, 0);
+    // PIDController yController = new PIDController(DriveConstants.kPXController, 0, 0);
+    // ProfiledPIDController thetaController = new ProfiledPIDController(
+    //     DriveConstants.kPThetaController, 0, 0, DriveConstants.kThetaControllerContraints);
+    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    // // create command
+    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+    //     trajectory, drive::getPose, DriveConstants.kinematics, xController, yController, thetaController,
+    //     drive::setModuleStates, drive);
 
-    return new SequentialCommandGroup(
-        new InstantCommand(() -> drive.resetPose(trajectory.getInitialPose())),
-        swerveControllerCommand,
-        new InstantCommand(() -> drive.stopModules()));
+    // return new SequentialCommandGroup(
+    //     new InstantCommand(() -> drive.resetPose(trajectory.getInitialPose())),
+    //     swerveControllerCommand,
+    //     new InstantCommand(() -> drive.stopModules()));
     
-  }*/
+  }
 }

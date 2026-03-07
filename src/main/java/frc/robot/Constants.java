@@ -103,9 +103,14 @@ public final class Constants {
     public static final int leftHoodServo = 0;
     public static final int rightHoodServo = 1;
 
+    public static final double FrontHubAngle = .1;
+
     //Nominal flywheel speed (currently duty cycle, gonna change to the target rpm)
     public static final double baseVelocity = 3500;
     public static final double baseEffort = .45;
+
+    public static final double passingVelocity = 4000;
+    public static final double FrontHubSpeed = 2750;
   }
 
   //Constants that pertain to the Hopper subsystem

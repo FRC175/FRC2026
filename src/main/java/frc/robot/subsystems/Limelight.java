@@ -69,6 +69,10 @@ public class Limelight extends SubsystemBase {
 
   }
 
+  //public int getID() {
+  //  return table.getEntry("tid").getInteger(0.0);
+  //}
+
   /**
    * Method to determine if the limelight has found a target, and returns its 2D
    * pose if so.
