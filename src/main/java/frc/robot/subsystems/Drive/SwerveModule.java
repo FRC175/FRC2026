@@ -221,7 +221,7 @@ public class SwerveModule extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         
-         //SmartDashboard.putNumber("spd", getState().speedMetersPerSecond);
+         SmartDashboard.putNumber("spd", getState().speedMetersPerSecond);
          
         
     }
