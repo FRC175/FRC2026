@@ -190,7 +190,7 @@ public class RobotContainer {
         new IntakeForewards(intake));
 
      new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
-        new InstantCommand(() -> drive.resetGyro()));
+        new InstantCommand(() -> drive.setGyro(0)));
 
 
     new Trigger(() -> operatorController.getBButton()).onTrue(
@@ -246,12 +246,21 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
-    //autoChooser.setDefaultOption("Preload", new ShootPreload());
-    autoChooser.setDefaultOption("Nothing", new ParallelCommandGroup(new WaitCommand(0), new InstantCommand(() -> drive.resetGyro())));
-   
+    autoChooser.setDefaultOption("Preload", new SequentialCommandGroup(new InstantCommand(() -> drive.setGyro(90)), new AimThenShoot(shooter, limelight, hopper)));
+    autoChooser.addOption("Preload on the starting line", new SequentialCommandGroup (
+            new InstantCommand(() -> drive.setGyro(90)),
+            new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
+            new Shoot(shooter, ShooterConstants.FrontHubSpeed),
+            new InstantCommand(() -> hopper.run())
+        ));
+    autoChooser.addOption("Nothing", new ParallelCommandGroup(new WaitCommand(0)));
    
     SmartDashboard.putData(autoChooser);
-  }
+  
+  };
+    
+   
+    
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -261,6 +270,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     return autoChooser.getSelected();
+    
   
     // trajectory settings
     // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(

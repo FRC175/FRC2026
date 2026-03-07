@@ -34,7 +34,7 @@ public class Swerve extends SubsystemBase {
     /** Creates a new Swerve System. */
     public Swerve() {
 
-        resetGyro();
+        //resetGyro();
         
 
     }
@@ -53,8 +53,8 @@ public class Swerve extends SubsystemBase {
     /**
      * Offsets the Gyro by 90 degrees to the left (adjust for mounting)
      */
-    public void resetGyro() {
-        gyro.setYaw(0);
+    public void setGyro(int value) {
+        gyro.setYaw(value);
     }
 
     /**
