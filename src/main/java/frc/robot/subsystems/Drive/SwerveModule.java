@@ -82,13 +82,6 @@ public class SwerveModule extends SubsystemBase {
         return driveEncoder.getPosition() * DriveConstants.driveEncoderResolution;
     }
 
-    // public double getAbsPosition() {
-    //     return absoluteEncoder.getPosition().getValueAsDouble();
-    // }
-    // public double getAbsAbsPosition() {
-    //     return absoluteEncoder.getAbsolutePosition().getValueAsDouble();
-    // }
-
     /**
      * Retrieves the position of the turn motor
      * @return Position of the turn motor (radians)

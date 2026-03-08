@@ -16,17 +16,13 @@ import edu.wpi.first.wpilibj.Timer;
 public class ClimbUp extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Climb m_Climb;
-  private final Timer timer;
-  private final double speed;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ClimbUp(Climb climb, double speed) {
+  public ClimbUp(Climb climb) {
     m_Climb = climb;
-    this.speed = speed;
-    timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
   }
@@ -41,7 +37,7 @@ public class ClimbUp extends Command {
   @Override
   public void execute() {
     
-    m_Climb.climbSpeed(true, speed);
+    m_Climb.climbSpeed(true, .3);
 
   }
 
@@ -55,8 +51,6 @@ public class ClimbUp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_Climb.getPosition() <= Constants.ClimbConstants.climbPos) {
-        return true;
-    } else return false;
+    return (m_Climb.getPosition() <= Constants.ClimbConstants.climbPos);
   }
 }
