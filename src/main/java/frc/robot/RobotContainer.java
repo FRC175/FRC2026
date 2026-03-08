@@ -11,10 +11,10 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ClimbConstants;
-
-import frc.robot.commands.SwerveJoystick;
+import frc.robot.commands.auto.ShootPreload;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
+import frc.robot.commands.drive.SwerveJoystick;
 import frc.robot.commands.intake.IntakeForewards;
 import frc.robot.commands.intake.IntakeMiddle;
 import frc.robot.commands.intake.IntakeBackwards;
@@ -246,8 +246,8 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
-    //autoChooser.setDefaultOption("Preload", new ShootPreload());
-    autoChooser.setDefaultOption("Nothing", new ParallelCommandGroup(new WaitCommand(0), new InstantCommand(() -> drive.resetGyro())));
+    autoChooser.setDefaultOption("Preload", new ShootPreload(shooter, limelight, hopper, drive));
+    autoChooser.addOption("Nothing", new ParallelCommandGroup(new WaitCommand(0)));
    
    
     SmartDashboard.putData(autoChooser);
