@@ -29,11 +29,11 @@ public class IntakeBackwards extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //if (intake.getState() == intakeState.Travel) {
+   if (intake.getState() == intakeState.Travel) {
       intake.pid.setSetpoint(IntakeConstants.intakeRetractPosition); 
-    // } else if (intake.getState() == intakeState.Deployed) {
-    //   intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
-    // }
+    } else if (intake.getState() == intakeState.Deployed) {
+      intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
+    }
       
     }
   
@@ -51,7 +51,12 @@ public class IntakeBackwards extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setDeployVelocity(0);
-    intake.setState(intakeState.Stowed);
+    if (intake.getState() == intakeState.Travel) {
+      intake.setState(intakeState.Stowed); 
+    } else if (intake.getState() == intakeState.Deployed) {
+      intake.setState(intakeState.Travel);
+    }
+    
   }
 
   // 300 is a dummy value.

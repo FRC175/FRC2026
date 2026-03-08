@@ -168,6 +168,8 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("X Distance", getX());
     SmartDashboard.putNumber("Y Distance", getY());
 
+    SmartDashboard.putBoolean("apriltag", foundTarget());
+
   }
 
   @Override

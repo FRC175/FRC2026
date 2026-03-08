@@ -26,16 +26,17 @@ public class IntakeForewards extends Command {
   
     addRequirements(intake);
   }
+  //deploy this 9:14 3/6/26  
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
 
-    //if (intake.getState() == intakeState.Travel) {
+    if (intake.getState() == intakeState.Travel) {
       intake.pid.setSetpoint(IntakeConstants.intakeDeployPosition); 
-    // } else if (intake.getState() == intakeState.Stowed) {
-    //   intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
-    // }
+     } else if (intake.getState() == intakeState.Stowed) {
+       intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
+     }
       
     }
 
@@ -56,7 +57,11 @@ public class IntakeForewards extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setDeployVelocity(0);
-    intake.setState(intakeState.Deployed);
+    if (intake.getState() == intakeState.Travel) {
+      intake.setState(intakeState.Deployed); 
+    } else if (intake.getState() == intakeState.Stowed) {
+      intake.setState(intakeState.Travel);
+    }
   }
 
   // 300 is a dummy value.

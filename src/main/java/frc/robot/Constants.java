@@ -34,7 +34,7 @@ public final class Constants {
   //Constants that pertain to the Swerve Drivebase
   public static class DriveConstants {
     public static final double maxSpeed = 5;
-    public static final double maxTeleopSpeed = maxSpeed / 4;
+    public static final double maxTeleopSpeed = maxSpeed *.75;
     public static final double maxDriveAcceleration = 3;
     public static final double maxAngularVelocity = Math.PI;
     public static final double maxTeleopAngularSpeed = maxAngularVelocity / 4;
