@@ -48,7 +48,14 @@ public class Aim extends Command  {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setServoHood(hoodPosition);
+    if ( hoodPosition >= .49) {
+      shooter.closeEnough = false;
+      shooter.setServoHood(.45);
+    } else {
+      shooter.closeEnough = true;
+      shooter.setServoHood(hoodPosition);
+    }
+    
   }
   //0 is just a placeholder//
   // Called once the command ends or is interrupted.

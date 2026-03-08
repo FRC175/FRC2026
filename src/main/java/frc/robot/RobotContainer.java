@@ -200,25 +200,23 @@ public class RobotContainer {
         new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
             new InstantCommand(() -> intake.setRollerSpeed(0)));
 
-    new Trigger(() -> operatorController.getAButton()).whileTrue(
-        new InstantCommand(() -> intake.setRollerSpeed(-IntakeConstants.intakeSpeed))).onFalse(
-            new InstantCommand(() -> intake.setRollerSpeed(0)));
-            
+    new Trigger(() -> operatorController.getAButton()).onTrue(
+        new IntakeMiddle(intake));
 
     new Trigger(() -> operatorController.getPOV() == 0).onTrue(
         //new ClimbUp(climb, .1));
-        new InstantCommand(() -> climb.setSpeed(-.2))).onFalse(
+        new InstantCommand(() -> climb.setSpeed(-.4))).onFalse(
           new InstantCommand(() -> climb.setSpeed(0))
         );
 
     new Trigger(() -> operatorController.getPOV() == 180).onTrue(
         //new ClimbDown(climb, .1));
-        new InstantCommand(() -> climb.setSpeed(.2))).onFalse(
+        new InstantCommand(() -> climb.setSpeed(.4))).onFalse(
           new InstantCommand(() -> climb.setSpeed(0))
         );
 
 
-    new Trigger(() -> climbController.getPOV() == 270).whileTrue(
+    new Trigger(() -> climbController.getPOV() == 0).whileTrue(
         new InstantCommand(() -> climb.setSpeed(-.1))).whileFalse(
             new InstantCommand(() -> climb.setSpeed(0)));
 
@@ -238,6 +236,67 @@ public class RobotContainer {
       new IntakeMiddle(intake)
     );
 
+    new Trigger(() -> climbController.getRightStickButton()).onTrue(
+      new InstantCommand(() -> shooter.setServoHood(.5))).onFalse(
+        new InstantCommand(() -> shooter.setServoHood(0))
+      );
+        new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue(
+        new AimThenShoot(shooter, limelight, hopper)).onFalse(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.stop()),
+                new InstantCommand(() -> hopper.stop()),
+                new InstantCommand(() -> shooter.setServoHood(0))));
+
+     new Trigger(() -> climbController.getLeftTriggerAxis() == 1).whileTrue(
+        new SequentialCommandGroup (
+            new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
+            new Shoot(shooter, ShooterConstants.FrontHubSpeed),
+            new InstantCommand(() -> hopper.run())
+        )).onFalse(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.stop()),
+                new InstantCommand(() -> hopper.stop()),
+                new InstantCommand(() -> shooter.setServoHood(0)))
+                );
+
+
+     new Trigger(() ->  climbController.getLeftBumperButton()).whileTrue(
+        new SequentialCommandGroup(
+            new InstantCommand(() -> shooter.setServoHood(.9)),
+            new Shoot(shooter, ShooterConstants.passingVelocity))
+        
+        ).onFalse (
+            new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.stop()),
+                new InstantCommand(() -> shooter.setServoHood(0))));
+    
+                
+    new Trigger(() -> climbController.getRightBumperButton()).whileTrue(
+            new InstantCommand(() -> hopper.run())
+        
+        ).onFalse (
+                new InstantCommand(() -> hopper.stop())
+        );
+     
+
+     
+
+
+    new Trigger(() -> climbController.getXButton()).onTrue(
+        new IntakeForewards(intake));
+
+
+    new Trigger(() -> climbController.getBButton()).onTrue(
+        new IntakeBackwards(intake));
+        
+    new Trigger(() -> climbController.getYButton()).whileTrue(
+        new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
+            new InstantCommand(() -> intake.setRollerSpeed(0)));
+
+    new Trigger(() -> climbController.getAButton()).onTrue(
+        new IntakeMiddle(intake));
+
+    
     // new Trigger(() -> climbController.getYButton()).onTrue(
     //   new IntakeBackwards(intake)
     // );
@@ -246,13 +305,24 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
-    autoChooser.setDefaultOption("Preload", new SequentialCommandGroup(new InstantCommand(() -> drive.setGyro(90)), new AimThenShoot(shooter, limelight, hopper)));
-    autoChooser.addOption("Preload on the starting line", new SequentialCommandGroup (
-            new InstantCommand(() -> drive.setGyro(90)),
-            new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
-            new Shoot(shooter, ShooterConstants.FrontHubSpeed),
-            new InstantCommand(() -> hopper.run())
+    autoChooser.setDefaultOption("Preload", new ParallelCommandGroup(
+        new IntakeMiddle(intake),
+        new SequentialCommandGroup(
+            new InstantCommand(() -> drive.setGyro(90))), 
+            new AimThenShoot(shooter, limelight, hopper)
         ));
+    autoChooser.addOption("Preload on the starting line", new ParallelCommandGroup(
+        new IntakeMiddle(intake),
+        new SequentialCommandGroup (
+            new InstantCommand(() -> drive.setGyro(90)),
+            new InstantCommand(() -> shooter.setServoHood(0)),
+            new Shoot(shooter, ShooterConstants.FrontHubSpeed),
+            new InstantCommand(() -> hopper.run()),
+            new WaitCommand(10),
+            new InstantCommand(() -> shooter.stop()),
+            new InstantCommand(() -> hopper.stop())
+
+        )));
     autoChooser.addOption("Nothing", new ParallelCommandGroup(new WaitCommand(0)));
    
     SmartDashboard.putData(autoChooser);

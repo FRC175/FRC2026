@@ -85,11 +85,11 @@ public final class Constants {
     }
 
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
-    public static final double intakeRetractPosition = 20;
+    public static final double intakeRetractPosition = 25;
     public static final double intakeMiddlePosition = 61.5;
     public static final double intakeDeployPosition = 145;
 
-    public static final double intakeSpeed = -.45;
+    public static final double intakeSpeed = -.6;
 
   }
 
@@ -103,14 +103,16 @@ public final class Constants {
     public static final int leftHoodServo = 0;
     public static final int rightHoodServo = 1;
 
-    public static final double FrontHubAngle = .1;
+    public static final double FrontHubAngle = 0;
 
-    //Nominal flywheel speed (currently duty cycle, gonna change to the target rpm)
-    public static final double baseVelocity = 3500;
+    public static final double baseVelocity = 3750;
     public static final double baseEffort = .45;
 
     public static final double passingVelocity = 4000;
-    public static final double FrontHubSpeed = 2750;
+    public static final double FrontHubSpeed = 1550;
+
+    public static final double[] blueShooterIDs= new double[] {5, 8, 9, 10, 11, 2};
+    public static final double[] redShooterIDs= new double[] {21, 24, 25, 26, 27, 18};
   }
 
   //Constants that pertain to the Hopper subsystem

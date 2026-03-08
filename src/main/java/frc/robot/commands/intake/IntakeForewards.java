@@ -32,36 +32,37 @@ public class IntakeForewards extends Command {
   @Override
   public void initialize() {
 
-    if (intake.getState() == intakeState.Travel) {
+    //if (intake.getState() == intakeState.Travel) {
+      intake.pid.reset();
       intake.pid.setSetpoint(IntakeConstants.intakeDeployPosition); 
-     } else if (intake.getState() == intakeState.Stowed) {
-       intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
-     }
+    //  } else if (intake.getState() == intakeState.Stowed) {
+    //    intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
+    //  }
       
     }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    deployEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+    //deployEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
 
-    deployEffort *= .175;
+    //deployEffort *= .175;
 
-    SmartDashboard.putNumber("DeployEffort", deployEffort);
+    //SmartDashboard.putNumber("DeployEffort", deployEffort);
 
-    intake.setDeployVelocity(deployEffort);
+    //intake.setDeployVelocity(deployEffort);
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setDeployVelocity(0);
-    if (intake.getState() == intakeState.Travel) {
+    //intake.setDeployVelocity(0);
+    //if (intake.getState() == intakeState.Travel) {
       intake.setState(intakeState.Deployed); 
-    } else if (intake.getState() == intakeState.Stowed) {
-      intake.setState(intakeState.Travel);
-    }
+    // } else if (intake.getState() == intakeState.Stowed) {
+    //   intake.setState(intakeState.Travel);
+    // }
   }
 
   // 300 is a dummy value.

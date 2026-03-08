@@ -12,6 +12,8 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 
+import frc.robot.subsystems.Limelight;
+
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,6 +30,8 @@ public class Shooter extends SubsystemBase {
   private final Servo leftServoHood;
   private final Servo rightServoHood;
   public final PIDController velocityController;
+
+  public boolean closeEnough;
 
   public Boolean shooterRunning;
   private double flywheelEffort;
@@ -53,6 +57,7 @@ public class Shooter extends SubsystemBase {
     velocityController.setSetpoint(ShooterConstants.baseVelocity);
     velocityController.setTolerance(50);
     velocityController.setIZone(500);
+    closeEnough = false;
 
   }
   
@@ -144,8 +149,18 @@ public class Shooter extends SubsystemBase {
     rightServoHood.set(value);
   }
 
+  public double calculate(Limelight limelight) {
+    double hoodPosition = 0;
+    double distance = limelight.getZ();
+    hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
+    return hoodPosition;
+    
+  }
+
   @Override
   public void periodic() {
+    
+  
     SmartDashboard.putNumber("servoPose", getServoPose());
     if(shooterRunning) {
       flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity);
@@ -158,6 +173,7 @@ public class Shooter extends SubsystemBase {
     }
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
+    SmartDashboard.putBoolean("Close Enough?", closeEnough);
     shooterLeader.set(-flywheelEffort);
 
   }

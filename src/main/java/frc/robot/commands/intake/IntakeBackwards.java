@@ -29,11 +29,12 @@ public class IntakeBackwards extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   if (intake.getState() == intakeState.Travel) {
+  // if (intake.getState() == intakeState.Travel) {
+      intake.pid.reset();
       intake.pid.setSetpoint(IntakeConstants.intakeRetractPosition); 
-    } else if (intake.getState() == intakeState.Deployed) {
-      intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
-    }
+    // } else if (intake.getState() == intakeState.Deployed) {
+    //   intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
+    // }
       
     }
   
@@ -41,21 +42,21 @@ public class IntakeBackwards extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    retractEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
-    retractEffort *= .175;
-    SmartDashboard.putNumber("Retract Effort", retractEffort);
-    intake.setDeployVelocity(retractEffort);
+    //retractEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+    //retractEffort *= .175;
+    //SmartDashboard.putNumber("Retract Effort", retractEffort);
+    //intake.setDeployVelocity(retractEffort);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setDeployVelocity(0);
-    if (intake.getState() == intakeState.Travel) {
+    //intake.setDeployVelocity(0);
+    //if (intake.getState() == intakeState.Travel) {
       intake.setState(intakeState.Stowed); 
-    } else if (intake.getState() == intakeState.Deployed) {
-      intake.setState(intakeState.Travel);
-    }
+    // } else if (intake.getState() == intakeState.Deployed) {
+    //   intake.setState(intakeState.Travel);
+    // }
     
   }
 

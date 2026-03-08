@@ -6,6 +6,7 @@ package frc.robot.commands.intake;
 
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
@@ -15,42 +16,53 @@ import frc.robot.Constants.IntakeConstants.intakeState;
 public class IntakeMiddle extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
-  private double effort;
+  private double retractEffort;
  
   public IntakeMiddle(Intake intake) {
     this.intake = intake;
-  
-    // Use addRequirements() here to declare subsystem dependencies.
+
+    retractEffort = 0;
+    
     addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
-  }
+  // if (intake.getState() == intakeState.Travel) {
+      intake.pid.reset();
+      intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition); 
+    // } else if (intake.getState() == intakeState.Deployed) {
+    //   intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
+    // }
+      
+    }
+  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    effort = intake.pid.calculate(intake.getAbsolutePosition());
-    effort = MathUtil.clamp(effort, -1, 1);
-    effort *= .175;
-    SmartDashboard.putNumber("Mid Effort", effort);
-    intake.setDeployVelocity(effort);
+    //retractEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+    //retractEffort *= .175;
+    //SmartDashboard.putNumber("Retract Effort", retractEffort);
+    //intake.setDeployVelocity(retractEffort);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setDeployVelocity(0);
-    intake.setState(intakeState.Travel);
+    //intake.setDeployVelocity(0);
+    //if (intake.getState() == intakeState.Travel) {
+      //intake.setState(intakeState.Travel); 
+     //} else if (intake.getState() == intakeState.Deployed) {
+       intake.setState(intakeState.Travel);
+     
+    
   }
 
   // 300 is a dummy value.
   @Override
   public boolean isFinished() {
-   return intake.pid.atSetpoint();
-  } 
-
+    return intake.pid.atSetpoint();
+  }
 }

@@ -8,6 +8,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drive.Swerve;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,7 +27,6 @@ public class AimThenShoot extends SequentialCommandGroup  {
   public AimThenShoot(Shooter shooter, Limelight limelight, Hopper hopper) {
     addCommands(
     new Aim(shooter, limelight),
-    //new InstantCommand(() -> shooter.setServoHood(.55)),
     new Shoot(shooter, ShooterConstants.baseVelocity),
     new InstantCommand(() -> hopper.run())
     );

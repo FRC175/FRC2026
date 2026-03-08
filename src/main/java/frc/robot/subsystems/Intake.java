@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakeState;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,9 +32,11 @@ public class Intake extends SubsystemBase {
     rollerEncoder = intakeRoller.getEncoder();
 
     pid = new PIDController(.015, .005, 0);
-    pid.setTolerance(5);
+    pid.setTolerance(2.5);
 
     correctState();
+    pid.setSetpoint(getAbsolutePosition());
+    pid.reset();
   }
 
   /**
@@ -45,6 +48,10 @@ public class Intake extends SubsystemBase {
       instance = new Intake();
     }
     return instance;
+  }
+
+  private double getEffort() {
+    return pid.calculate(getAbsolutePosition());
   }
 
   /**
@@ -135,6 +142,11 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    correctState();
+    double effort = pid.calculate(getAbsolutePosition());
+    effort = MathUtil.clamp(effort, -1, 1);
+    setDeployVelocity(effort * .175);
+    SmartDashboard.putNumber("intakeEffort", effort);
     SmartDashboard.putNumber("Position", getAbsolutePosition());
     switch (state) {
       case Deployed:

@@ -81,17 +81,17 @@ public class Climb extends SubsystemBase {
    * @param speed The speed the climb motor is set to (-1.0 to 1.0).
    */
   public void climbSpeed(boolean up, double speed) {
-    if (up)
+    if (up && !(getPosition() <= ClimbConstants.climbPos))
       setSpeed(-speed);
-    else
+    else if(!up && !(getPosition() >= ClimbConstants.climbMin))
       setSpeed(speed);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("climbEncoder", getPosition());
-    if(getPosition() <= ClimbConstants.climbPos) setSpeed(0);
-  }
+  //   SmartDashboard.putNumber("climbEncoder", getPosition());
+  //   if(getPosition() <= ClimbConstants.climbPos ) setSpeed(0);
+   }
 
   @Override
   public void simulationPeriodic() {

@@ -5,9 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
+
+import java.util.Arrays;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight extends SubsystemBase {
@@ -69,9 +74,9 @@ public class Limelight extends SubsystemBase {
 
   }
 
-  //public int getID() {
-  //  return table.getEntry("tid").getInteger(0.0);
-  //}
+  public double getID() {
+   return table.getEntry("tid").getDouble(-9999);
+  }
 
   /**
    * Method to determine if the limelight has found a target, and returns its 2D
@@ -80,14 +85,21 @@ public class Limelight extends SubsystemBase {
    * @return an array of doubles representing [tx, ty, ta] if a target is found,
    *         null otherwise
    */
-  public double[] findAprilTag2D() {
-
+  public double[] findAprilTag2D(boolean isShooting) {
+    
     if (foundTarget() == false) {
 
       return null;
 
     } else {
-
+      if(isShooting) {
+        if (DriverStation.getAlliance().get() == Alliance.Red && !Arrays.asList(ShooterConstants.redShooterIDs).contains(getID())) {
+          return null;
+        } else if (!Arrays.asList(ShooterConstants.blueShooterIDs).contains(getID())) {
+          return null;
+        }
+      }
+  
       double tX = getTx();
       double tY = getTy();
       double tA = getTa();
@@ -96,6 +108,7 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  
   /**
    * Method to determine if the limelight has found a target, and returns its 3D
    * pose in robot space if so.
