@@ -105,7 +105,8 @@ public class RobotContainer {
         () -> -driverController.getRightX(),
         () -> !driverController.getAButton())
     );
-    intake.setDefaultCommand(new MaintainPosition(intake));
+    intake.setDefaultCommand(new MaintainPosition(intake)); //TODO: Make sure this works
+    //Also check the set position commands, they didnt change much but did slightly
 
     configureBindings();
     configureAutoChooser();
@@ -348,7 +349,7 @@ public class RobotContainer {
 
     return autoChooser.getSelected();
     
-  
+    //TODO: Now that we have the time, revisit '0 To Autonomous'
     // trajectory settings
     // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
     //     DriveConstants.maxSpeed,

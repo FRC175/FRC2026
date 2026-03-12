@@ -42,7 +42,8 @@ public class DriveFor extends Command {
   @Override
   public void execute() {
     currPos = swerve.getPose().getTranslation();
-    currDistance = startPos.getDistance(currPos);
+    currDistance = startPos.getDistance(currPos); //TODO: This wasn't reporting the right distances
+    //Look at what the encoder methods are saying distances should be, is that wrong or the odometry?
 
     SmartDashboard.putNumber("current distance", currDistance);
     SmartDashboard.putNumber("current angle", swerve.getPose().getRotation().getDegrees());

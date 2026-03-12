@@ -165,8 +165,12 @@ public class Shooter extends SubsystemBase {
     if(shooterRunning) {
       flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity);
       //flywheelEffort *= ShooterConstants.baseEffort;
+
       double error = velocityController.getError();
-      flywheelEffort += .000075 * error;
+      flywheelEffort += .000075 * error; //TODO: Turn this into real feed forward
+      //I was an idiot here trying to rush add feed forward and instead just added another factor of proportion
+      //Also I tried looking around more and couldnt find anything on velocity controller object but I swore I had seen it before?
+
       flywheelEffort = MathUtil.clamp(flywheelEffort, -1, 1);
     } else {
       flywheelEffort = 0;
