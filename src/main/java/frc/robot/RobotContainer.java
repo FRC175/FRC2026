@@ -14,6 +14,7 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.commands.auto.ShootPreload;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
+import frc.robot.commands.drive.DriveFor;
 import frc.robot.commands.drive.SwerveJoystick;
 import frc.robot.commands.intake.IntakeForewards;
 import frc.robot.commands.intake.IntakeMiddle;
@@ -308,9 +309,11 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Preload", new ParallelCommandGroup(
         new IntakeMiddle(intake),
         new SequentialCommandGroup(
-            new InstantCommand(() -> drive.setGyro(90))), 
+            new InstantCommand(() -> drive.setGyro(90))),
+            new DriveFor(drive, .5),
             new AimThenShoot(shooter, limelight, hopper)
         ));
+    autoChooser.addOption("drive .5m forewards", new DriveFor(drive, 0.5));
     autoChooser.addOption("Preload on the starting line", new ParallelCommandGroup(
         new IntakeMiddle(intake),
         new SequentialCommandGroup (

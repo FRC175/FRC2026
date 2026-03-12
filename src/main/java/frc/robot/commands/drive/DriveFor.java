@@ -9,6 +9,7 @@ import frc.robot.subsystems.Drive.Swerve;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -42,7 +43,10 @@ public class DriveFor extends Command {
     currPose = swerve.getPose();
     currDistance = currPose.getX() - startPos.getX();
 
-    ChassisSpeeds speed = new ChassisSpeeds(.75, 0, 0);
+    SmartDashboard.putNumber("current distance", currDistance);
+    SmartDashboard.putNumber("current angle", currPose.getRotation().getDegrees());
+
+    ChassisSpeeds speed = new ChassisSpeeds(.25, 0, 0);
     SwerveModuleState[] swerveStates = DriveConstants.kinematics.toSwerveModuleStates(speed);
     swerve.setModuleStates(swerveStates);
   }
