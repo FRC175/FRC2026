@@ -45,7 +45,7 @@ public class DriveFor extends Command {
     currDistance = startPos.getDistance(currPos);
 
     SmartDashboard.putNumber("current distance", currDistance);
-    SmartDashboard.putNumber("current angle", currPose.getRotation().getDegrees());
+    SmartDashboard.putNumber("current angle", swerve.getPose().getRotation().getDegrees());
 
     ChassisSpeeds speed = new ChassisSpeeds(.25, 0, 0);
     SwerveModuleState[] swerveStates = DriveConstants.kinematics.toSwerveModuleStates(speed);
