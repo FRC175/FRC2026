@@ -33,12 +33,6 @@ public final class Constants {
 
   //Constants that pertain to the Swerve Drivebase
   public static class DriveConstants {
-    public static final double maxSpeed = 5;
-    public static final double maxTeleopSpeed = maxSpeed *.75;
-    public static final double maxDriveAcceleration = 3;
-    public static final double maxAngularVelocity = Math.PI;
-    public static final double maxTeleopAngularSpeed = maxAngularVelocity / 4;
-    public static final double maxAngularAcceleration = 3;
 
     //Motor ID's
     public static final int frTurnID = 2;
@@ -50,6 +44,15 @@ public final class Constants {
     public static final int brTurnID = 8;
     public static final int brDriveID = 9;
 
+    //Velocity/Acceleration Constants
+    public static final double maxSpeed = 5;
+    public static final double maxTeleopSpeed = maxSpeed *.75;
+    public static final double maxDriveAcceleration = 3;
+    public static final double maxAngularVelocity = Math.PI;
+    public static final double maxTeleopAngularSpeed = maxAngularVelocity / 4;
+    public static final double maxAngularAcceleration = 3;
+
+    //Robot Dimensions and Gear Ratio Conversions
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveGearRatio = 1 / 6.75;
     public static final double turnGearRatio = 1 / 21.43;
@@ -58,6 +61,7 @@ public final class Constants {
     public static final double driveSpeedResolution = driveEncoderResolution / 60;
     public static final double turnSpeedResolution = turnEncoderResolution / 60;
 
+    //Swerve Module Kinematic Constants
     public static final Translation2d frontLeftLocation = new Translation2d(0.282575, 0.282575);
     public static final Translation2d frontRightLocation = new Translation2d(0.282575, -0.282575);
     public static final Translation2d backLeftLocation = new Translation2d(-0.282575, 0.282575);
@@ -81,7 +85,8 @@ public final class Constants {
     public static enum intakeState {
       Stowed,
       Travel,
-      Deployed
+      Deployed,
+      Intermediary
     }
 
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
@@ -130,7 +135,6 @@ public final class Constants {
     public static final double climbPos = -108;
     public static final double climbMin = -4.76;
 
-    
   }
 
 }

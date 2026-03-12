@@ -7,6 +7,7 @@ package frc.robot.commands.drive;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drive.Swerve;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +18,7 @@ public class DriveFor extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Swerve swerve;
   private double goalDistance, currDistance;
-  private Pose2d startPos, currPose;
+  private Translation2d startPos, currPos;
 
   /**
    * Creates a new ExampleCommand.
@@ -34,14 +35,14 @@ public class DriveFor extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    startPos = swerve.getPose();
+    startPos = swerve.getPose().getTranslation();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currPose = swerve.getPose();
-    currDistance = currPose.getX() - startPos.getX();
+    currPos = swerve.getPose().getTranslation();
+    currDistance = startPos.getDistance(currPos);
 
     SmartDashboard.putNumber("current distance", currDistance);
     SmartDashboard.putNumber("current angle", currPose.getRotation().getDegrees());

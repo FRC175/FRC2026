@@ -13,15 +13,15 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakeState;
 
 /** A command that deploys the Intake */
-public class IntakeMiddle extends Command {
+public class IntakeRetract extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
-  private double retractEffort;
+  private double effort;
  
-  public IntakeMiddle(Intake intake) {
+  public IntakeRetract(Intake intake) {
     this.intake = intake;
 
-    retractEffort = 0;
+    effort = 0;
     
     addRequirements(intake);
   }
@@ -29,35 +29,25 @@ public class IntakeMiddle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  // if (intake.getState() == intakeState.Travel) {
-      intake.pid.reset();
-      intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition); 
-    // } else if (intake.getState() == intakeState.Deployed) {
-    //   intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
-    // }
+    intake.pid.reset();
+    intake.pid.setSetpoint(IntakeConstants.intakeRetractPosition); 
       
-    }
+  }
   
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //retractEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
-    //retractEffort *= .175;
+    effort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+    effort *= .175;
     //SmartDashboard.putNumber("Retract Effort", retractEffort);
-    //intake.setDeployVelocity(retractEffort);
+    intake.setDeployVelocity(effort);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //intake.setDeployVelocity(0);
-    //if (intake.getState() == intakeState.Travel) {
-      //intake.setState(intakeState.Travel); 
-     //} else if (intake.getState() == intakeState.Deployed) {
-       intake.setState(intakeState.Travel);
-     
-    
+    intake.setState(intakeState.Stowed);
   }
 
   // 300 is a dummy value.

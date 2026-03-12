@@ -14,15 +14,15 @@ import frc.robot.Constants.IntakeConstants.intakeState;
 
 
 /** A command that deploys the Intake */
-public class IntakeForewards extends Command {
+public class IntakeDeploy extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake; 
-  private double deployEffort;
+  private double effort;
   
  
-  public IntakeForewards(Intake intake) {
+  public IntakeDeploy(Intake intake) {
     this.intake = intake;
-    deployEffort = 0;
+    effort = 0;
   
     addRequirements(intake);
   }
@@ -32,37 +32,25 @@ public class IntakeForewards extends Command {
   @Override
   public void initialize() {
 
-    //if (intake.getState() == intakeState.Travel) {
-      intake.pid.reset();
-      intake.pid.setSetpoint(IntakeConstants.intakeDeployPosition); 
-    //  } else if (intake.getState() == intakeState.Stowed) {
-    //    intake.pid.setSetpoint(IntakeConstants.intakeMiddlePosition);
-    //  }
-      
+    intake.pid.reset();
+    intake.pid.setSetpoint(IntakeConstants.intakeDeployPosition); 
+
     }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //deployEffort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
-
-    //deployEffort *= .175;
-
+    effort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
+    effort *= .175;
     //SmartDashboard.putNumber("DeployEffort", deployEffort);
-
-    //intake.setDeployVelocity(deployEffort);
+    intake.setDeployVelocity(effort);
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //intake.setDeployVelocity(0);
-    //if (intake.getState() == intakeState.Travel) {
-      intake.setState(intakeState.Deployed); 
-    // } else if (intake.getState() == intakeState.Stowed) {
-    //   intake.setState(intakeState.Travel);
-    // }
+    intake.setState(intakeState.Deployed); 
   }
 
   // 300 is a dummy value.

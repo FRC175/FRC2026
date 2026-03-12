@@ -52,7 +52,7 @@ public class SwerveJoystick extends Command {
         ySpeed = Math.abs(ySpeed) > .1 ? ySpeed : 0.0;
         turnSpeed = Math.abs(turnSpeed) > .15 ? turnSpeed : 0.0;
 
-        //Rate Limiter on joysticks and scale to 1/2 of max speed for Teleop
+        //Rate Limiter on joysticks and scale to 75% of max speed for Teleop
         xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.maxTeleopSpeed;
         SmartDashboard.putNumber("Converted X Speed", xSpeed);
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;

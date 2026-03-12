@@ -16,9 +16,10 @@ import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
 import frc.robot.commands.drive.DriveFor;
 import frc.robot.commands.drive.SwerveJoystick;
-import frc.robot.commands.intake.IntakeForewards;
-import frc.robot.commands.intake.IntakeMiddle;
-import frc.robot.commands.intake.IntakeBackwards;
+import frc.robot.commands.intake.IntakeDeploy;
+import frc.robot.commands.intake.IntakeTravel;
+import frc.robot.commands.intake.MaintainPosition;
+import frc.robot.commands.intake.IntakeRetract;
 import frc.robot.commands.shooter.Aim;
 import frc.robot.commands.shooter.AimThenShoot;
 import frc.robot.commands.shooter.Shoot;
@@ -94,14 +95,17 @@ public class RobotContainer {
      * Setting default commands for each subsystem that
      * -Must ambiently run in some way, such as a mechanism resisting being pushed
      * either direction
-     * -Teleop controls that require more than a Trigger can
+     * -Teleop controls that require more than a simple trigger
      */
+
     drive.setDefaultCommand(new SwerveJoystick(
         drive,
         () -> -driverController.getLeftY(),
         () -> -driverController.getLeftX(),
         () -> -driverController.getRightX(),
-        () -> !driverController.getAButton()));
+        () -> !driverController.getAButton())
+    );
+    intake.setDefaultCommand(new MaintainPosition(intake));
 
     configureBindings();
     configureAutoChooser();
@@ -188,21 +192,21 @@ public class RobotContainer {
 
 
     new Trigger(() -> operatorController.getXButton()).onTrue(
-        new IntakeForewards(intake));
+        new IntakeDeploy(intake));
 
      new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
         new InstantCommand(() -> drive.setGyro(0)));
 
 
     new Trigger(() -> operatorController.getBButton()).onTrue(
-        new IntakeBackwards(intake));
+        new IntakeRetract(intake));
         
     new Trigger(() -> operatorController.getYButton()).whileTrue(
         new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
             new InstantCommand(() -> intake.setRollerSpeed(0)));
 
     new Trigger(() -> operatorController.getAButton()).onTrue(
-        new IntakeMiddle(intake));
+        new IntakeTravel(intake));
 
     new Trigger(() -> operatorController.getPOV() == 0).onTrue(
         //new ClimbUp(climb, .1));
@@ -230,11 +234,11 @@ public class RobotContainer {
 
 
     new Trigger(() -> climbController.getAButton()).onTrue(
-      new IntakeForewards(intake)
+      new IntakeDeploy(intake)
     );
 
     new Trigger(() -> climbController.getBButton()).onTrue(
-      new IntakeMiddle(intake)
+      new IntakeTravel(intake)
     );
 
     new Trigger(() -> climbController.getRightStickButton()).onTrue(
@@ -284,18 +288,18 @@ public class RobotContainer {
 
 
     new Trigger(() -> climbController.getXButton()).onTrue(
-        new IntakeForewards(intake));
+        new IntakeDeploy(intake));
 
 
     new Trigger(() -> climbController.getBButton()).onTrue(
-        new IntakeBackwards(intake));
+        new IntakeRetract(intake));
         
     new Trigger(() -> climbController.getYButton()).whileTrue(
         new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
             new InstantCommand(() -> intake.setRollerSpeed(0)));
 
     new Trigger(() -> climbController.getAButton()).onTrue(
-        new IntakeMiddle(intake));
+        new IntakeTravel(intake));
 
     
     // new Trigger(() -> climbController.getYButton()).onTrue(
@@ -307,7 +311,7 @@ public class RobotContainer {
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("Preload", new ParallelCommandGroup(
-        new IntakeMiddle(intake),
+        new IntakeTravel(intake),
         new SequentialCommandGroup(
             new InstantCommand(() -> drive.setGyro(90))),
             new DriveFor(drive, .5),
@@ -315,7 +319,7 @@ public class RobotContainer {
         ));
     autoChooser.addOption("drive .5m forewards", new DriveFor(drive, 0.5));
     autoChooser.addOption("Preload on the starting line", new ParallelCommandGroup(
-        new IntakeMiddle(intake),
+        new IntakeTravel(intake),
         new SequentialCommandGroup (
             new InstantCommand(() -> drive.setGyro(90)),
             new InstantCommand(() -> shooter.setServoHood(0)),

@@ -181,21 +181,12 @@ public class SwerveModule extends SubsystemBase {
             return;
         }
 
-     
-       
         state.optimize(getState().angle);
 
-
-        //if(this.driveMotorReversed) driveMotor.set((state.speedMetersPerSecond / DriveConstants.maxSpeed) * -1);
-        //else 
-        //driveMotor.set(state.speedMetersPerSecond / DriveConstants.maxSpeed);
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.maxSpeed);
-
-        //if(this.turnMotorReversed) turnMotor.set(-1 * turnPID.calculate(getAbsoluteEncoderRad(), state.angle.getRadians()));
-        //else 
-          //SmartDashboard.putNumber("desiredAngle", state.angle.getRadians());
-            //SmartDashboard.putNumber("desiredBangle", getAbsoluteEncoderRad());
-          //SmartDashboard.putNumber("tpid", turnPID.calculate(getAbsoluteEncoderRad(), state.angle.getRadians()));
+        //SmartDashboard.putNumber("desiredAngle", state.angle.getRadians());
+        //SmartDashboard.putNumber("desiredBangle", getAbsoluteEncoderRad());
+        //SmartDashboard.putNumber("tpid", turnPID.calculate(getAbsoluteEncoderRad(), state.angle.getRadians()));
          
          
         turnMotor.set(turnPID.calculate(getAbsoluteEncoderRad(), state.angle.getRadians()));

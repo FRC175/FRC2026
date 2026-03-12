@@ -77,8 +77,9 @@ public class Intake extends SubsystemBase {
     double currPosition = getAbsolutePosition();
 
     if(currPosition >= 130) state = intakeState.Deployed;
-    else if(currPosition <= 25) state = intakeState.Stowed;
-    else state = intakeState.Travel;
+    else if(currPosition <= 35) state = intakeState.Stowed;
+    else if(currPosition <= 70 && currPosition >= 55)state = intakeState.Travel;
+    else state = intakeState.Intermediary;
     
   }
 
@@ -143,10 +144,6 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     correctState();
-    double effort = pid.calculate(getAbsolutePosition());
-    effort = MathUtil.clamp(effort, -1, 1);
-    setDeployVelocity(effort * .175);
-    SmartDashboard.putNumber("intakeEffort", effort);
     SmartDashboard.putNumber("Position", getAbsolutePosition());
     switch (state) {
       case Deployed:
@@ -157,6 +154,9 @@ public class Intake extends SubsystemBase {
         break;
       case Stowed:
         SmartDashboard.putString("State:", "Stowed");
+        break;
+      case Intermediary:
+        SmartDashboard.putString("State", "Intermediary");
 
     }
   }
