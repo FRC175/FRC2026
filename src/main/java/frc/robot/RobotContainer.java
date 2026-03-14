@@ -6,6 +6,10 @@ package frc.robot;
 
 import java.util.List;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.PointTowardsZoneTrigger;
+
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -36,6 +40,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -90,6 +95,11 @@ public class RobotContainer {
     this.limelight = Limelight.getInstance();
 
     autoChooser = new SendableChooser<>();
+
+     NamedCommands.registerCommand("Shoot from hub", new Shoot(shooter, ShooterConstants.FrontHubSpeed));
+     NamedCommands.registerCommand("Reset Gyro", new InstantCommand(() -> drive.setGyro(0)));
+     
+       
 
 
     /**
@@ -337,6 +347,9 @@ public class RobotContainer {
 
         )));
     autoChooser.addOption("Nothing", new ParallelCommandGroup(new WaitCommand(0)));
+
+    autoChooser.addOption("ligne", new PathPlannerAuto("ligne"));
+    autoChooser.addOption("fun little loop :-)", new PathPlannerAuto("fun little loop"));
    
     SmartDashboard.putData(autoChooser);
   
@@ -351,6 +364,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
+
 
     return autoChooser.getSelected();
     
