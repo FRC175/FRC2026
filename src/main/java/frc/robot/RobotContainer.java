@@ -98,6 +98,10 @@ public class RobotContainer {
 
      NamedCommands.registerCommand("Shoot from hub", new Shoot(shooter, ShooterConstants.FrontHubSpeed));
      NamedCommands.registerCommand("Reset Gyro", new InstantCommand(() -> drive.setGyro(0)));
+     NamedCommands.registerCommand("Deploy Intake", new IntakeDeploy(intake));
+     NamedCommands.registerCommand("Run Intake", new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)));
+    NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> intake.setRollerSpeed(0)));
+
      
        
 
