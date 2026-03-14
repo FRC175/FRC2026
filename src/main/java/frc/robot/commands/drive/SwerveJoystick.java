@@ -64,10 +64,13 @@ public class SwerveJoystick extends Command {
         ChassisSpeeds chassisSpeeds;
         if(fieldOrientedFunction.get()) {
             //Field Relative Control
+            
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerve.getRotation2d());
+            swerve.chassisSpeeds = chassisSpeeds;
         } else {
             //Robot Relative Control
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+            swerve.chassisSpeeds = chassisSpeeds;
         }
 
         //ChassisSpeeds.discretize(chassisSpeeds, .02);

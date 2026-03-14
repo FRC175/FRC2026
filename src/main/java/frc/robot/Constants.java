@@ -66,6 +66,15 @@ public final class Constants {
     public static final Translation2d frontRightLocation = new Translation2d(0.282575, -0.282575);
     public static final Translation2d backLeftLocation = new Translation2d(-0.282575, 0.282575);
     public static final Translation2d backRightLocation = new Translation2d(-0.282575, -0.282575);
+    
+    public static final double pTurnConstants = .2;
+    public static final double iTurnConstants = 0;
+    public static final double dTurnConstants = 0;
+
+    public static final double pDriveConstants = 1;
+    public static final double iDriveConstants = 0;
+    public static final double dDriveConstants = 0;
+
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
     public static final double kPXController = 1.5;
@@ -114,7 +123,8 @@ public final class Constants {
     public static final double baseEffort = .45;
 
     public static final double passingVelocity = 4000;
-    public static final double FrontHubSpeed = 1550;
+    public static final double FrontHubSpeed = 2600;
+    //locked in
 
     public static final double[] blueShooterIDs= new double[] {5, 8, 9, 10, 11, 2};
     public static final double[] redShooterIDs= new double[] {21, 24, 25, 26, 27, 18};

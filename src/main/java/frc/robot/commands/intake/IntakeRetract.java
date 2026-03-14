@@ -40,7 +40,7 @@ public class IntakeRetract extends Command {
   public void execute() {
     effort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
     effort *= .175;
-    //SmartDashboard.putNumber("Retract Effort", retractEffort);
+    SmartDashboard.putNumber("Retract Effort", effort);
     intake.setDeployVelocity(effort);
   }
 

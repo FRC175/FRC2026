@@ -31,8 +31,8 @@ public class Intake extends SubsystemBase {
     intakeRoller = new SparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
     rollerEncoder = intakeRoller.getEncoder();
 
-    pid = new PIDController(.015, .005, 0);
-    pid.setTolerance(2.5);
+    pid = new PIDController(.025, .00, 0);
+    pid.setTolerance(5);
 
     correctState();
     pid.setSetpoint(getAbsolutePosition());

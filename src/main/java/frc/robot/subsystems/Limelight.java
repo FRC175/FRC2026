@@ -39,10 +39,13 @@ public class Limelight extends SubsystemBase {
   /**
    * Method to retrieve the horizontal offset from the crosshair to the target.
    * 
-   * @return the horizontal offset in degrees
+   * @return the horizontal offset in radians
    */
-  private double getTx() {
-    return table.getEntry("tx").getDouble(0.0);
+  public double getTx(double tag) {
+    if (getID() == tag) {
+      return -Math.toRadians(table.getEntry("tx").getDouble(0.0));
+    }
+    return 0;
   }
 
   /**
@@ -100,7 +103,7 @@ public class Limelight extends SubsystemBase {
         }
       }
   
-      double tX = getTx();
+      double tX = getTx(25);
       double tY = getTy();
       double tA = getTa();
 
@@ -173,6 +176,16 @@ public class Limelight extends SubsystemBase {
     } else
       return -9999;
   }
+
+  // public double getYaw() {
+  //   if (foundTarget()) {
+  //     double[] d3Location = findAprilTag3D();
+  //     double findX = d3Location[5];
+  //     //findX = 0.15 * findX - 0.03742;
+  //     return findX;
+  //   } else
+  //     return -9999;
+  // }
 
   @Override
   public void periodic() {

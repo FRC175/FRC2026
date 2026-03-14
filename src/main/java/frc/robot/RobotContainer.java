@@ -14,6 +14,7 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.commands.auto.ShootPreload;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
+import frc.robot.commands.drive.AngleToLime;
 import frc.robot.commands.drive.DriveFor;
 import frc.robot.commands.drive.SwerveJoystick;
 import frc.robot.commands.intake.IntakeDeploy;
@@ -157,7 +158,11 @@ public class RobotContainer {
                 new InstantCommand(() -> hopper.stop()),
                 new InstantCommand(() -> shooter.setServoHood(0))));
 
-     new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
+      new Trigger(() -> driverController.getRightBumperButton()).whileTrue(
+        new AngleToLime(drive, limelight, driverController::getLeftTriggerAxis, driverController::getRightTriggerAxis));
+
+
+     new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
         new SequentialCommandGroup (
             new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
             new Shoot(shooter, ShooterConstants.FrontHubSpeed),

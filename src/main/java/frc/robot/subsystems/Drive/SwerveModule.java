@@ -70,6 +70,8 @@ public class SwerveModule extends SubsystemBase {
         turnPID = new PIDController(0.2, 0.0, 0.0);
         turnPID.enableContinuousInput(-1*Math.PI, Math.PI);
 
+
+
         resetEncoders();
 
     }
@@ -80,6 +82,10 @@ public class SwerveModule extends SubsystemBase {
      */
     public double getDrivePosition() {
         return driveEncoder.getPosition() * DriveConstants.driveEncoderResolution;
+    }
+
+    public double getDriveVoltage() {
+        return driveMotor.getBusVoltage();
     }
 
     /**

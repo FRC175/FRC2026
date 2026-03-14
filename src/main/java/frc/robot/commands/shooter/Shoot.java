@@ -32,6 +32,7 @@ public class Shoot extends Command  {
   @Override
   public void initialize() {
     shooter.velocityController.reset();
+    shooter.currentSetpoint = setpoint;
     shooter.velocityController.setSetpoint(setpoint);
   }
 

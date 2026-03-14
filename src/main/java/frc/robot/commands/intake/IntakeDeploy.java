@@ -42,7 +42,7 @@ public class IntakeDeploy extends Command {
   public void execute() {
     effort = MathUtil.clamp(intake.pid.calculate(intake.getAbsolutePosition()), -1, 1);
     effort *= .175;
-    //SmartDashboard.putNumber("DeployEffort", deployEffort);
+    SmartDashboard.putNumber("DeployEffort", effort);
     intake.setDeployVelocity(effort);
     
   }

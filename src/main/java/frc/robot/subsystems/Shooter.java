@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
@@ -30,6 +30,8 @@ public class Shooter extends SubsystemBase {
   private final Servo leftServoHood;
   private final Servo rightServoHood;
   public final PIDController velocityController;
+  private final SimpleMotorFeedforward feedForeward;
+  public double currentSetpoint;
 
   public boolean closeEnough;
 
@@ -53,10 +55,15 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(.000000375, 0.00001, 0);
+    velocityController = new PIDController(.0000004, 0.00001, 0);
     velocityController.setSetpoint(ShooterConstants.baseVelocity);
     velocityController.setTolerance(50);
     velocityController.setIZone(500);
+
+    feedForeward = new SimpleMotorFeedforward( 0, .000005 );
+    
+    currentSetpoint = ShooterConstants.FrontHubSpeed;
+    
     closeEnough = false;
 
   }
@@ -157,13 +164,13 @@ public class Shooter extends SubsystemBase {
     
   }
 
+  
+
   @Override
   public void periodic() {
-    
-  
-    SmartDashboard.putNumber("servoPose", getServoPose());
     if(shooterRunning) {
-      flywheelEffort = velocityController.calculate(getVelocity(), ShooterConstants.baseVelocity);
+      flywheelEffort = velocityController.calculate(getVelocity(), currentSetpoint) - feedForeward.calculate(getVelocity(), currentSetpoint);
+      
       //flywheelEffort *= ShooterConstants.baseEffort;
 
       double error = velocityController.getError();
@@ -175,8 +182,10 @@ public class Shooter extends SubsystemBase {
     } else {
       flywheelEffort = 0;
     }
+    SmartDashboard.putNumber("servoPose", getServoPose());
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
+    SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
     SmartDashboard.putBoolean("Close Enough?", closeEnough);
     shooterLeader.set(-flywheelEffort);
 

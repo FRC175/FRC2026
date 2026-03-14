@@ -7,13 +7,19 @@ package frc.robot.subsystems.Drive;
 import frc.robot.Constants.DriveConstants;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -28,16 +34,60 @@ public class Swerve extends SubsystemBase {
     private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, true, true, true);
     private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, true, true,  true);
 
+    public ChassisSpeeds chassisSpeeds;
+
+    private RobotConfig config;
     private final Pigeon2 gyro = new Pigeon2(10);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(0), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()} );
 
     /** Creates a new Swerve System. */
     public Swerve() {
 
+        chassisSpeeds = new ChassisSpeeds(0, 0, 0);
+        
+
         //resetGyro();
+        try {
+           config = RobotConfig.fromGUISettings(); 
+        } catch (Exception e) {
+           config = new RobotConfig(0, 0, null, 0);
+        }
+            AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> setModuleStatesFromChassisSpeed(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(DriveConstants.pDriveConstants, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(DriveConstants.pTurnConstants, 0.0, 0.0) // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+
+
+    );
         
 
     }
+
+    
+
+   public ChassisSpeeds getChassisSpeeds() {
+    return this.chassisSpeeds;
+   }
+
+    
 
     /**
    * Returns the initialized shooter subsystem, or creates a shooter if there is not one already
@@ -109,11 +159,24 @@ public class Swerve extends SubsystemBase {
         backRight.setDesiredState(states[3]);
     }
 
+    public void setModuleStatesFromChassisSpeed(ChassisSpeeds chassisSpeeds) {
+         SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);
+         this.chassisSpeeds = chassisSpeeds;
+         setModuleStates(moduleStates);
+    }
+
+    
+    
+
+     // Configure AutoBuilder last
+
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
         //SmartDashboard.putNumber("Gyro Heading", getHeading());
         SmartDashboard.putNumber("Gyro", gyro.getRotation2d().getDegrees());
+        SmartDashboard.putNumberArray("module power", new double[] {frontLeft.getDriveVoltage(), frontRight.getDriveVoltage(), backLeft.getDriveVoltage(), backRight.getDriveVoltage()});
         odometer.update(getRotation2d(), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()});
        
     }
