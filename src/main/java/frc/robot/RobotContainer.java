@@ -162,7 +162,7 @@ public class RobotContainer {
         new AngleToLime(drive, limelight, driverController::getLeftTriggerAxis, driverController::getRightTriggerAxis));
 
 
-     new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
+     new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
         new SequentialCommandGroup (
             new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
             new Shoot(shooter, ShooterConstants.FrontHubSpeed),
@@ -177,10 +177,10 @@ public class RobotContainer {
 
      new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
         new SequentialCommandGroup(
-            new InstantCommand(() -> shooter.setServoHood(.9)),
-            new Shoot(shooter, ShooterConstants.passingVelocity))
+            new Aim(shooter, limelight),
+            new Shoot(shooter, ShooterConstants.baseVelocity)
         
-        ).onFalse (
+        )).onFalse (
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
                 new InstantCommand(() -> shooter.setServoHood(0))));
