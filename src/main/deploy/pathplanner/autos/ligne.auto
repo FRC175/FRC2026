@@ -11,6 +11,18 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "resetGyro"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "line"

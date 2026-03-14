@@ -40,7 +40,7 @@ public class AngleToLime extends Command {
     this.swerve = swerve;
     this.limelight = limelight;
 
-    turnController = new PIDController(DriveConstants.dTurnConstants, 0, 0);
+    turnController = new PIDController(DriveConstants.pTurnConstants, 0, 0);
     turnController.setTolerance(.1);
     //Swerve subsystem
         

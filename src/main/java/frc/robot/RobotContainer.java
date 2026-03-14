@@ -326,14 +326,14 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
-    autoChooser.setDefaultOption("Preload", new ParallelCommandGroup(
-        new IntakeTravel(intake),
-        new SequentialCommandGroup(
-            new InstantCommand(() -> drive.setGyro(90))),
-            new DriveFor(drive, .5),
-            new AimThenShoot(shooter, limelight, hopper)
-        ));
-    autoChooser.addOption("drive .5m forewards", new DriveFor(drive, 0.5));
+    // autoChooser.setDefaultOption("Preload", new ParallelCommandGroup(
+    //     new IntakeTravel(intake),
+    //     new SequentialCommandGroup(
+    //         new InstantCommand(() -> drive.setGyro(90))),
+    //         new DriveFor(drive, .5),
+    //         new AimThenShoot(shooter, limelight, hopper)
+    //     ));
+    //autoChooser.addOption("drive .5m forewards", new DriveFor(drive, 0.5));
     autoChooser.addOption("Preload on the starting line", new ParallelCommandGroup(
         new IntakeTravel(intake),
         new SequentialCommandGroup (
@@ -350,6 +350,7 @@ public class RobotContainer {
 
     autoChooser.addOption("ligne", new PathPlannerAuto("ligne"));
     autoChooser.addOption("fun little loop :-)", new PathPlannerAuto("fun little loop"));
+    //autoChooser.addOption("autoaim", new );
    
     SmartDashboard.putData(autoChooser);
   
