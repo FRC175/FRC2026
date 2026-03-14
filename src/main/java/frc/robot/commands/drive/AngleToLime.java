@@ -73,9 +73,9 @@ public class AngleToLime extends Command {
   public void execute() {
     //Gets the joystick inputs
         double xSpeed = xSpeedFunction.get();
-        SmartDashboard.putNumber("x-Stick", xSpeed);
+        SmartDashboard.putNumber("LIMEx-Stick", xSpeed);
         double ySpeed = ySpeedFunction.get();
-         SmartDashboard.putNumber("y-Stick", ySpeed);
+         SmartDashboard.putNumber("LIMEy-Stick", ySpeed);
         
 
         //Apply the Deadband
@@ -84,25 +84,26 @@ public class AngleToLime extends Command {
         
         //Rate Limiter on joysticks and scale to 75% of max speed for Teleop
         xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.maxTeleopSpeed;
-        SmartDashboard.putNumber("Converted X Speed", xSpeed);
+        SmartDashboard.putNumber("LIMEConverted X Speed", xSpeed);
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;
-        SmartDashboard.putNumber("Converted Y Speed", ySpeed);
+        SmartDashboard.putNumber("LIMEConverted Y Speed", ySpeed);
         
         //SmartDashboard.putNumber("Converted Turn Speed", );
 
-    currentAngle = limelight.getTx(25);
+    currentAngle = limelight.getTx(26);
     double effort = turnController.calculate(currentAngle, 0);
     SmartDashboard.putNumber("turning effort", effort);
     //new SwerveJoystick(swerve, null, null, null, null)
     ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed , effort);
     SwerveModuleState[] swerveStates = DriveConstants.kinematics.toSwerveModuleStates(speed);
     swerve.setModuleStates(swerveStates);
+    SmartDashboard.putString("auto aiming?", "AIMING....");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerve.stopModules();
+    SmartDashboard.putString("auto aiming?", "nope");
   }
 
   // Returns true when the command should end.

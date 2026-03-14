@@ -17,9 +17,10 @@ public class Shoot extends Command  {
   private final double setpoint;
 
   /**
-   * Creates a new ExampleCommand.
+   * Shoots balls by revving flywheel speed to a desired setpoint
    *
-   * @param subsystem The subsystem used by this command.
+   * @param shooter an instance of the Shooter Subsystem
+   * @param setpoint the desired rpm of the flywheel motors
    */
   public Shoot(Shooter shooter, double setpoint) {
     this.shooter = shooter;
