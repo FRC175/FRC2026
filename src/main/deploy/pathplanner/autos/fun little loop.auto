@@ -5,24 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "resetGyro"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot From Hub"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "loop"

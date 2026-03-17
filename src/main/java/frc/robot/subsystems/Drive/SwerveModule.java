@@ -171,7 +171,11 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public SwerveModulePosition getPosition() {
-       return new SwerveModulePosition(getDrivePosition(), new Rotation2d(absoluteEncoder.getPosition()));
+       return new SwerveModulePosition(-getDrivePosition(), new Rotation2d(absoluteEncoder.getPosition()));
+    }
+
+    public void resetDistance() {
+        driveEncoder.setPosition(0);
     }
 
     
@@ -211,7 +215,7 @@ public class SwerveModule extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         
-         SmartDashboard.putNumber("spd", getState().speedMetersPerSecond);
+         SmartDashboard.putNumber("effort", driveMotor.getAppliedOutput());
          
         
     }

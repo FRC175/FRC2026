@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -36,6 +38,8 @@ public class Swerve extends SubsystemBase {
 
     public ChassisSpeeds chassisSpeeds;
 
+    private Pose2d startingPose;
+
     private RobotConfig config;
     private final Pigeon2 gyro = new Pigeon2(10);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(0), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()} );
@@ -43,6 +47,8 @@ public class Swerve extends SubsystemBase {
     /** Creates a new Swerve System. */
     public Swerve() {
 
+
+        startingPose = getPose();
         chassisSpeeds = new ChassisSpeeds(0, 0, 0);
         
 
@@ -128,11 +134,19 @@ public class Swerve extends SubsystemBase {
     
     public Pose2d getPose() {
         return odometer.getPoseMeters();
+       // return new Pose2d(pose.getY(), pose.getX(), pose.getRotation());
+        
     }
     
      public void resetPose(Pose2d pose) {
-        odometer.resetPose(pose);;
+       // pose.transformBy(new Transform2d(new Translation2d(-12.5, 0), new Rotation2d(0)));
+        odometer.resetPose(pose);
     }
+
+    // public void resetPose() {
+    //     odometer.resetPose(startingPose);
+    //     //odometer.resetPosition(startingPose.getRotation(), new SwerveModulePosition[] {new SwerveModulePosition(0, new Rotation2d(0)), new SwerveModulePosition(0, new Rotation2d(0)), new SwerveModulePosition(0,new Rotation2d(0)), new SwerveModulePosition(0, new Rotation2d(0))}, startingPose);
+    // }
 
     /**
      * Stops all 4 swerve modules with individual method
@@ -142,6 +156,13 @@ public class Swerve extends SubsystemBase {
         frontLeft.stop();
         backRight.stop();
         backLeft.stop();
+    }
+
+      public void resetDistModules() {
+        frontRight.resetDistance();;
+        frontLeft.resetDistance();
+        backRight.resetDistance();
+        backLeft.resetDistance();
     }
 
     /**
@@ -175,10 +196,12 @@ public class Swerve extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         //SmartDashboard.putNumber("Gyro Heading", getHeading());
-        SmartDashboard.putNumber("Gyro", gyro.getRotation2d().getDegrees());
-        SmartDashboard.putNumberArray("module power", new double[] {frontLeft.getDriveVoltage(), frontRight.getDriveVoltage(), backLeft.getDriveVoltage(), backRight.getDriveVoltage()});
+        SmartDashboard.putString("distance", getPose().getTranslation().toString());
+        //SmartDashboard.putNumber("posey", getPose().getMeasureY().baseUnitMagnitude());
+        SmartDashboard.putNumberArray("module position", new double[] {frontLeft.getDrivePosition(), frontRight.getDrivePosition(), backLeft.getDrivePosition(), backRight.getDrivePosition()});
         odometer.update(getRotation2d(), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()});
-       
+       SmartDashboard.putNumberArray("moudle ",new double[] {frontLeft.getPosition().angle.getDegrees(), frontRight.getPosition().angle.getDegrees(), backLeft.getPosition().angle.getDegrees(), backRight.getPosition().angle.getDegrees()});
+       SmartDashboard.putString("pose", getPose().toString());
     }
 
     @Override

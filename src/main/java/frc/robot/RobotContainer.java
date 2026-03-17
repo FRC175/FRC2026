@@ -80,7 +80,6 @@ public class RobotContainer {
   private final XboxController driverController = new XboxController(OperatorConstants.driverControllerPort);
   private final XboxController operatorController = new XboxController(OperatorConstants.operatorControllerPort);
   private final XboxController climbController = new XboxController(OperatorConstants.climbControllerPort);
-
   private final SendableChooser<Command> autoChooser;
 
   /**
@@ -97,7 +96,8 @@ public class RobotContainer {
     autoChooser = new SendableChooser<>();
 
      NamedCommands.registerCommand("Shoot from hub", new Shoot(shooter, ShooterConstants.FrontHubSpeed));
-     NamedCommands.registerCommand("Reset Gyro", new InstantCommand(() -> drive.setGyro(0)));
+     NamedCommands.registerCommand("Reset Gyro", new InstantCommand(() -> drive.setGyro(270)));
+      NamedCommands.registerCommand("Spindexer", new InstantCommand(() -> hopper.run()));
      NamedCommands.registerCommand("Deploy Intake", new IntakeDeploy(intake));
      NamedCommands.registerCommand("Run Intake", new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)));
     NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> intake.setRollerSpeed(0)));
@@ -320,6 +320,12 @@ public class RobotContainer {
 
     new Trigger(() -> climbController.getAButton()).onTrue(
         new IntakeTravel(intake));
+    
+        new Trigger(() -> driverController.getAButton()).onTrue(
+        new InstantCommand(() -> drive.resetDistModules()));
+
+
+
 
     
     // new Trigger(() -> climbController.getYButton()).onTrue(
