@@ -138,7 +138,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void resetEncoders() {
         driveEncoder.setPosition(0.0);
-        turnEncoder.setPosition(absoluteEncoder.getPosition());
+        turnEncoder.setPosition(getAbsoluteEncoderRad());
         //SmartDashboard.putNumber("resetting turn encoder to", absoluteEncoder.getPosition());
     }
 
@@ -171,7 +171,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public SwerveModulePosition getPosition() {
-       return new SwerveModulePosition(-getDrivePosition(), new Rotation2d(absoluteEncoder.getPosition()));
+       return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getAbsoluteEncoderRad()));
     }
 
     public void resetDistance() {

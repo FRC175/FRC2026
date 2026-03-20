@@ -23,7 +23,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   
-  //Constants that pertain to the Drive Team/Robot Control
+  //Constants that pertain to the; Drive Team/Robot Control
   public static class OperatorConstants {
     public static final int driverControllerPort = 0;
     public static final int operatorControllerPort = 1;
@@ -101,9 +101,9 @@ public final class Constants {
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
     public static final double intakeRetractPosition = 25;
     public static final double intakeMiddlePosition = 61.5;
-    public static final double intakeDeployPosition = 145;
+    public static final double intakeDeployPosition = 155;
 
-    public static final double intakeSpeed = -.6;
+    public static final double intakeSpeed = -2700;
 
   }
 

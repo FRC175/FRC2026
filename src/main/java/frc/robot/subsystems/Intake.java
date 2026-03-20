@@ -3,33 +3,38 @@ package frc.robot.subsystems;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakeState;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 
 public class Intake extends SubsystemBase {
   private static Intake instance;
-  private final SparkMax intakeDeploy;
+  private final SparkFlex intakeDeploy;
   private final AbsoluteEncoder deployEncoder;
-  private final SparkMax intakeRoller;
+  private final SparkFlex intakeRoller;
   private final RelativeEncoder rollerEncoder;
   public final PIDController pid;
+  private final SimpleMotorFeedforward feedforward;
 
   private intakeState state = intakeState.Stowed;
+
 
   /**
    * Creates a new intake subsystem
    */
   public Intake() {
-    intakeDeploy = new SparkMax(IntakeConstants.deployID, MotorType.kBrushless);
+    intakeDeploy = new SparkFlex(IntakeConstants.deployID, MotorType.kBrushless);
     deployEncoder = intakeDeploy.getAbsoluteEncoder();
-    intakeRoller = new SparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
+    intakeRoller = new SparkFlex(IntakeConstants.rollerID, MotorType.kBrushless);
     rollerEncoder = intakeRoller.getEncoder();
+    feedforward = new SimpleMotorFeedforward(0, .005);
 
     pid = new PIDController(.025, .00, 0);
     pid.setTolerance(5);
@@ -106,7 +111,8 @@ public class Intake extends SubsystemBase {
    * @param speed
    */
   public void setRollerSpeed(double speed) {
-    intakeRoller.set(speed);
+    double effort = feedforward.calculate(speed);
+    intakeRoller.set(effort);
   }
 
   /**
@@ -145,6 +151,7 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     correctState();
     SmartDashboard.putNumber("Position", getAbsolutePosition());
+    SmartDashboard.putNumber("Intake Speed", intakeRoller.getAppliedOutput());
     switch (state) {
       case Deployed:
         SmartDashboard.putString("State:", "Deployed");
@@ -159,6 +166,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putString("State", "Intermediary");
 
     }
+
   }
 
   @Override
