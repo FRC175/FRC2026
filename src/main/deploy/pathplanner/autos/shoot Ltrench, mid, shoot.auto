@@ -25,13 +25,13 @@
         {
           "type": "named",
           "data": {
-            "name": "DeployIntake"
+            "name": "Deploy Intake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StartIntake"
+            "name": "Run Intake"
           }
         },
         {

@@ -11,21 +11,27 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of line"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Aim"
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Spindexer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         },
         {
@@ -41,21 +47,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Rtrench to mid"
+            "name": "Climb Up"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "mid to Rshoot"
+            "pathName": "Copy of Copy of line"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Start Shooter"
+            "name": "Climb Down"
           }
         }
       ]

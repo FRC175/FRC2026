@@ -82,14 +82,19 @@ public class Climb extends SubsystemBase {
    */
   public void climbSpeed(boolean up, double speed) {
     if (up && !(getPosition() <= ClimbConstants.climbPos))
-      setSpeed(-speed);
+      setSpeed(speed);
     else if(!up && !(getPosition() >= ClimbConstants.climbMin))
       setSpeed(speed);
   }
 
+  
+  public void stop() {
+    setSpeed(0);
+  }
+
   @Override
   public void periodic() {
-  //   SmartDashboard.putNumber("climbEncoder", getPosition());
+     SmartDashboard.putNumber("climbEncoder", getPosition());
   //   if(getPosition() <= ClimbConstants.climbPos ) setSpeed(0);
    }
 

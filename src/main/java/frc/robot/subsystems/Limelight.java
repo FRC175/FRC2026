@@ -36,6 +36,10 @@ public class Limelight extends SubsystemBase {
     return instance;
   }
 
+  private void switchTables() {
+   // table.p
+  }
+
   /**
    * Method to retrieve the horizontal offset from the crosshair to the target.
    * 

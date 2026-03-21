@@ -100,10 +100,12 @@ public final class Constants {
 
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
     public static final double intakeRetractPosition = 25;
+    public static final double intakeBumpPosition = 83;
+    public static final double intakeBump2Position = 103;
     public static final double intakeMiddlePosition = 61.5;
     public static final double intakeDeployPosition = 155;
 
-    public static final double intakeSpeed = -2700;
+    public static final double intakeSpeed = -3000;
 
   }
 

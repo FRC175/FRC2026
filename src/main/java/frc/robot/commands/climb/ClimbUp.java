@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /** An example command that uses an example subsystem. */
@@ -36,15 +37,16 @@ public class ClimbUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    m_Climb.climbSpeed(true, .3);
+    SmartDashboard.putBoolean("climbng?", true);
+    m_Climb.climbSpeed(true, -.5);
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Climb.climbSpeed(true, 0);
+    m_Climb.stop();
+    SmartDashboard.putBoolean("climbng?", false);
 
   }
 

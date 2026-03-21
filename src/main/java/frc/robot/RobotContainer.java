@@ -21,6 +21,7 @@ import frc.robot.commands.climb.ClimbUp;
 import frc.robot.commands.drive.AngleToLime;
 import frc.robot.commands.drive.DriveFor;
 import frc.robot.commands.drive.SwerveJoystick;
+import frc.robot.commands.intake.Agitate;
 import frc.robot.commands.intake.IntakeDeploy;
 import frc.robot.commands.intake.IntakeTravel;
 import frc.robot.commands.intake.MaintainPosition;
@@ -96,11 +97,18 @@ public class RobotContainer {
     autoChooser = new SendableChooser<>();
 
      NamedCommands.registerCommand("Shoot from hub", new Shoot(shooter, ShooterConstants.FrontHubSpeed));
+     NamedCommands.registerCommand("Start Shooter", new Shoot(shooter, ShooterConstants.baseVelocity));
+     NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
+     NamedCommands.registerCommand("Aim", new Aim(shooter, limelight));
      NamedCommands.registerCommand("Reset Gyro", new InstantCommand(() -> drive.setGyro(270)));
+      NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
       NamedCommands.registerCommand("Spindexer", new InstantCommand(() -> hopper.run()));
+       NamedCommands.registerCommand("Spindexer", new InstantCommand(() -> hopper.stop()));
      NamedCommands.registerCommand("Deploy Intake", new IntakeDeploy(intake));
      NamedCommands.registerCommand("Run Intake", new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)));
     NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> intake.setRollerSpeed(0)));
+     NamedCommands.registerCommand("Climb Up", new ClimbUp(climb));
+     NamedCommands.registerCommand("Climb Down", new ClimbDown(climb));
 
      
        
@@ -240,6 +248,13 @@ public class RobotContainer {
           new InstantCommand(() -> climb.setSpeed(0))
         );
 
+    new Trigger(() -> operatorController.getPOV() == 270).whileTrue(
+        //new ClimbDown(climb, .1));
+        new Agitate(intake)
+        ).onFalse(
+        new IntakeDeploy(intake)
+        );
+
 
     new Trigger(() -> climbController.getPOV() == 0).whileTrue(
         new InstantCommand(() -> climb.setSpeed(-.1))).whileFalse(
@@ -285,22 +300,14 @@ public class RobotContainer {
                 );
 
 
-     new Trigger(() ->  climbController.getLeftBumperButton()).whileTrue(
-        new SequentialCommandGroup(
-            new InstantCommand(() -> shooter.setServoHood(.9)),
-            new Shoot(shooter, ShooterConstants.passingVelocity))
+     new Trigger(() ->  climbController.getLeftBumperButton()).onTrue(
+        new ClimbUp(climb)
         
-        ).onFalse (
-            new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> shooter.setServoHood(0))));
-    
-                
-    new Trigger(() -> climbController.getRightBumperButton()).whileTrue(
-            new InstantCommand(() -> hopper.run())
+        );
+
+    new Trigger(() -> climbController.getRightBumperButton()).onTrue(
+            new ClimbDown(climb)
         
-        ).onFalse (
-                new InstantCommand(() -> hopper.stop())
         );
      
 
@@ -360,6 +367,8 @@ public class RobotContainer {
 
     autoChooser.addOption("ligne", new PathPlannerAuto("ligne"));
     autoChooser.addOption("fun little loop :-)", new PathPlannerAuto("fun little loop"));
+    autoChooser.addOption("fake climb", new PathPlannerAuto("Grimper (faux)"));
+    autoChooser.addOption("rtrench", new PathPlannerAuto("shoot Rtrench, mid, shoot"));
     //autoChooser.addOption("autoaim", new );
    
     SmartDashboard.putData(autoChooser);

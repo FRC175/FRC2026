@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
   public final PIDController pid;
   private final SimpleMotorFeedforward feedforward;
 
-  private intakeState state = intakeState.Stowed;
+  private intakeState state, lastState = intakeState.Stowed;
 
 
   /**
@@ -64,7 +64,16 @@ public class Intake extends SubsystemBase {
    * @param newState New state the intake has been set to
    */
   public void setState(intakeState newState) {
+    setLastState(state);
     this.state = newState;
+  }
+
+  public void setLastState(intakeState newState) {
+    this.lastState = newState;
+  }
+
+  public intakeState getLastState() {
+    return lastState;
   }
 
   /**
