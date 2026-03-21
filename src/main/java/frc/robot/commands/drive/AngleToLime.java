@@ -90,7 +90,7 @@ public class AngleToLime extends Command {
         
         //SmartDashboard.putNumber("Converted Turn Speed", );
 
-    currentAngle = limelight.getTx(10);
+    currentAngle = limelight.getTx();
     double effort = turnController.calculate(currentAngle, 0);
     SmartDashboard.putNumber("turning effort", effort);
     //new SwerveJoystick(swerve, null, null, null, null)

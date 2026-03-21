@@ -121,7 +121,7 @@ public final class Constants {
 
     public static final double FrontHubAngle = 0;
 
-    public static final double baseVelocity = 3250;
+    public static final double baseVelocity = 3375;
     public static final double baseEffort = .45;
 
     public static final double passingVelocity = 4000;

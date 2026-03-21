@@ -41,8 +41,8 @@ public class SwerveJoystick extends Command {
         this.turnLimiter = new SlewRateLimiter(DriveConstants.maxAngularAcceleration);
 
         //PID for shooter aiming lock-on
-        aimController = new PIDController(DriveConstants.pTurnConstants, 0, 0);
-        aimController.setTolerance(.1);
+        aimController = new PIDController(2,0,0);
+        aimController.setTolerance(.01);
 
         addRequirements(swerve);
 
@@ -70,11 +70,11 @@ public class SwerveJoystick extends Command {
         SmartDashboard.putNumber("Converted Y Speed", ySpeed);
         turnSpeed = turnLimiter.calculate(turnSpeed) * Math.PI ;
 
-        currentAngle = limelight.getTx(10);
+        currentAngle = limelight.getTx();
         double effort = aimController.calculate(currentAngle, 0);
 
         if(aimLockOn.get()) {
-            turnSpeed = effort;
+            turnSpeed = -effort*Math.PI;
             SmartDashboard.putNumber("Aim Turn Effort", effort);
         } else SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
         //Create chassis speeds

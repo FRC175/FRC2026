@@ -39,7 +39,8 @@ public class Aim extends Command  {
   public void initialize() {
     distance = limelight.getZ();
     SmartDashboard.putNumber("Limelight distance", distance);
-    hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
+  //hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
+  hoodPosition = .2; //just hard setting so we can refigure out the equation
     SmartDashboard.putNumber("hood Position", hoodPosition);
     timer.start();
 

@@ -5,45 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Start Shooter"
+            "pathName": "Rtrench to mid"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "mid to towerfront"
+            "pathName": "mid to Rshoot"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Aim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Spindexer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Shooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Spindexer"
+            "pathName": "Rshoot to tower"
           }
         },
         {

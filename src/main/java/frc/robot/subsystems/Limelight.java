@@ -45,11 +45,11 @@ public class Limelight extends SubsystemBase {
    * 
    * @return the horizontal offset in radians
    */
-  public double getTx(double tag) {
-    if (getID() == tag) {
+  public double getTx() {
+    
       return -Math.toRadians(table.getEntry("tx").getDouble(0.0));
-    }
-    return 0;
+    
+    
   }
 
   /**
@@ -107,7 +107,7 @@ public class Limelight extends SubsystemBase {
         }
       }
   
-      double tX = getTx(25);
+      double tX = getTx();
       double tY = getTy();
       double tA = getTa();
 
@@ -176,10 +176,30 @@ public class Limelight extends SubsystemBase {
       double findZ = d3Location[2];
       //findZ = 0.1636 * findZ - 0.02290;
       //findZ = 1.005 * findZ + 0.04104;
-      return findZ + .35;
+      return findZ + getAprilToHub();
     } else
       return -9999;
   }
+
+  private double getYaw() {
+    if(foundTarget()) {
+    double location[] = findAprilTag3D();
+    return location[3];
+    } else return -9999;
+  }
+
+  private double getAprilToHub() {
+    double[] location = findAprilTag3D();
+    double yaw = getYaw();
+    return (.375 / Math.cos(yaw));
+  }
+
+  public double findManualDist() {
+    double tagHeight =1.125;
+    double distance =(tagHeight - 0.254)/(Math.tan(Math.toRadians(-getTy())));
+    return distance;
+  }
+  
 
   // public double getYaw() {
   //   if (foundTarget()) {
@@ -197,8 +217,11 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Z Distance", getZ());
     SmartDashboard.putNumber("X Distance", getX());
     SmartDashboard.putNumber("Y Distance", getY());
+    SmartDashboard.putNumber("Hub Distance", findManualDist());
+    SmartDashboard.putNumber("Yaw", getYaw());
 
     SmartDashboard.putBoolean("apriltag", foundTarget());
+    
 
   }
 
