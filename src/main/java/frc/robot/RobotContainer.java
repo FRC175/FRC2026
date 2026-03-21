@@ -123,10 +123,12 @@ public class RobotContainer {
 
     drive.setDefaultCommand(new SwerveJoystick(
         drive,
+        limelight,
         () -> -driverController.getLeftY(),
         () -> -driverController.getLeftX(),
         () -> -driverController.getRightX(),
-        () -> !driverController.getAButton())
+        () -> !driverController.getAButton(),
+        () -> driverController.getRightBumperButton())
     );
     intake.setDefaultCommand(new MaintainPosition(intake)); //TODO: Make sure this works
     //Also check the set position commands, they didnt change much but did slightly
@@ -179,9 +181,6 @@ public class RobotContainer {
                 new InstantCommand(() -> shooter.stop()),
                 new InstantCommand(() -> hopper.stop()),
                 new InstantCommand(() -> shooter.setServoHood(0))));
-
-      new Trigger(() -> driverController.getRightBumperButton()).whileTrue(
-        new AngleToLime(drive, limelight, driverController::getLeftTriggerAxis, driverController::getRightTriggerAxis));
 
 
      new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(

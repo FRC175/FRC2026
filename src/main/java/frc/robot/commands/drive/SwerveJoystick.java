@@ -2,36 +2,47 @@ package frc.robot.commands.drive;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Drive.Swerve;
 
 public class SwerveJoystick extends Command {
 
     private final Swerve swerve;
+    private final Limelight limelight;
     private final Supplier<Double> xSpeedFunction, ySpeedFunction, turnSpeedFunction;
-    private final Supplier<Boolean> fieldOrientedFunction;
+    private final Supplier<Boolean> fieldOrientedFunction, aimLockOn;
     private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
+    private final PIDController aimController;
+    private double currentAngle;
 
-    public SwerveJoystick(Swerve swerve, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction,
-            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction) {
+    public SwerveJoystick(Swerve swerve, Limelight limelight, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction,
+            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> aimLockOn) {
         //Swerve subsystem
         this.swerve = swerve;
+        this.limelight = limelight;
 
         //Input functions
         this.xSpeedFunction = xSpeedFunction;
         this.ySpeedFunction = ySpeedFunction;
         this.turnSpeedFunction = turnSpeedFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
+        this.aimLockOn = aimLockOn;
 
         //Rate Limiters
         this.xLimiter = new SlewRateLimiter(DriveConstants.maxDriveAcceleration);
         this.yLimiter = new SlewRateLimiter(DriveConstants.maxDriveAcceleration);
         this.turnLimiter = new SlewRateLimiter(DriveConstants.maxAngularAcceleration);
+
+        //PID for shooter aiming lock-on
+        aimController = new PIDController(DriveConstants.pTurnConstants, 0, 0);
+        aimController.setTolerance(.1);
 
         addRequirements(swerve);
 
@@ -58,8 +69,14 @@ public class SwerveJoystick extends Command {
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;
         SmartDashboard.putNumber("Converted Y Speed", ySpeed);
         turnSpeed = turnLimiter.calculate(turnSpeed) * Math.PI ;
-        SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
 
+        currentAngle = limelight.getTx(10);
+        double effort = aimController.calculate(currentAngle, 0);
+
+        if(aimLockOn.get()) {
+            turnSpeed = effort;
+            SmartDashboard.putNumber("Aim Turn Effort", effort);
+        } else SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
         //Create chassis speeds
         ChassisSpeeds chassisSpeeds;
         if(fieldOrientedFunction.get()) {
