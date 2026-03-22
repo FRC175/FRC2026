@@ -31,7 +31,7 @@ public class ShootPreload extends SequentialCommandGroup  {
    */
   public ShootPreload(Shooter shooter, Limelight limelight, Hopper hopper, Swerve swerve) {
     addCommands(
-    new AimThenShoot(shooter,limelight,hopper)
+    new AimThenShoot(shooter,limelight,hopper, swerve)
                
     );
   }

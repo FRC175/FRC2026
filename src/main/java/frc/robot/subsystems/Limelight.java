@@ -176,7 +176,18 @@ public class Limelight extends SubsystemBase {
       double findZ = d3Location[2];
       //findZ = 0.1636 * findZ - 0.02290;
       //findZ = 1.005 * findZ + 0.04104;
-      return findZ + getAprilToHub();
+      return findZ;
+    } else
+      return -9999;
+  }
+
+  public double getZtoHub(double shooterHeading) {
+    if (foundTarget()) {
+      double[] d3Location = findAprilTag3D();
+      double findZ = d3Location[2];
+      //findZ = 0.1636 * findZ - 0.02290;
+      //findZ = 1.005 * findZ + 0.04104;
+      return findZ + getAprilToHub(shooterHeading);
     } else
       return -9999;
   }
@@ -188,10 +199,10 @@ public class Limelight extends SubsystemBase {
     } else return -9999;
   }
 
-  private double getAprilToHub() {
+  private double getAprilToHub(double shooterHeading) {
     double[] location = findAprilTag3D();
     double yaw = getYaw();
-    return (.375 / Math.cos(yaw));
+    return (.375 / Math.cos(shooterHeading));
   }
 
   public double findManualDist() {

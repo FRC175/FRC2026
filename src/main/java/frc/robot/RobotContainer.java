@@ -176,7 +176,7 @@ public class RobotContainer {
 
     
     new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue(
-        new AimThenShoot(shooter, limelight, hopper)).onFalse(
+        new AimThenShoot(shooter, limelight, hopper, drive)).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
                 new InstantCommand(() -> hopper.stop()),
@@ -280,7 +280,7 @@ public class RobotContainer {
         new InstantCommand(() -> shooter.setServoHood(0))
       );
         new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue(
-        new AimThenShoot(shooter, limelight, hopper)).onFalse(
+        new AimThenShoot(shooter, limelight, hopper, drive)).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
                 new InstantCommand(() -> hopper.stop()),

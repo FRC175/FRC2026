@@ -19,6 +19,7 @@ public class Aim extends Command  {
   
   private double distance;
   private double hoodPosition;
+  private double heading;
 
   private Timer timer;
   /**
@@ -37,7 +38,8 @@ public class Aim extends Command  {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    distance = limelight.getZ();
+    heading = shooter.getHeading();
+    distance = limelight.getZtoHub(heading);
     SmartDashboard.putNumber("Limelight distance", distance);
   //hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
   hoodPosition = .2; //just hard setting so we can refigure out the equation

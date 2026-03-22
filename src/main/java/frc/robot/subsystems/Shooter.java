@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
   private final Servo rightServoHood;
   public final PIDController velocityController;
   private final SimpleMotorFeedforward feedForeward;
-  public double currentSetpoint;
+  public double currentSetpoint, shooterHeading;
 
   public boolean closeEnough;
 
@@ -77,6 +77,22 @@ public class Shooter extends SubsystemBase {
       instance = new Shooter();
     }
     return instance;
+  }
+
+  /**
+   * Updates the running parameter measuring the shooter's heading (in reference to field positive x axis)
+   * @param robotHeading The robot's heading in radians
+   */
+  public void updateHeading(double robotHeading) {
+    shooterHeading = robotHeading;
+  }
+
+  /**
+   * Returns the shooter's heading (in reference to field positive x axis)
+   * @return Shooter's heading in radians
+   */
+  public double getHeading() {
+    return shooterHeading;
   }
 
   /**
