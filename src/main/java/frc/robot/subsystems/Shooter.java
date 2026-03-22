@@ -15,29 +15,40 @@ import com.revrobotics.ResetMode;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
+  private static Shooter instance;
   private final SparkFlex shooterLeader;
-   private final SparkFlex shooterFollower;
-  private final RelativeEncoder leaderEncoder, followerEncoder;
-  private final Servo servoHood;
+  private final SparkFlex shooterFollower;
+  private final RelativeEncoder leaderEncoder;
+  private final RelativeEncoder followerEncoder;
+  private final Servo leftServoHood;
+  private final Servo rightServoHood;
 
-  // private final RelativeEncoder followerEncoder;
-  /** Creates a new ExampleSubsystem. */
+  /** 
+   * Creates a new Shooter Subsystem 
+   * */
   public Shooter() {
-    shooterLeader = new SparkFlex(11, MotorType.kBrushless);
-    shooterFollower = new SparkFlex(12, MotorType.kBrushless);
+    shooterLeader = new SparkFlex(ShooterConstants.shooterLeaderID, MotorType.kBrushless);
+    shooterFollower = new SparkFlex(ShooterConstants.shooterFollowID, MotorType.kBrushless);
+
     leaderEncoder = shooterLeader.getEncoder();
     followerEncoder = shooterFollower.getEncoder();
-    servoHood = new Servo(0);
 
-    configureFlexes();
+    leftServoHood = new Servo(ShooterConstants.leftHoodServo);
+    rightServoHood = new Servo(ShooterConstants.rightHoodServo);
   }
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("leader", shooterLeader.getAppliedOutput());
-    SmartDashboard.putNumber("follower", shooterFollower.getAppliedOutput());
+  /**
+   * Returns the initialized shooter subsystem, or creates a shooter if there is not one already
+   * @return The current shooter instance
+   */
+  public static Shooter getInstance() {
+    if(instance == null) {
+      instance = new Shooter();
+    }
+    return instance;
   }
 
 
@@ -88,7 +99,7 @@ public class Shooter extends SubsystemBase {
 
   public void configureFlexes() {
     SparkFlexConfig followConfig = new SparkFlexConfig();
-    followConfig.follow(11, true);
+    followConfig.follow(DriveConstants.shooterLeaderID, true);
     
     shooterFollower.configure(followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -104,19 +115,21 @@ public class Shooter extends SubsystemBase {
       return false;
   }
 /**
- * Getting the servo hood position
+ * Getting the angle of the shooter hood, as the average of the two controlling servo positiongs
  * @return returning the servo hood position
  */
-  public double getPosition() {
-    double answer = servoHood.get();
-    return answer;
+  public double getHoodPosition() {
+    double left = leftServoHood.get();
+    double right = rightServoHood.get();
+    return (left + right) / 2;
   }
 /**
  * setting the servo hood value
  * @param value returning the servo hood value
  */
   public void setServoHood(double value) {
-    servoHood.set(value);
+    leftServoHood.set(value);
+    rightServoHood.set(value);
   }
 
   @Override
