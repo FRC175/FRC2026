@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.PersistMode;
@@ -26,9 +27,9 @@ public class Shooter extends SubsystemBase {
   private static Shooter instance;
   private final SparkFlex shooterLeader;
   private final SparkFlex shooterFollower;
+  private final SparkMax hoodMotor;
   private final RelativeEncoder leaderEncoder, followerEncoder;
-  private final Servo leftServoHood;
-  private final Servo rightServoHood;
+
   public final PIDController velocityController;
   private final SimpleMotorFeedforward feedForeward;
   public double currentSetpoint, shooterHeading;
@@ -48,10 +49,14 @@ public class Shooter extends SubsystemBase {
     leaderEncoder = shooterLeader.getEncoder();
     followerEncoder = shooterFollower.getEncoder();
 
-    leftServoHood = new Servo(ShooterConstants.leftHoodServo);
-    leftServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
-    rightServoHood = new Servo(ShooterConstants.rightHoodServo);
-    rightServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
+    // leftServoHood = new Servo(ShooterConstants.leftHoodServo);
+    // leftServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
+    // rightServoHood = new Servo(ShooterConstants.rightHoodServo);
+    // rightServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
+
+    hoodMotor = new SparkMax(0, MotorType.kBrushless);
+    //rightHoodMotor = new SparkMax(0, MotorType.kBrushless);
+    
 
     shooterRunning = false;
     flywheelEffort = 0;
@@ -84,7 +89,7 @@ public class Shooter extends SubsystemBase {
    * @param robotHeading The robot's heading in radians
    */
   public void updateHeading(double robotHeading) {
-    shooterHeading = robotHeading;
+    shooterHeading = robotHeading - (Math.PI / 2);
   }
 
   /**
@@ -123,8 +128,8 @@ public class Shooter extends SubsystemBase {
    * Returns the pose of the hood-servo
    * @return The hood-servo pose
    */
-  public double getServoPose() {
-    return leftServoHood.get();
+  public double getHoodPose() {
+    return hoodMotor.getAbsoluteEncoder().getPosition();
   }
 
   /**
@@ -153,23 +158,13 @@ public class Shooter extends SubsystemBase {
       return false;
   }
 
-/**
- * Getting the angle of the shooter hood, as the average of the two controlling servo positiongs
- * @return returning the servo hood position
- */
-  public double getHoodPosition() {
-    double left = leftServoHood.get();
-    double right = rightServoHood.get();
-    return (left + right) / 2;
-  }
 
 /**
  * setting the servo hood value
  * @param value returning the servo hood value
  */
-  public void setServoHood(double value) {
-    leftServoHood.set(value);
-    rightServoHood.set(value);
+  public void setHoodVelocity(double value) {
+    hoodMotor.set(value);
   }
 
   public double calculate(Limelight limelight) {
@@ -198,7 +193,7 @@ public class Shooter extends SubsystemBase {
     } else {
       flywheelEffort = 0;
     }
-    SmartDashboard.putNumber("servoPose", getServoPose());
+    SmartDashboard.putNumber("Hood Encoder", getHoodPose());
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
     SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));

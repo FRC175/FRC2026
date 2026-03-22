@@ -6,6 +6,7 @@ package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +23,7 @@ public class Aim extends Command  {
   private double heading;
 
   private Timer timer;
+  private final PIDController hoodController;
   /**
    * Creates a new ExampleCommand.
    *
@@ -33,27 +35,26 @@ public class Aim extends Command  {
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
+    hoodController = new PIDController(.01, 0, 0);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    heading = shooter.getHeading();
-    distance = limelight.getZtoHub(heading);
-    SmartDashboard.putNumber("Limelight distance", distance);
-  //hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
-  hoodPosition = .2; //just hard setting so we can refigure out the equation
-    SmartDashboard.putNumber("hood Position", hoodPosition);
-    timer.start();
+    
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   
-      shooter.closeEnough = true;
-      shooter.setServoHood(hoodPosition);
+    heading = shooter.getHeading();
+    distance = limelight.getZtoHub(heading);
+    SmartDashboard.putNumber("Limelight distance", distance);
+    double targetHoodSetpoint = 0;
+    double effort = hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint);
+    shooter.setHoodVelocity(effort);
+
     
     
   }
@@ -65,10 +66,6 @@ public class Aim extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (timer.get() > 1.1) {
-      return true;
-    } else{
-      return false;
-    }
+    return hoodController.atSetpoint();
 }
 }
