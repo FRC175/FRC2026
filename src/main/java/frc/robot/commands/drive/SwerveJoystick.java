@@ -2,6 +2,7 @@ package frc.robot.commands.drive;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -10,23 +11,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drive.Swerve;
 
 public class SwerveJoystick extends Command {
 
     private final Swerve swerve;
     private final Limelight limelight;
+    private final Shooter shooter;
     private final Supplier<Double> xSpeedFunction, ySpeedFunction, turnSpeedFunction;
-    private final Supplier<Boolean> fieldOrientedFunction, aimLockOn;
+    private final Supplier<Boolean> fieldOrientedFunction, aimLockOn, strafeLockOn;
     private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
-    private final PIDController aimController;
+    private final PIDController aimController, xController;
     private double currentAngle;
 
-    public SwerveJoystick(Swerve swerve, Limelight limelight, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction,
-            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> aimLockOn) {
+    public SwerveJoystick(Swerve swerve, Limelight limelight, Shooter shooter, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction,
+            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> aimLockOn, Supplier<Boolean> strafeLockOn) {
         //Swerve subsystem
         this.swerve = swerve;
         this.limelight = limelight;
+        this.shooter = shooter;
 
         //Input functions
         this.xSpeedFunction = xSpeedFunction;
@@ -34,6 +38,7 @@ public class SwerveJoystick extends Command {
         this.turnSpeedFunction = turnSpeedFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
         this.aimLockOn = aimLockOn;
+        this.strafeLockOn = strafeLockOn;
 
         //Rate Limiters
         this.xLimiter = new SlewRateLimiter(DriveConstants.maxDriveAcceleration);
@@ -44,8 +49,14 @@ public class SwerveJoystick extends Command {
         aimController = new PIDController(2,0,0);
         aimController.setTolerance(.01);
 
-        addRequirements(swerve);
+        //PID for Strafing
+        xController = new PIDController(DriveConstants.pDriveConstants, 0, 0);
+        xController.setTolerance(20);
+       
 
+
+        addRequirements(swerve);
+        
     }
 
     @Override
@@ -76,7 +87,12 @@ public class SwerveJoystick extends Command {
         if(aimLockOn.get()) {
             turnSpeed = -effort*Math.PI;
             SmartDashboard.putNumber("Aim Turn Effort", effort);
+            if (strafeLockOn.get()) {
+                double xEffort = MathUtil.clamp(xController.calculate(shooter.getHeading(), 0), -1, 1) * DriveConstants.maxTeleopSpeed;
+
+            }
         } else SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
+
         //Create chassis speeds
         ChassisSpeeds chassisSpeeds;
         if(fieldOrientedFunction.get()) {

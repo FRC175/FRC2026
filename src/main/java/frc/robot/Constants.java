@@ -90,6 +90,7 @@ public final class Constants {
     //Motor ID's
     public static final int deployID = 16;
     public static final int rollerID = 17;
+    public static final int rollerFollower = 18;
 
     public static enum intakeState {
       Stowed,
@@ -99,7 +100,7 @@ public final class Constants {
     }
 
     //Encoder position for deploying or retracting intake (in reference to previous position, in terms of rotations)
-    public static final double intakeRetractPosition = 25;
+    public static final double intakeRetractPosition = 26;
     public static final double intakeBumpPosition = 83;
     public static final double intakeBump2Position = 103;
     public static final double intakeMiddlePosition = 61.5;
@@ -116,8 +117,7 @@ public final class Constants {
     public static final int shooterFollowID = 12;
 
     //Hood Servos
-    public static final int leftHoodServo = 0;
-    public static final int rightHoodServo = 1;
+    public static final int hoodMotorID = 19;
 
     public static final double FrontHubAngle = 0;
 
@@ -127,6 +127,8 @@ public final class Constants {
     public static final double passingVelocity = 4000;
     public static final double FrontHubSpeed = 2600;
     //locked in
+
+    public static final double maxHoodExtension = .058;
 
     public static final double[] blueShooterIDs= new double[] {5, 8, 9, 10, 11, 2};
     public static final double[] redShooterIDs= new double[] {21, 24, 25, 26, 27, 18};

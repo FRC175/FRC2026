@@ -8,7 +8,9 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -30,7 +32,7 @@ public class Shooter extends SubsystemBase {
   private final SparkMax hoodMotor;
   private final RelativeEncoder leaderEncoder, followerEncoder;
 
-  public final PIDController velocityController;
+  public final PIDController velocityController, hoodController;
   private final SimpleMotorFeedforward feedForeward;
   public double currentSetpoint, shooterHeading;
 
@@ -54,7 +56,7 @@ public class Shooter extends SubsystemBase {
     // rightServoHood = new Servo(ShooterConstants.rightHoodServo);
     // rightServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
 
-    hoodMotor = new SparkMax(0, MotorType.kBrushless);
+    hoodMotor = new SparkMax(ShooterConstants.hoodMotorID, MotorType.kBrushless);
     //rightHoodMotor = new SparkMax(0, MotorType.kBrushless);
     
 
@@ -68,6 +70,8 @@ public class Shooter extends SubsystemBase {
     feedForeward = new SimpleMotorFeedforward( 0, .000005 );
     
     currentSetpoint = ShooterConstants.FrontHubSpeed;
+
+    hoodController = new PIDController(.2, 0, 0);
     
     closeEnough = false;
 
@@ -90,6 +94,15 @@ public class Shooter extends SubsystemBase {
    */
   public void updateHeading(double robotHeading) {
     shooterHeading = robotHeading - (Math.PI / 2);
+  }
+  
+
+  public void setHoodNeo(double setpoint){
+    if (!(getHoodPose() >= setpoint)){
+      setHoodVelocity(.05);
+    } else {
+      setHoodVelocity(0);
+    }
   }
 
   /**
@@ -136,7 +149,7 @@ public class Shooter extends SubsystemBase {
    * Configures the motor controllers for the shooter.
    * We use default configuration other than the one motor being a follower, but more can be added
    */
-  public void configureFlexes() {
+  public void configureSparks() {
     SparkFlexConfig followConfig = new SparkFlexConfig();
     followConfig.follow(ShooterConstants.shooterLeaderID, true);
     
@@ -144,6 +157,13 @@ public class Shooter extends SubsystemBase {
 
     SparkFlexConfig leaderConfig = new SparkFlexConfig();
     shooterLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    
+
+
+
+
+
   }
 
 /**

@@ -4,22 +4,16 @@
 
 package frc.robot;
 
-import java.util.List;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.ClimbConstants;
-import frc.robot.commands.auto.ShootPreload;
+
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
-import frc.robot.commands.drive.AngleToLime;
-import frc.robot.commands.drive.DriveFor;
 import frc.robot.commands.drive.SwerveJoystick;
 import frc.robot.commands.intake.Agitate;
 import frc.robot.commands.intake.IntakeDeploy;
@@ -27,6 +21,7 @@ import frc.robot.commands.intake.IntakeTravel;
 import frc.robot.commands.intake.MaintainPosition;
 import frc.robot.commands.intake.IntakeRetract;
 import frc.robot.commands.shooter.Aim;
+import frc.robot.commands.shooter.AimDutyCycle;
 import frc.robot.commands.shooter.AimThenShoot;
 import frc.robot.commands.shooter.Shoot;
 
@@ -41,23 +36,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -99,7 +84,7 @@ public class RobotContainer {
      NamedCommands.registerCommand("Shoot from hub", new Shoot(shooter, ShooterConstants.FrontHubSpeed));
      NamedCommands.registerCommand("Start Shooter", new Shoot(shooter, ShooterConstants.baseVelocity));
      NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
-     NamedCommands.registerCommand("Aim", new Aim(shooter, limelight));
+     NamedCommands.registerCommand("Aim", new Aim(shooter, limelight, 0));
      NamedCommands.registerCommand("Reset Gyro", new InstantCommand(() -> drive.setGyro(270)));
       NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
       NamedCommands.registerCommand("Spindexer", new InstantCommand(() -> hopper.run()));
@@ -124,14 +109,15 @@ public class RobotContainer {
     drive.setDefaultCommand(new SwerveJoystick(
         drive,
         limelight,
+        shooter,
         () -> -driverController.getLeftY(),
         () -> -driverController.getLeftX(),
         () -> -driverController.getRightX(),
         () -> !driverController.getAButton(),
-        () -> driverController.getRightBumperButton())
+        () -> driverController.getRightBumperButton(),
+        () -> (driverController.getRightTriggerAxis() >= .75))
     );
-    intake.setDefaultCommand(new MaintainPosition(intake)); //TODO: Make sure this works
-    //Also check the set position commands, they didnt change much but did slightly
+    intake.setDefaultCommand(new MaintainPosition(intake));
 
     configureBindings();
     configureAutoChooser();
@@ -179,32 +165,34 @@ public class RobotContainer {
         new AimThenShoot(shooter, limelight, hopper, drive)).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> hopper.stop()),
-                new InstantCommand(() -> shooter.setServoHood(0))));
+                new InstantCommand(() -> hopper.stop())
+               // new InstantCommand(() -> shooter.setServoHood(0))
+               ));
 
 
      new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
         new SequentialCommandGroup (
-            new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
+            //new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
             new Shoot(shooter, ShooterConstants.FrontHubSpeed),
             new InstantCommand(() -> hopper.run())
         )).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> hopper.stop()),
-                new InstantCommand(() -> shooter.setServoHood(0)))
-                );
+                new InstantCommand(() -> hopper.stop())
+                //new InstantCommand(() -> shooter.setServoHood(0))
+        ));
 
 
      new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
         new SequentialCommandGroup(
-            new Aim(shooter, limelight),
+            new Aim(shooter, limelight, 0),
             new Shoot(shooter, ShooterConstants.baseVelocity)
         
         )).onFalse (
             new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> shooter.setServoHood(0))));
+                new InstantCommand(() -> shooter.stop())
+               // new InstantCommand(() -> shooter.setServoHood(0))
+                ));
     
                 
     new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
@@ -267,36 +255,36 @@ public class RobotContainer {
             new InstantCommand(() -> climb.setSpeed(0)));
 
 
-    new Trigger(() -> climbController.getAButton()).onTrue(
-      new IntakeDeploy(intake)
+    new Trigger(() -> climbController.getAButton()).whileTrue(
+      new AimDutyCycle(shooter, .3)
     );
 
     new Trigger(() -> climbController.getBButton()).onTrue(
       new IntakeTravel(intake)
     );
 
-    new Trigger(() -> climbController.getRightStickButton()).onTrue(
-      new InstantCommand(() -> shooter.setServoHood(.5))).onFalse(
-        new InstantCommand(() -> shooter.setServoHood(0))
-      );
+    // new Trigger(() -> climbController.getRightStickButton()).onTrue(
+    //   new InstantCommand(() -> shooter.setServoHood(.5))).onFalse(
+    //     new InstantCommand(() -> shooter.setServoHood(0))
+    //   );
         new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue(
         new AimThenShoot(shooter, limelight, hopper, drive)).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> hopper.stop()),
-                new InstantCommand(() -> shooter.setServoHood(0))));
+                new InstantCommand(() -> hopper.stop())
+                ));
 
      new Trigger(() -> climbController.getLeftTriggerAxis() == 1).whileTrue(
         new SequentialCommandGroup (
-            new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
+           // new InstantCommand(() -> shooter.setServoHood(ShooterConstants.FrontHubAngle)),
             new Shoot(shooter, ShooterConstants.FrontHubSpeed),
             new InstantCommand(() -> hopper.run())
         )).onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> hopper.stop()),
-                new InstantCommand(() -> shooter.setServoHood(0)))
-                );
+                new InstantCommand(() -> hopper.stop())
+                //new InstantCommand(() -> shooter.setServoHood(0)))
+        ));
 
 
      new Trigger(() ->  climbController.getLeftBumperButton()).onTrue(
@@ -324,8 +312,8 @@ public class RobotContainer {
         new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
             new InstantCommand(() -> intake.setRollerSpeed(0)));
 
-    new Trigger(() -> climbController.getAButton()).onTrue(
-        new IntakeTravel(intake));
+    // new Trigger(() -> climbController.getAButton()).onTrue(
+    //     new IntakeTravel(intake));
     
         new Trigger(() -> driverController.getAButton()).onTrue(
         new InstantCommand(() -> drive.resetDistModules()));
@@ -354,7 +342,7 @@ public class RobotContainer {
         new IntakeTravel(intake),
         new SequentialCommandGroup (
             new InstantCommand(() -> drive.setGyro(90)),
-            new InstantCommand(() -> shooter.setServoHood(0)),
+            //new InstantCommand(() -> shooter.setServoHood(0)),
             new Shoot(shooter, ShooterConstants.FrontHubSpeed),
             new InstantCommand(() -> hopper.run()),
             new WaitCommand(10),

@@ -187,7 +187,9 @@ public class Limelight extends SubsystemBase {
       double findZ = d3Location[2];
       //findZ = 0.1636 * findZ - 0.02290;
       //findZ = 1.005 * findZ + 0.04104;
+      SmartDashboard.putNumber("limelighht to hub", findZ + getAprilToHub(shooterHeading));
       return findZ + getAprilToHub(shooterHeading);
+
     } else
       return -9999;
   }
@@ -200,9 +202,7 @@ public class Limelight extends SubsystemBase {
   }
 
   private double getAprilToHub(double shooterHeading) {
-    double[] location = findAprilTag3D();
-    double yaw = getYaw();
-    return (.375 / Math.cos(shooterHeading));
+    return .5842 - (.2794 * Math.sin(shooterHeading));
   }
 
   public double findManualDist() {
@@ -228,7 +228,7 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Z Distance", getZ());
     SmartDashboard.putNumber("X Distance", getX());
     SmartDashboard.putNumber("Y Distance", getY());
-    SmartDashboard.putNumber("Hub Distance", findManualDist());
+    //SmartDashboard.putNumber("Hub Distance", getAprilToHub());
     SmartDashboard.putNumber("Yaw", getYaw());
 
     SmartDashboard.putBoolean("apriltag", foundTarget());

@@ -13,10 +13,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 
 /** An example command that uses an example subsystem. */
-public class Aim extends Command  {
+public class AimDutyCycle extends Command  {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
-  private final Limelight limelight;
   
   private double distance;
   private double hoodPosition;
@@ -30,9 +29,8 @@ public class Aim extends Command  {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Aim(Shooter shooter, Limelight limelight, double setpoint) {
+  public AimDutyCycle(Shooter shooter,double setpoint) {
     this.shooter = shooter;
-    this.limelight = limelight;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
@@ -49,14 +47,8 @@ public class Aim extends Command  {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    heading = shooter.getHeading();
-    distance = limelight.getZtoHub(heading);
-    SmartDashboard.putNumber("Limelight distance", distance);
-    double targetHoodSetpoint = setpoint;
-    double effort = shooter.hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint);
-    shooter.setHoodVelocity(effort);
-
-    
+    SmartDashboard.putString("RUNNI", "AAAAAAAAAAAAAAAAAAA");
+    shooter.setHoodVelocity(.05);
     
   }
   //0 is just a placeholder//
@@ -64,11 +56,12 @@ public class Aim extends Command  {
   @Override
   public void end(boolean interrupted) {
     shooter.setHoodVelocity(0);
+    SmartDashboard.putString("RUNNI", "nope");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.hoodController.atSetpoint();
+    return (shooter.getHoodPose() >= setpoint);
 }
 }
