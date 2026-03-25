@@ -35,7 +35,7 @@ public class AimDutyCycle extends Command  {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AimDutyCycle(Shooter shooter,double setpoint, boolean up) {
+  public AimDutyCycle(Shooter shooter, double setpoint, boolean up) {
     this.shooter = shooter;
     timer = new Timer();
     this.setpoint = setpoint;

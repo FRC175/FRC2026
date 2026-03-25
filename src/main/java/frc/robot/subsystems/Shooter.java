@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -30,10 +32,11 @@ public class Shooter extends SubsystemBase {
   private final SparkFlex shooterLeader;
   private final SparkFlex shooterFollower;
   private final SparkMax hoodMotor;
+  private final SparkClosedLoopController flywheelController;
   private final RelativeEncoder leaderEncoder, followerEncoder;
 
-  public final PIDController velocityController, hoodController;
-  private final SimpleMotorFeedforward feedForeward;
+  //public final PIDController velocityController, hoodController;
+  //private final SimpleMotorFeedforward feedForeward;
   public double currentSetpoint, shooterHeading;
 
   public boolean closeEnough;
@@ -62,16 +65,18 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(.00000000045, 0.000016, 0);
-    velocityController.setSetpoint(ShooterConstants.baseVelocity);
-    velocityController.setTolerance(25);
-    velocityController.setIZone(500);
+    //velocityController = new PIDController(.00000000045, 0.000016, 0);
+    //velocityController.setSetpoint(ShooterConstants.baseVelocity);
+    //velocityController.setTolerance(25);
+    //velocityController.setIZone(500);
 
-    feedForeward = new SimpleMotorFeedforward( 0, 0.000001 );
+    //feedForeward = new SimpleMotorFeedforward( 0, 0.000001 );
+
+    flywheelController = shooterLeader.getClosedLoopController();
     
     currentSetpoint = ShooterConstants.FrontHubSpeed;
 
-    hoodController = new PIDController(.2, 0, 0);
+    //hoodController = new PIDController(.2, 0, 0);
     
     closeEnough = false;
 
@@ -118,7 +123,8 @@ public class Shooter extends SubsystemBase {
    */
   public void run(){
     this.shooterRunning = true;
-    shooterLeader.set(-flywheelEffort);
+    //shooterLeader.set(-flywheelEffort);
+    flywheelController.setSetpoint(ShooterConstants.baseVelocity, ControlType.kVelocity);
   }
 
   /**
@@ -172,7 +178,7 @@ public class Shooter extends SubsystemBase {
  * @return true if goal speed is greater thn or equal to flywheel speed, else false
  */
   public boolean flywheelAtSpeed(double goalSpeed) {
-    if (Math.abs(getVelocity()) >= Math.abs(goalSpeed)) {
+    if ((Math.abs(getVelocity()) >= Math.abs(goalSpeed) - 25) && (Math.abs(getVelocity()) <= Math.abs(goalSpeed) + 25)) {
       return true;
     } else
       return false;
@@ -199,7 +205,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(shooterRunning) {
+    /*if(shooterRunning) {
       flywheelEffort = velocityController.calculate(getVelocity(), currentSetpoint) - feedForeward.calculate(getVelocity(), currentSetpoint);
       
       //flywheelEffort *= ShooterConstants.baseEffort;
@@ -212,13 +218,13 @@ public class Shooter extends SubsystemBase {
       flywheelEffort = MathUtil.clamp(flywheelEffort, -1, 1);
     } else {
       flywheelEffort = 0;
-    }
+    }*/
     SmartDashboard.putNumber("Hood Encoder", getHoodPose());
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
-    SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
+    //SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
     SmartDashboard.putBoolean("Close Enough?", closeEnough);
-    shooterLeader.set(-flywheelEffort);
+    //shooterLeader.set(-flywheelEffort);
 
   }
 }

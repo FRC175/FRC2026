@@ -55,7 +55,7 @@ public class Aim extends Command  {
     distance = limelight.getZtoHub(heading);
     SmartDashboard.putNumber("Limelight distance", distance);
     double targetHoodSetpoint = setpoint;
-    double effort = shooter.hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint);
+    double effort = 0;//shooter.hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint);
     if (setpoint < ShooterConstants.maxHoodExtension) {
     shooter.setHoodVelocity(effort);
      SmartDashboard.putBoolean("toofar", false);

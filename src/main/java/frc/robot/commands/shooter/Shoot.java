@@ -32,9 +32,9 @@ public class Shoot extends Command  {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.velocityController.reset();
+    //shooter.velocityController.reset();
     shooter.currentSetpoint = setpoint;
-    shooter.velocityController.setSetpoint(setpoint);
+    //shooter.velocityController.setSetpoint(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,7 +51,7 @@ public class Shoot extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (shooter.velocityController.atSetpoint());
+    return (shooter.flywheelAtSpeed(setpoint));
   }
 }
 //19 is a placeholder//
