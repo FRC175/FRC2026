@@ -4,8 +4,12 @@
 
 package frc.robot.commands.shooter;
 
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+
+import javax.print.attribute.SetOfIntegerSyntax;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +26,8 @@ public class AimDutyCycle extends Command  {
   private double heading;
   private double setpoint;
 
+  private boolean up;
+
   private Timer timer;
   //private final PIDController hoodController;
   /**
@@ -29,9 +35,12 @@ public class AimDutyCycle extends Command  {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AimDutyCycle(Shooter shooter,double setpoint) {
+  public AimDutyCycle(Shooter shooter,double setpoint, boolean up) {
     this.shooter = shooter;
     timer = new Timer();
+    this.setpoint = setpoint;
+    this.up = up;
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
     
@@ -41,14 +50,28 @@ public class AimDutyCycle extends Command  {
   @Override
   public void initialize() {
     
+SmartDashboard.putString("RUNNI", "init");
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putNumber("Hoodsetpoint", setpoint);
+    
     SmartDashboard.putString("RUNNI", "AAAAAAAAAAAAAAAAAAA");
-    shooter.setHoodVelocity(.05);
+    if (setpoint < ShooterConstants.maxHoodExtension) {
+      if (up) {
+      shooter.setHoodVelocity(.1);
+    } else {
+      shooter.setHoodVelocity(-.1);
+    }
+     SmartDashboard.putBoolean("toofar", false);
+    } else {
+      SmartDashboard.putBoolean("toofar", true);
+    }
+    
+    
     
   }
   //0 is just a placeholder//
@@ -56,12 +79,18 @@ public class AimDutyCycle extends Command  {
   @Override
   public void end(boolean interrupted) {
     shooter.setHoodVelocity(0);
-    SmartDashboard.putString("RUNNI", "nope");
+    SmartDashboard.putBoolean("INTERUPPTED", interrupted);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (shooter.getHoodPose() >= setpoint);
-}
+     if (up) {
+       SmartDashboard.putString("RUNNI", "done organically");
+      return (shooter.getHoodPose() >= setpoint);
+    } else {
+      SmartDashboard.putString("RUNNI", "done organically");
+      return (shooter.getHoodPose() <= setpoint);
+    }
+  }
 }

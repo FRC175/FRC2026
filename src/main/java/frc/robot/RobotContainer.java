@@ -185,7 +185,7 @@ public class RobotContainer {
 
      new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
         new SequentialCommandGroup(
-            new Aim(shooter, limelight, 0),
+            //new Aim(shooter, limelight, 0),
             new Shoot(shooter, ShooterConstants.baseVelocity)
         
         )).onFalse (
@@ -255,12 +255,12 @@ public class RobotContainer {
             new InstantCommand(() -> climb.setSpeed(0)));
 
 
-    new Trigger(() -> climbController.getAButton()).whileTrue(
-      new AimDutyCycle(shooter, .3)
+    new Trigger(() -> climbController.getAButton()).onTrue(
+      new AimDutyCycle(shooter, .7,true)
     );
 
-    new Trigger(() -> climbController.getBButton()).onTrue(
-      new IntakeTravel(intake)
+    new Trigger(() -> climbController.getYButton()).onTrue(
+      new AimDutyCycle(shooter, .15, false)
     );
 
     // new Trigger(() -> climbController.getRightStickButton()).onTrue(
@@ -308,9 +308,9 @@ public class RobotContainer {
     new Trigger(() -> climbController.getBButton()).onTrue(
         new IntakeRetract(intake));
         
-    new Trigger(() -> climbController.getYButton()).whileTrue(
-        new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
-            new InstantCommand(() -> intake.setRollerSpeed(0)));
+    // new Trigger(() -> climbController.getYButton()).whileTrue(
+    //     new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
+    //         new InstantCommand(() -> intake.setRollerSpeed(0)));
 
     // new Trigger(() -> climbController.getAButton()).onTrue(
     //     new IntakeTravel(intake));

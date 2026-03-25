@@ -62,12 +62,12 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(.0000004, 0.00001, 0);
+    velocityController = new PIDController(.00000000045, 0.000016, 0);
     velocityController.setSetpoint(ShooterConstants.baseVelocity);
-    velocityController.setTolerance(50);
+    velocityController.setTolerance(25);
     velocityController.setIZone(500);
 
-    feedForeward = new SimpleMotorFeedforward( 0, .000005 );
+    feedForeward = new SimpleMotorFeedforward( 0, 0.000001 );
     
     currentSetpoint = ShooterConstants.FrontHubSpeed;
 

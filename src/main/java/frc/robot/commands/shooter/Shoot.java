@@ -51,7 +51,7 @@ public class Shoot extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(shooter.getVelocity()) >= setpoint - 50);
+    return (shooter.velocityController.atSetpoint());
   }
 }
 //19 is a placeholder//
