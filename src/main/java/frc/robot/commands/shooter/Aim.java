@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.controller.PIDController;
@@ -34,6 +35,7 @@ public class Aim extends Command  {
     this.shooter = shooter;
     this.limelight = limelight;
     timer = new Timer();
+    this.setpoint = setpoint;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
     
@@ -54,7 +56,12 @@ public class Aim extends Command  {
     SmartDashboard.putNumber("Limelight distance", distance);
     double targetHoodSetpoint = setpoint;
     double effort = shooter.hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint);
+    if (setpoint < ShooterConstants.maxHoodExtension) {
     shooter.setHoodVelocity(effort);
+     SmartDashboard.putBoolean("toofar", false);
+    } else {
+      SmartDashboard.putBoolean("toofar", true);
+    }
 
     
     
@@ -69,6 +76,7 @@ public class Aim extends Command  {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.hoodController.atSetpoint();
+    return true;
+    
 }
 }

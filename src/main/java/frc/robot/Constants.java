@@ -128,7 +128,7 @@ public final class Constants {
     public static final double FrontHubSpeed = 2600;
     //locked in
 
-    public static final double maxHoodExtension = .058;
+    public static final double maxHoodExtension = .82;
 
     public static final double[] blueShooterIDs= new double[] {5, 8, 9, 10, 11, 2};
     public static final double[] redShooterIDs= new double[] {21, 24, 25, 26, 27, 18};
