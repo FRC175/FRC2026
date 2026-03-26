@@ -6,6 +6,7 @@ package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.ShooterConstants;
@@ -34,19 +35,23 @@ public class Shoot extends Command  {
   public void initialize() {
     //shooter.velocityController.reset();
     shooter.currentSetpoint = setpoint;
-    //shooter.velocityController.setSetpoint(setpoint);
+    shooter.velocityController.setSetpoint(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("flyWheelRunning", true);
     shooter.run();
     //SmartDashboard.putBoolean("atSetpoint", shooter)
   }
   //0 is just a placeholder//
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("IS SHOOTEr iNTERUPPTED", interrupted);
+   
+  }
 
   // Returns true when the command should end.
   @Override

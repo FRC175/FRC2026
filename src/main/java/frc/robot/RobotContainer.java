@@ -161,13 +161,10 @@ public class RobotContainer {
      */
 
     
-    new Trigger(() -> operatorController.getRightTriggerAxis() == 1).whileTrue(
-        new AimThenShoot(shooter, limelight, hopper, drive)).onFalse(
-            new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.stop()),
-                new InstantCommand(() -> hopper.stop())
-               // new InstantCommand(() -> shooter.setServoHood(0))
-               ));
+    
+    new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
+        new Shoot(shooter, ShooterConstants.baseVelocity)).onFalse(
+            new InstantCommand(() -> shooter.stop()));
 
 
      new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
@@ -183,16 +180,16 @@ public class RobotContainer {
         ));
 
 
-     new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
-        new SequentialCommandGroup(
-            //new Aim(shooter, limelight, 0),
-            new Shoot(shooter, ShooterConstants.baseVelocity)
+    //  new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
+    //     new SequentialCommandGroup(
+    //         //new Aim(shooter, limelight, 0),
+    //         new Shoot(shooter, ShooterConstants.baseVelocity)
         
-        )).onFalse (
-            new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.stop())
-               // new InstantCommand(() -> shooter.setServoHood(0))
-                ));
+    //     )).onFalse (
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(() -> shooter.stop())
+    //            // new InstantCommand(() -> shooter.setServoHood(0))
+    //             ));
     
                 
     new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
@@ -207,14 +204,14 @@ public class RobotContainer {
 
 
     new Trigger(() -> operatorController.getXButton()).onTrue(
-        new IntakeDeploy(intake));
+        new IntakeRetract(intake));
 
      new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
         new InstantCommand(() -> drive.setGyro(0)));
 
 
     new Trigger(() -> operatorController.getBButton()).onTrue(
-        new IntakeRetract(intake));
+        new IntakeDeploy(intake));
         
     new Trigger(() -> operatorController.getYButton()).whileTrue(
         new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
@@ -302,11 +299,11 @@ public class RobotContainer {
 
 
     new Trigger(() -> climbController.getXButton()).onTrue(
-        new IntakeDeploy(intake));
+        new IntakeRetract(intake));
 
 
     new Trigger(() -> climbController.getBButton()).onTrue(
-        new IntakeRetract(intake));
+        new IntakeDeploy(intake));
         
     // new Trigger(() -> climbController.getYButton()).whileTrue(
     //     new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(

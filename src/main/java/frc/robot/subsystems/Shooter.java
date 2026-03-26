@@ -5,10 +5,11 @@
 package frc.robot.subsystems;
 
 
-import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -35,8 +36,8 @@ public class Shooter extends SubsystemBase {
   private final SparkClosedLoopController flywheelController;
   private final RelativeEncoder leaderEncoder, followerEncoder;
 
-  //public final PIDController velocityController, hoodController;
-  //private final SimpleMotorFeedforward feedForeward;
+  public final PIDController velocityController, hoodController;
+  private final SimpleMotorFeedforward feedForeward;
   public double currentSetpoint, shooterHeading;
 
   public boolean closeEnough;
@@ -54,6 +55,9 @@ public class Shooter extends SubsystemBase {
     leaderEncoder = shooterLeader.getEncoder();
     followerEncoder = shooterFollower.getEncoder();
 
+    flywheelController = shooterLeader.getClosedLoopController();
+    leaderEncoder.setPosition(0);
+
     // leftServoHood = new Servo(ShooterConstants.leftHoodServo);
     // leftServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
     // rightServoHood = new Servo(ShooterConstants.rightHoodServo);
@@ -65,18 +69,16 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    //velocityController = new PIDController(.00000000045, 0.000016, 0);
-    //velocityController.setSetpoint(ShooterConstants.baseVelocity);
-    //velocityController.setTolerance(25);
-    //velocityController.setIZone(500);
+    velocityController = new PIDController(0.000002, 0.00001, 0);
+    velocityController.setSetpoint(ShooterConstants.baseVelocity);
+    velocityController.setTolerance(25);
+    velocityController.setIZone(500);
 
-    //feedForeward = new SimpleMotorFeedforward( 0, 0.000001 );
-
-    flywheelController = shooterLeader.getClosedLoopController();
+    feedForeward = new SimpleMotorFeedforward( 0, 0.01 );
     
     currentSetpoint = ShooterConstants.FrontHubSpeed;
 
-    //hoodController = new PIDController(.2, 0, 0);
+    hoodController = new PIDController(.2, 0, 0);
     
     closeEnough = false;
 
@@ -124,7 +126,7 @@ public class Shooter extends SubsystemBase {
   public void run(){
     this.shooterRunning = true;
     //shooterLeader.set(-flywheelEffort);
-    flywheelController.setSetpoint(ShooterConstants.baseVelocity, ControlType.kVelocity);
+    //flywheelController.setSetpoint(ShooterConstants.baseVelocity, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
   }
 
   /**
@@ -133,6 +135,7 @@ public class Shooter extends SubsystemBase {
   public void stop() {
     this.shooterRunning = false;
     shooterLeader.set(0);
+    SmartDashboard.putBoolean("flyWheelRunning", false);
   }
 
   /**
@@ -162,6 +165,8 @@ public class Shooter extends SubsystemBase {
     shooterFollower.configure(followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     SparkFlexConfig leaderConfig = new SparkFlexConfig();
+    
+  
     shooterLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     
@@ -178,7 +183,7 @@ public class Shooter extends SubsystemBase {
  * @return true if goal speed is greater thn or equal to flywheel speed, else false
  */
   public boolean flywheelAtSpeed(double goalSpeed) {
-    if ((Math.abs(getVelocity()) >= Math.abs(goalSpeed) - 25) && (Math.abs(getVelocity()) <= Math.abs(goalSpeed) + 25)) {
+    if (Math.abs(getVelocity()) >= Math.abs(goalSpeed)) {
       return true;
     } else
       return false;
@@ -205,26 +210,27 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /*if(shooterRunning) {
-      flywheelEffort = velocityController.calculate(getVelocity(), currentSetpoint) - feedForeward.calculate(getVelocity(), currentSetpoint);
+    if(shooterRunning) {
+      flywheelEffort = velocityController.calculate(getVelocity(), currentSetpoint) + feedForeward.calculate(getVelocity(), currentSetpoint);
       
       //flywheelEffort *= ShooterConstants.baseEffort;
 
       double error = velocityController.getError();
-      flywheelEffort += .000075 * error; //TODO: Turn this into real feed forward
+      //flywheelEffort += .000075 * error; //TODO: Turn this into real feed forward
       //I was an idiot here trying to rush add feed forward and instead just added another factor of proportion
       //Also I tried looking around more and couldnt find anything on velocity controller object but I swore I had seen it before?
 
       flywheelEffort = MathUtil.clamp(flywheelEffort, -1, 1);
     } else {
       flywheelEffort = 0;
-    }*/
+    }
     SmartDashboard.putNumber("Hood Encoder", getHoodPose());
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
     //SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
     SmartDashboard.putBoolean("Close Enough?", closeEnough);
-    //shooterLeader.set(-flywheelEffort);
+    SmartDashboard.putNumber("flyweheel Setpoint", flywheelController.getSetpoint());
+    shooterLeader.set(-flywheelEffort);
 
   }
 }
