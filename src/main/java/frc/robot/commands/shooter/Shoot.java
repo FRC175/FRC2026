@@ -6,6 +6,7 @@ package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.ShooterConstants;
@@ -41,6 +42,7 @@ public class Shoot extends Command  {
   @Override
   public void execute() {
     shooter.run();
+    SmartDashboard.putString("SHOOTING", "SHOOTINNG");
     //SmartDashboard.putBoolean("atSetpoint", shooter)
   }
   //0 is just a placeholder//

@@ -82,7 +82,7 @@ public class Climb extends SubsystemBase {
    */
   public void climbSpeed(boolean up, double speed) {
     if (up && !(getPosition() <= ClimbConstants.climbPos))
-      setSpeed(speed);
+      setSpeed(-speed);
     else if(!up && !(getPosition() >= ClimbConstants.climbMin))
       setSpeed(speed);
   }

@@ -103,7 +103,7 @@ public final class Constants {
     public static final double intakeRetractPosition = 26;
     public static final double intakeBumpPosition = 83;
     public static final double intakeBump2Position = 103;
-    public static final double intakeMiddlePosition = 61.5;
+    public static final double intakeMiddlePosition = 70;
     public static final double intakeDeployPosition = 155;
 
     public static final double intakeSpeed = -3000;
@@ -121,8 +121,8 @@ public final class Constants {
 
     public static final double FrontHubAngle = 0;
 
-    public static final double baseVelocity = 3375;
-    public static final double baseEffort = .45;
+    public static final double baseVelocity = 3275;
+    public static final double baseEffort = .45; 
 
     public static final double passingVelocity = 4000;
     public static final double FrontHubSpeed = 2600;

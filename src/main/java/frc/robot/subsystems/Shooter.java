@@ -219,6 +219,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
     SmartDashboard.putBoolean("Close Enough?", closeEnough);
     shooterLeader.set(-flywheelEffort);
+    //shooterLeader.setVoltage(4);
 
   }
 }

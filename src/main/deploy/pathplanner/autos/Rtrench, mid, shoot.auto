@@ -5,9 +5,39 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Run Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deploy Intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "line"
+            "pathName": "Rtrench to mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "mid to Rshoot"
           }
         },
         {
@@ -19,25 +49,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Prep Shooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Start Shooter"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 2.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Spindexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAim"
           }
         }
       ]

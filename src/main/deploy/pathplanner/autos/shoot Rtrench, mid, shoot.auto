@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Prep Shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Start Shooter"
           }
         },
@@ -14,6 +20,12 @@
           "type": "named",
           "data": {
             "name": "Aim"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
@@ -25,7 +37,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 2.0
           }
         },
         {
@@ -41,9 +53,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Deploy Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run Intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Rtrench to mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
           }
         },
         {
@@ -55,7 +85,31 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prep Shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Start Shooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Spindexer"
           }
         }
       ]
