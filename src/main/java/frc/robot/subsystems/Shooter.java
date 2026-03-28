@@ -62,16 +62,17 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(.00000000045, 0.000016, 0);
+    velocityController = new PIDController(0.002, 0, 0);
     velocityController.setSetpoint(ShooterConstants.baseVelocity);
     velocityController.setTolerance(25);
     velocityController.setIZone(500);
 
-    feedForeward = new SimpleMotorFeedforward( 0, 0.000001 );
+    feedForeward = new SimpleMotorFeedforward( 0, 0.0018 );
     
     currentSetpoint = ShooterConstants.FrontHubSpeed;
 
     hoodController = new PIDController(.2, 0, 0);
+    
     
     closeEnough = false;
 
@@ -118,7 +119,9 @@ public class Shooter extends SubsystemBase {
    */
   public void run(){
     this.shooterRunning = true;
-    shooterLeader.set(-flywheelEffort);
+    velocityController.setSetpoint(ShooterConstants.baseVelocity);
+    //SmartDashboard.putBoolean("sh", closeEnough)
+    //shooterLeader.set(-flywheelEffort);
   }
 
   /**
@@ -134,7 +137,7 @@ public class Shooter extends SubsystemBase {
    * @return avererage velocity(rpm)
    */
   public double getVelocity() {
-    return leaderEncoder.getVelocity();
+    return Math.abs(leaderEncoder.getVelocity());
   }
 
   /**
@@ -200,16 +203,16 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     if(shooterRunning) {
-      flywheelEffort = velocityController.calculate(getVelocity(), currentSetpoint) - feedForeward.calculate(getVelocity(), currentSetpoint);
+      flywheelEffort = velocityController.calculate(getVelocity(), currentSetpoint) + feedForeward.calculate(currentSetpoint);
       
       //flywheelEffort *= ShooterConstants.baseEffort;
 
-      double error = velocityController.getError();
-      flywheelEffort += .000075 * error; //TODO: Turn this into real feed forward
+      //double error = velocityController.getError();
+      //flywheelEffort += .000075 * error; //TODO: Turn this into real feed forward
       //I was an idiot here trying to rush add feed forward and instead just added another factor of proportion
       //Also I tried looking around more and couldnt find anything on velocity controller object but I swore I had seen it before?
 
-      flywheelEffort = MathUtil.clamp(flywheelEffort, -1, 1);
+     // flywheelEffort = MathUtil.clamp(flywheelEffort, -1, 1);
     } else {
       flywheelEffort = 0;
     }
@@ -218,7 +221,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
     SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
     SmartDashboard.putBoolean("Close Enough?", closeEnough);
-    shooterLeader.set(-flywheelEffort);
+    shooterLeader.setVoltage(-flywheelEffort);
     //shooterLeader.setVoltage(4);
 
   }

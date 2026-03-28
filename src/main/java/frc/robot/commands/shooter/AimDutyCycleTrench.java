@@ -17,16 +17,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 
 /** An example command that uses an example subsystem. */
-public class AimDutyCycle extends Command {
+public class AimDutyCycleTrench extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
-  private final Limelight limelight;
+
 
   private double distance;
   private double heading;
   private double setpoint;
   private double currHoodPose;
-  private boolean override;
+ 
 
   // private final PIDController hoodController;
   /**
@@ -34,10 +34,9 @@ public class AimDutyCycle extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AimDutyCycle(Shooter shooter, Limelight limelight) {
+  public AimDutyCycleTrench(Shooter shooter) {
     this.shooter = shooter;
-    this.limelight = limelight;
-    this.override = override;
+   
 
     // Use addRequirements() here to declare subsystem dependencies.
     
@@ -51,18 +50,9 @@ public class AimDutyCycle extends Command {
 
     // SmartDashboard.putString("RUNNI", "init");
 
-    heading = shooter.getHeading();
-    
-      distance = limelight.getZtoHub(heading);
-    
-    
-if (setpoint < ShooterConstants.maxHoodExtension) {
-      if (currHoodPose < setpoint - .01) {
-        shooter.setHoodVelocity(.2);
-      } else if(currHoodPose > setpoint + .01){
-        shooter.setHoodVelocity(-.2);
-      } else shooter.setHoodVelocity(0);
-    }
+
+  setpoint = .62;
+
 
   }
 
@@ -71,18 +61,14 @@ if (setpoint < ShooterConstants.maxHoodExtension) {
   public void execute() {
     currHoodPose = shooter.getHoodPose();
     heading = shooter.getHeading();
-    distance = limelight.getZtoHub(heading);
+   
     
+
+  setpoint = .62;
+
   
-    if(distance == -9999) {
-      setpoint = currHoodPose;
-    } else {
-      setpoint = (.1183 * distance * distance) - (.2596 * distance) + .3708;
-    
 
-  }
-
-    SmartDashboard.putNumber("disttohub", distance);
+   // SmartDashboard.putNumber("disttohub", distance);
 
     //SmartDashboard.putString("RUNNI", "AAAAAAAAAAAAAAAAAAA");
     if (setpoint < ShooterConstants.maxHoodExtension) {
@@ -91,13 +77,9 @@ if (setpoint < ShooterConstants.maxHoodExtension) {
       } else if(currHoodPose > setpoint + .01){
         shooter.setHoodVelocity(-.2);
       } else shooter.setHoodVelocity(0);
-    }
+    }}
 
-    if (shooter.getHoodPose() >= ShooterConstants.maxHoodExtension - .05) {
-      setpoint -= .1;
-    }
-
-  }
+  
 
   // 0 is just a placeholder//
   // Called once the command ends or is interrupted.

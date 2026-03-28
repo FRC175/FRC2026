@@ -22,6 +22,7 @@ import frc.robot.commands.intake.MaintainPosition;
 import frc.robot.commands.intake.IntakeRetract;
 import frc.robot.commands.shooter.Aim;
 import frc.robot.commands.shooter.AimDutyCycle;
+import frc.robot.commands.shooter.AimDutyCycleTrench;
 import frc.robot.commands.shooter.AimThenShoot;
 import frc.robot.commands.shooter.Shoot;
 
@@ -174,6 +175,7 @@ public class RobotContainer {
         // ** Left Trigger - Shoot from Hub */
         new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
                 new SequentialCommandGroup(
+                        //new InstantCommand(() -> shooter.setHoodNeo(.01)),
                         new Shoot(shooter, ShooterConstants.FrontHubSpeed),
                         new InstantCommand(() -> hopper.run())))
                 .onFalse(
@@ -183,23 +185,23 @@ public class RobotContainer {
 
         // ** Left Bumper - Run Shooter and Set Hood */
         new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
-                new SequentialCommandGroup(
+                new ParallelCommandGroup(
                         new AimDutyCycle(shooter, limelight),
                         new Shoot(shooter, ShooterConstants.baseVelocity)
                         )).onFalse(
                             new SequentialCommandGroup(
-                            new InstantCommand(() -> shooter.stop())));
+                                new InstantCommand(() -> hopper.stop()),
+                                new WaitCommand(1),
+                                new InstantCommand(() -> shooter.stop())));
 
         // ** Right Bumper - Run Hopper */
         new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
                 new SequentialCommandGroup(
                 new InstantCommand(() -> hopper.run()),
-                new WaitCommand(8),
-                new InstantCommand(() -> hopper.stop()),
+                new WaitCommand(4),
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
                 new WaitCommand(.3),
                 new InstantCommand(() -> intake.setRollerSpeed(0)),
-                new InstantCommand(() -> hopper.run()),
                 new IntakeTravel(intake),
                 new WaitCommand(.3),
                 new IntakeDeploy(intake),
@@ -236,9 +238,16 @@ public class RobotContainer {
 
         // ** D-Pad Left - Agitate Intake (Subject to Change) */
         new Trigger(() -> operatorController.getPOV() == 270).whileTrue(
+                 new ParallelCommandGroup(
+                        new AimDutyCycleTrench(shooter),
+                        new Shoot(shooter, ShooterConstants.baseVelocity)
+                        )).onFalse(
+                            new SequentialCommandGroup(
+                            new InstantCommand(() -> shooter.stop())));
+
+        
                 // new ClimbDown(climb, .1));
-                new Agitate(intake)).onFalse(
-                        new IntakeDeploy(intake));
+        
 
         // CLIMB CONTROLLER (Do we still need?)
         new Trigger(() -> climbController.getPOV() == 0).whileTrue(

@@ -79,7 +79,7 @@ public class SwerveJoystick extends Command {
         SmartDashboard.putNumber("Converted X Speed", xSpeed);
         ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;
         SmartDashboard.putNumber("Converted Y Speed", ySpeed);
-        turnSpeed = turnLimiter.calculate(turnSpeed) * Math.PI ;
+        turnSpeed = turnLimiter.calculate(turnSpeed) * 1.2* Math.PI ;
 
         currentAngle = limelight.getTx();
         double effort = aimController.calculate(currentAngle, 0);
