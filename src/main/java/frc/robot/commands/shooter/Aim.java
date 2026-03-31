@@ -5,6 +5,7 @@
 package frc.robot.commands.shooter;
 
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.controller.PIDController;
@@ -35,6 +36,7 @@ public class Aim extends Command  {
     this.shooter = shooter;
     this.limelight = limelight;
     timer = new Timer();
+    this.setpoint = setpoint;
     this.setpoint = setpoint;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);

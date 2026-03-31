@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -51,13 +53,7 @@ public class Shooter extends SubsystemBase {
     leaderEncoder = shooterLeader.getEncoder();
     followerEncoder = shooterFollower.getEncoder();
 
-    // leftServoHood = new Servo(ShooterConstants.leftHoodServo);
-    // leftServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
-    // rightServoHood = new Servo(ShooterConstants.rightHoodServo);
-    // rightServoHood.setBoundsMicroseconds(2000, 1500, 1500, 1500, 1000);
-
     hoodMotor = new SparkMax(ShooterConstants.hoodMotorID, MotorType.kBrushless);
-    //rightHoodMotor = new SparkMax(0, MotorType.kBrushless);
     
 
     shooterRunning = false;
@@ -175,7 +171,7 @@ public class Shooter extends SubsystemBase {
  * @return true if goal speed is greater thn or equal to flywheel speed, else false
  */
   public boolean flywheelAtSpeed(double goalSpeed) {
-    if (Math.abs(getVelocity()) >= Math.abs(goalSpeed)) {
+    if ((Math.abs(getVelocity()) >= Math.abs(goalSpeed) - 25) && (Math.abs(getVelocity()) <= Math.abs(goalSpeed) + 25)) {
       return true;
     } else
       return false;
@@ -204,22 +200,14 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     if(shooterRunning) {
       flywheelEffort = velocityController.calculate(getVelocity(), currentSetpoint) + feedForeward.calculate(currentSetpoint);
-      
-      //flywheelEffort *= ShooterConstants.baseEffort;
-
-      //double error = velocityController.getError();
-      //flywheelEffort += .000075 * error; //TODO: Turn this into real feed forward
-      //I was an idiot here trying to rush add feed forward and instead just added another factor of proportion
-      //Also I tried looking around more and couldnt find anything on velocity controller object but I swore I had seen it before?
-
-     // flywheelEffort = MathUtil.clamp(flywheelEffort, -1, 1);
     } else {
       flywheelEffort = 0;
     }
+    
     SmartDashboard.putNumber("Hood Encoder", getHoodPose());
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));
-    SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
+    //SmartDashboard.putNumber("FeedForeward", feedForeward.calculate(getVelocity(), ShooterConstants.baseVelocity));
     SmartDashboard.putBoolean("Close Enough?", closeEnough);
     shooterLeader.setVoltage(-flywheelEffort);
     //shooterLeader.setVoltage(4);
