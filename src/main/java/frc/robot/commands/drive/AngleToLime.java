@@ -26,7 +26,7 @@ public class AngleToLime extends Command {
   private double goalAngle, currAngle;
   private double currentAngle;
   private final PIDController turnController;
-  private final Supplier<Double> xSpeedFunction, ySpeedFunction;
+ 
  
   private final SlewRateLimiter xLimiter, yLimiter;
 
@@ -36,7 +36,7 @@ public class AngleToLime extends Command {
    * @param swerve The subsystem used by this command.
    * @param goalAngle the desired angle to turn by (degrees)
    */
-  public AngleToLime(Swerve swerve, Limelight limelight, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction) {
+  public AngleToLime(Swerve swerve, Limelight limelight) {
     this.swerve = swerve;
     this.limelight = limelight;
 
@@ -45,10 +45,6 @@ public class AngleToLime extends Command {
     //Swerve subsystem
         
 
-        //Input functions
-        this.xSpeedFunction = xSpeedFunction;
-        this.ySpeedFunction = ySpeedFunction;
-       
        
 
         //Rate Limiters
@@ -71,30 +67,16 @@ public class AngleToLime extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //Gets the joystick inputs
-        double xSpeed = xSpeedFunction.get();
-        SmartDashboard.putNumber("LIMEx-Stick", xSpeed);
-        double ySpeed = ySpeedFunction.get();
-         SmartDashboard.putNumber("LIMEy-Stick", ySpeed);
-        
+   
 
-        //Apply the Deadband
-        xSpeed = Math.abs(xSpeed) > .1 ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > .1 ? ySpeed : 0.0;
-        
-        //Rate Limiter on joysticks and scale to 75% of max speed for Teleop
-        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.maxTeleopSpeed;
-        SmartDashboard.putNumber("LIMEConverted X Speed", xSpeed);
-        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.maxTeleopSpeed;
-        SmartDashboard.putNumber("LIMEConverted Y Speed", ySpeed);
-        
+       
         //SmartDashboard.putNumber("Converted Turn Speed", );
 
     currentAngle = limelight.getTx();
     double effort = turnController.calculate(currentAngle, 0);
     SmartDashboard.putNumber("turning effort", effort);
     //new SwerveJoystick(swerve, null, null, null, null)
-    ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed , effort);
+    ChassisSpeeds speed = new ChassisSpeeds(0, 0 , effort);
     SwerveModuleState[] swerveStates = DriveConstants.kinematics.toSwerveModuleStates(speed);
     swerve.setModuleStates(swerveStates);
     SmartDashboard.putString("auto aiming?", "AIMING....");

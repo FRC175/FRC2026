@@ -53,18 +53,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Deploy Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Run Intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Copy of Rtrench to mid"

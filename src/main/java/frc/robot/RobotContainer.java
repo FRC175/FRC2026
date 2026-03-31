@@ -22,6 +22,7 @@ import frc.robot.commands.intake.MaintainPosition;
 import frc.robot.commands.intake.IntakeRetract;
 import frc.robot.commands.shooter.Aim;
 import frc.robot.commands.shooter.AimDutyCycle;
+import frc.robot.commands.shooter.AimDutyCycleAuto;
 import frc.robot.commands.shooter.AimDutyCycleTrench;
 import frc.robot.commands.shooter.AimThenShoot;
 import frc.robot.commands.shooter.Shoot;
@@ -88,18 +89,20 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
         NamedCommands.registerCommand("Aim", new AimDutyCycle(shooter, limelight));
-        NamedCommands.registerCommand("Reset Gyro", new InstantCommand(() -> drive.setGyro(270)));
+        NamedCommands.registerCommand("Reset Gyro 180", new InstantCommand(() -> drive.setGyro(180)));
         NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
         NamedCommands.registerCommand("Spindexer", new InstantCommand(() -> hopper.run()));
         NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)));
         NamedCommands.registerCommand("Stop Spindexer", new InstantCommand(() -> hopper.stop()));
         NamedCommands.registerCommand("Deploy Intake", new IntakeDeploy(intake));
+        NamedCommands.registerCommand("Mid Intake", new IntakeTravel(intake));
         NamedCommands.registerCommand("Run Intake",
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)));
         NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> intake.setRollerSpeed(0)));
         NamedCommands.registerCommand("Climb Up", new ClimbUp(climb));
         NamedCommands.registerCommand("Climb Down", new ClimbDown(climb));
-        //NamedCommands.registerCommand("Climb Down", new AngleToLime(drive, limelight, null, null));
+        NamedCommands.registerCommand("Angle to Lime", new AngleToLime(drive, limelight));
+        NamedCommands.registerCommand("Aim Trench Auto", new AimDutyCycleAuto(shooter));
 
         /**
          * Setting default commands for each subsystem that
@@ -197,8 +200,10 @@ public class RobotContainer {
         // ** Right Bumper - Run Hopper */
         new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
                 new SequentialCommandGroup(
+                new AimDutyCycle(shooter, limelight),
+                new WaitCommand(.2),
                 new InstantCommand(() -> hopper.run()),
-                new WaitCommand(4),
+                new WaitCommand(3),
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
                 new WaitCommand(.3),
                 new InstantCommand(() -> intake.setRollerSpeed(0)),
@@ -238,12 +243,12 @@ public class RobotContainer {
 
         // ** D-Pad Left - Agitate Intake (Subject to Change) */
         new Trigger(() -> operatorController.getPOV() == 270).whileTrue(
-                 new ParallelCommandGroup(
+                 new SequentialCommandGroup(
                         new AimDutyCycleTrench(shooter),
-                        new Shoot(shooter, ShooterConstants.baseVelocity)
+                        new InstantCommand(() -> hopper.run())
                         )).onFalse(
                             new SequentialCommandGroup(
-                            new InstantCommand(() -> shooter.stop())));
+                            new InstantCommand(() -> hopper.stop())));
 
         
                 // new ClimbDown(climb, .1));
@@ -341,13 +346,11 @@ public class RobotContainer {
                 )));
         autoChooser.addOption("Nothing", new ParallelCommandGroup(new WaitCommand(0)));
 
-        autoChooser.addOption("ligne", new PathPlannerAuto("ligne"));
-        autoChooser.addOption("shootgne", new PathPlannerAuto("ligne then SHOOT B)"));
-        autoChooser.addOption("fun little loop :-)", new PathPlannerAuto("fun little loop"));
+        autoChooser.addOption("ligne then shoot", new PathPlannerAuto("ligne then SHOOT B)"));
         autoChooser.addOption("Fav (Right Climb)", new PathPlannerAuto("Grimper (faux)"));
-        autoChooser.addOption("Sprite Haluchi (Right Trench)", new PathPlannerAuto("shoot Rtrench, mid, shoot"));
+        autoChooser.addOption("Sprite Haluchi (Right Trench)", new SequentialCommandGroup(new PathPlannerAuto("shoot Rtrench, mid, shoot"), new InstantCommand(() -> drive.setGyro(180))));
         autoChooser.addOption("Baha Blast (Left Trench)", new PathPlannerAuto("shoot Ltrench, mid, shoot"));
-        autoChooser.addOption("Straight to (Right Trench)", new PathPlannerAuto("Rtrench, mid, shoot"));
+        autoChooser.addOption("Straight to (Right Trench)", new SequentialCommandGroup(new PathPlannerAuto("Rtrench, mid, shoot"), new InstantCommand(() -> drive.setGyro(180))));
         
         // autoChooser.addOption("autoaim", new );
 
