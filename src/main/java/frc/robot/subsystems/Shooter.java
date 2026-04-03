@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(0.002, 0, 0);
+    velocityController = new PIDController(0.0005, 0., 0);
     velocityController.setSetpoint(ShooterConstants.baseVelocity);
     velocityController.setTolerance(25);
     velocityController.setIZone(500);
@@ -203,7 +203,9 @@ public class Shooter extends SubsystemBase {
     } else {
       flywheelEffort = 0;
     }
-    
+
+    //flywheelEffort = 6;
+
     SmartDashboard.putNumber("Hood Encoder", getHoodPose());
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));

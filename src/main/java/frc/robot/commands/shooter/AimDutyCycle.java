@@ -51,55 +51,57 @@ public class AimDutyCycle extends Command {
   @Override
   public void initialize() {
 
-    currHoodPose = shooter.getHoodPose();
+    // currHoodPose = shooter.getHoodPose();
 
-    // SmartDashboard.putString("RUNNI", "init");
+    // // SmartDashboard.putString("RUNNI", "init");
 
-    heading = shooter.getHeading();
+    // heading = shooter.getHeading();
     
-      distance = limelight.getZtoHub(heading);
+    //   distance = limelight.getZtoHub(heading);
     
     
-if (setpoint < ShooterConstants.maxHoodExtension) {
-      if (currHoodPose < setpoint - .001) {
-        shooter.setHoodVelocity(.2);
-      } else if(currHoodPose > setpoint + .001){
-        shooter.setHoodVelocity(-.2);
-      } else shooter.setHoodVelocity(0);
-    }
+// if (setpoint < ShooterConstants.maxHoodExtension) {
+//       if (currHoodPose < setpoint - .001) {
+//         shooter.setHoodVelocity(.2);
+//       } else if(currHoodPose > setpoint + .001){
+//         shooter.setHoodVelocity(-.2);
+//       } else shooter.setHoodVelocity(0);
+//     }
 
-  }
+   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currHoodPose = shooter.getHoodPose();
-    heading = shooter.getHeading();
-    distance = limelight.getZtoHub(heading);
+    // currHoodPose = shooter.getHoodPose();
+    // heading = shooter.getHeading();
+    // distance = limelight.getZtoHub(heading);
     
   
-    if(distance == -9999) {
-      setpoint = currHoodPose;
-    } else {
-      setpoint = (.1183 * distance * distance) - (.2596 * distance) + .3708;
+    // if(distance == -9999) {
+    //   setpoint = currHoodPose;
+    // } else {
+    //   setpoint = (.1183 * distance * distance) - (.2596 * distance) + .3708;
+     // setpoint =.40;
+      
+    //   if (setpoint < ShooterConstants.maxHoodExtension) {
+    //   if (currHoodPose < setpoint - .001) {
+    //     shooter.setHoodVe
+    //     locity(.2);
+    //   } else if(currHoodPose > setpoint + .001){
+    //     shooter.setHoodVelocity(-.2);
+    //   } else shooter.setHoodVelocity(0);
+    // }
+
+   // setpoint = .5;
     
 
-  }
+  
 
-    SmartDashboard.putNumber("disttohub", distance);
+    //SmartDashboard.putNumber("disttohub", distance);
 
-    //SmartDashboard.putString("RUNNI", "AAAAAAAAAAAAAAAAAAA");
-    if (setpoint < ShooterConstants.maxHoodExtension) {
-      if (currHoodPose < setpoint - .01) {
-        shooter.setHoodVelocity(.2);
-      } else if(currHoodPose > setpoint + .01){
-        shooter.setHoodVelocity(-.2);
-      } else shooter.setHoodVelocity(0);
-    }
-
-    if (shooter.getHoodPose() >= ShooterConstants.maxHoodExtension - .05) {
-      setpoint -= .1;
-    }
+    SmartDashboard.putString("RUNNI", "running");
+    
 
   }
 
@@ -107,6 +109,7 @@ if (setpoint < ShooterConstants.maxHoodExtension) {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+     SmartDashboard.putString("RUNNI", "done");
     shooter.setHoodVelocity(0);
     //SmartDashboard.putBoolean("INTERUPPTED", interrupted);
   }

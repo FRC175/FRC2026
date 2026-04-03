@@ -189,7 +189,7 @@ public class RobotContainer {
         // ** Left Bumper - Run Shooter and Set Hood */
         new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
                 new ParallelCommandGroup(
-                        new AimDutyCycle(shooter, limelight),
+                        
                         new Shoot(shooter, ShooterConstants.baseVelocity)
                         )).onFalse(
                             new SequentialCommandGroup(
