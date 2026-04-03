@@ -94,13 +94,14 @@ public class Shooter extends SubsystemBase {
   }
   
 
+  /*
   public void setHoodNeo(double setpoint){
     if (!(getHoodPose() >= setpoint)){
       setHoodVelocity(.05);
     } else {
       setHoodVelocity(0);
     }
-  }
+  }*/
 
   /**
    * Returns the shooter's heading (in reference to field positive x axis)
@@ -182,13 +183,17 @@ public class Shooter extends SubsystemBase {
  * setting the servo hood value
  * @param value returning the servo hood value
  */
-  public void setHoodVelocity(double value) {
-    hoodMotor.set(value);
+  public void setHoodVoltage(double voltage) {
+    hoodMotor.setVoltage(voltage);
+  }
+
+  public void setHoodVelocity(double effort) {
+    hoodMotor.set(effort);
   }
 
   public double calculate(Limelight limelight) {
     double hoodPosition = 0;
-    double distance = limelight.getZ();
+    double distance = limelight.getZtoHub(getHeading());
     hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
     return hoodPosition;
     
