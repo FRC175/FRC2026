@@ -38,7 +38,7 @@ public class Aim extends Command {
     this.limelight = limelight;
     timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements(limelight);
 
   }
 
@@ -46,6 +46,9 @@ public class Aim extends Command {
   @Override
   public void initialize() {
     setpoint = shooter.calculate(limelight);
+    //setpoint = .36;
+    SmartDashboard.putString("hood state", "running");
+
 
   }
 
@@ -57,8 +60,13 @@ public class Aim extends Command {
     heading = shooter.getHeading();
     distance = limelight.getZtoHub(heading);
     SmartDashboard.putNumber("Limelight distance", distance);
+    
+    SmartDashboard.putNumber("current hood set", setpoint);
+
 
     double targetHoodSetpoint = shooter.calculate(limelight); //Calculate hood position
+    //double targetHoodSetpoint = .32; //Calculate hood position
+    
     double voltage = shooter.hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint); //Calculate voltage output from PID
 
     if (setpoint < ShooterConstants.maxHoodExtension) {
@@ -79,6 +87,6 @@ public class Aim extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false ;
   }
 }

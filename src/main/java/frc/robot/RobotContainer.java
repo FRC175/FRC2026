@@ -111,6 +111,7 @@ public class RobotContainer {
          * -Teleop controls that require more than a simple trigger
          */
 
+        limelight.setDefaultCommand(new Aim(shooter, limelight));
         drive.setDefaultCommand(new SwerveJoystick(
                 drive,
                 limelight,
@@ -199,11 +200,12 @@ public class RobotContainer {
 
         // ** Right Bumper - Run Hopper */
         new Trigger(() -> operatorController.getRightBumperButton()).whileTrue(
-                new SequentialCommandGroup(
-                new AimDutyCycle(shooter, limelight),
+               
+        new SequentialCommandGroup(
+                //new AimDutyCycle(shooter, limelight),
                 new WaitCommand(.2),
                 new InstantCommand(() -> hopper.run()),
-                new WaitCommand(3),
+                new WaitCommand(6),
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
                 new WaitCommand(.3),
                 new InstantCommand(() -> intake.setRollerSpeed(0)),
@@ -241,7 +243,7 @@ public class RobotContainer {
                 new InstantCommand(() -> climb.climbSpeed(false, .4))).onFalse(
                         new InstantCommand(() -> climb.setSpeed(0)));
 
-        // ** D-Pad Left - Agitate Intake (Subject to Change) */
+        //** D-Pad Left - Agitate Intake (Subject to Change) */
         new Trigger(() -> operatorController.getPOV() == 270).whileTrue(
                  new SequentialCommandGroup(
                         new AimDutyCycleTrench(shooter),
@@ -249,6 +251,14 @@ public class RobotContainer {
                         )).onFalse(
                             new SequentialCommandGroup(
                             new InstantCommand(() -> hopper.stop())));
+
+        
+        // new Trigger(() -> operatorController.getPOV() == 90).whileTrue(
+        //          new Aim(shooter, limelight, .7));
+
+        //  new Trigger(() -> operatorController.getPOV() == 270).whileTrue(
+        //          new Aim(shooter, limelight, .115));
+
 
         
                 // new ClimbDown(climb, .1));

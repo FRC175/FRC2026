@@ -61,13 +61,13 @@ public class Shooter extends SubsystemBase {
     velocityController = new PIDController(0.0005, 0., 0);
     velocityController.setSetpoint(ShooterConstants.baseVelocity);
     velocityController.setTolerance(25);
-    velocityController.setIZone(500);
+    velocityController.setIZone(1000);
 
     feedForeward = new SimpleMotorFeedforward( 0, 0.0018 );
     
     currentSetpoint = ShooterConstants.FrontHubSpeed;
 
-    hoodController = new PIDController(.2, 0, 0);
+    hoodController = new PIDController(6, 0.3, 0);
     
     
     closeEnough = false;
@@ -194,11 +194,12 @@ public class Shooter extends SubsystemBase {
   public double calculate(Limelight limelight) {
     double hoodPosition = 0;
     double distance = limelight.getZtoHub(getHeading());
-    hoodPosition = .59 - (.565 * distance) + (.151 * (distance * distance));
-    return hoodPosition;
-    
-  }
 
+      hoodPosition = -.0533 + (.0946 * distance) + (.00696 * (distance * distance));
+      hoodPosition = MathUtil.clamp(hoodPosition, .115, .8);
+      return hoodPosition;
+  }
+  
   
 
   @Override
