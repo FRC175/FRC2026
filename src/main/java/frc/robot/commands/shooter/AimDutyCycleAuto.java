@@ -34,11 +34,12 @@ public class AimDutyCycleAuto extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AimDutyCycleAuto(Shooter shooter) {
+  public AimDutyCycleAuto(Shooter shooter, Limelight limelight) {
     this.shooter = shooter;
    
 
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(limelight);
     
   }
 

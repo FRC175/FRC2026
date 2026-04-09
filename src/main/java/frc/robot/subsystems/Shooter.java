@@ -194,10 +194,18 @@ public class Shooter extends SubsystemBase {
   public double calculate(Limelight limelight) {
     double hoodPosition = 0;
     double distance = limelight.getZtoHub(getHeading());
-
+     if( distance < 4.75 && distance != -9999) {
       hoodPosition = -.0533 + (.0946 * distance) + (.00696 * (distance * distance));
       hoodPosition = MathUtil.clamp(hoodPosition, .115, .8);
+      SmartDashboard.putBoolean("Close", true);
       return hoodPosition;
+     } else {
+      hoodPosition = 3.13 - (1.15 * distance) + (.123 * (distance * distance));
+      hoodPosition = MathUtil.clamp(hoodPosition, .115, .8);
+      SmartDashboard.putBoolean("Close", false);
+      return hoodPosition;
+     }
+      
   }
   
   
@@ -211,7 +219,7 @@ public class Shooter extends SubsystemBase {
     }
 
     //flywheelEffort = 6;
-
+    SmartDashboard.putNumber("curr shooter set", currentSetpoint);
     SmartDashboard.putNumber("Hood Encoder", getHoodPose());
     SmartDashboard.putNumber("Flywheel effort", flywheelEffort);
     SmartDashboard.putNumber("Flywheel Velocity", (getVelocity()));

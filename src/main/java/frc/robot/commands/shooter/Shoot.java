@@ -15,7 +15,8 @@ import frc.robot.Constants.ShooterConstants;
 public class Shoot extends Command  {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
-  private final double setpoint;
+  private final Limelight limelight;
+ 
 
   /**
    * Shoots balls by revving flywheel speed to a desired setpoint
@@ -23,9 +24,9 @@ public class Shoot extends Command  {
    * @param shooter an instance of the Shooter Subsystem
    * @param setpoint the desired rpm of the flywheel motors
    */
-  public Shoot(Shooter shooter, double setpoint) {
+  public Shoot(Shooter shooter, Limelight limelight) {
     this.shooter = shooter;
-    this.setpoint = setpoint;
+    this.limelight = limelight;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -33,8 +34,13 @@ public class Shoot extends Command  {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //shooter.velocityController.reset();
-    shooter.currentSetpoint = setpoint;
+    shooter.velocityController.reset();
+    if (limelight.getZtoHub(shooter.shooterHeading) < 4.75) {
+      shooter.currentSetpoint = ShooterConstants.baseVelocity;
+    } else {
+      shooter.currentSetpoint = ShooterConstants.cornerVelocity;
+    }
+    
     //shooter.velocityController.setSetpoint(setpoint);
   }
 
@@ -42,13 +48,15 @@ public class Shoot extends Command  {
   @Override
   public void execute() {
     shooter.run();
-    SmartDashboard.putString("SHOOTING", "SHOOTINNG");
+    SmartDashboard.putBoolean("SHOOTING", true);
     //SmartDashboard.putBoolean("atSetpoint", shooter)
   }
   //0 is just a placeholder//
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("SHOOTING", false);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -83,7 +83,7 @@ public class RobotContainer {
 
         autoChooser = new SendableChooser<>();
 
-        NamedCommands.registerCommand("Shoot from hub", new Shoot(shooter, ShooterConstants.FrontHubSpeed));
+        NamedCommands.registerCommand("Shoot from hub", new Shoot(shooter, limelight));
         NamedCommands.registerCommand("Start Shooter", new InstantCommand(() -> shooter.run()));
         NamedCommands.registerCommand("Prep Shooter", new SequentialCommandGroup(new InstantCommand(() -> shooter.velocityController.reset()), new InstantCommand(() -> shooter.currentSetpoint = ShooterConstants.baseVelocity), new InstantCommand(() -> shooter.velocityController.setSetpoint(ShooterConstants.baseVelocity))));
         
@@ -102,7 +102,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Climb Up", new ClimbUp(climb));
         NamedCommands.registerCommand("Climb Down", new ClimbDown(climb));
         NamedCommands.registerCommand("Angle to Lime", new AngleToLime(drive, limelight));
-        NamedCommands.registerCommand("Aim Trench Auto", new AimDutyCycleAuto(shooter));
+        NamedCommands.registerCommand("Aim Trench Auto", new AimDutyCycleAuto(shooter, limelight));
 
         /**
          * Setting default commands for each subsystem that
@@ -180,7 +180,7 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
                 new SequentialCommandGroup(
                         //new InstantCommand(() -> shooter.setHoodNeo(.01)),
-                        new Shoot(shooter, ShooterConstants.FrontHubSpeed),
+                        new Shoot(shooter, limelight),
                         new InstantCommand(() -> hopper.run())))
                 .onFalse(
                         new ParallelCommandGroup(
@@ -191,7 +191,7 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getLeftBumperButton()).whileTrue(
                 new ParallelCommandGroup(
                         
-                        new Shoot(shooter, ShooterConstants.baseVelocity)
+                        new Shoot(shooter, limelight)
                         )).onFalse(
                             new SequentialCommandGroup(
                                 new InstantCommand(() -> hopper.stop()),
@@ -205,7 +205,8 @@ public class RobotContainer {
                 //new AimDutyCycle(shooter, limelight),
                 new WaitCommand(.2),
                 new InstantCommand(() -> hopper.run()),
-                new WaitCommand(6),
+                new WaitCommand(3
+                ),
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
                 new WaitCommand(.3),
                 new InstantCommand(() -> intake.setRollerSpeed(0)),
@@ -288,7 +289,7 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                         // new InstantCommand(() ->
                         // shooter.setServoHood(ShooterConstants.FrontHubAngle)),
-                        new Shoot(shooter, ShooterConstants.FrontHubSpeed),
+                        new Shoot(shooter, limelight),
                         new InstantCommand(() -> hopper.run())))
                 .onFalse(
                         new SequentialCommandGroup(
@@ -347,7 +348,7 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                         new InstantCommand(() -> drive.setGyro(90)),
                         // new InstantCommand(() -> shooter.setServoHood(0)),
-                        new Shoot(shooter, ShooterConstants.FrontHubSpeed),
+                        new Shoot(shooter,limelight),
                         new InstantCommand(() -> hopper.run()),
                         new WaitCommand(10),
                         new InstantCommand(() -> shooter.stop()),
