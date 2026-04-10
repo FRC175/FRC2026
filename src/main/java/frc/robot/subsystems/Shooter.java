@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase {
 
     shooterRunning = false;
     flywheelEffort = 0;
-    velocityController = new PIDController(0.0005, 0., 0);
+    velocityController = new PIDController(0.0007, 0.0005, 0);
     velocityController.setSetpoint(ShooterConstants.baseVelocity);
     velocityController.setTolerance(25);
     velocityController.setIZone(1000);

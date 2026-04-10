@@ -7,49 +7,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Run Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Deploy Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Rtrench to mid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of mid to Rshoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Prep Shooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Start Shooter"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim Trench Auto"
           }
         },
         {
@@ -67,7 +37,43 @@
         {
           "type": "named",
           "data": {
-            "name": "Ag the tate"
+            "name": "Stop Spindexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Shooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L Trench to Ladder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climb Up"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New New New New New New New Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climb Down"
           }
         }
       ]

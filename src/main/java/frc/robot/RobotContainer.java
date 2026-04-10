@@ -92,6 +92,21 @@ public class RobotContainer {
         NamedCommands.registerCommand("Reset Gyro 180", new InstantCommand(() -> drive.setGyro(180)));
         NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
         NamedCommands.registerCommand("Spindexer", new InstantCommand(() -> hopper.run()));
+        NamedCommands.registerCommand("Ag the tate",   new SequentialCommandGroup(
+                new InstantCommand(() -> hopper.run()),
+                new WaitCommand(3
+                ),
+                new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
+                new WaitCommand(.3),
+                new InstantCommand(() -> intake.setRollerSpeed(0)),
+                new IntakeTravel(intake),
+                new WaitCommand(.3),
+                new IntakeDeploy(intake),
+                new WaitCommand(.3),
+                new IntakeTravel(intake),
+                new WaitCommand(.3),
+                new IntakeDeploy(intake)
+                ));
         NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)));
         NamedCommands.registerCommand("Stop Spindexer", new InstantCommand(() -> hopper.stop()));
         NamedCommands.registerCommand("Deploy Intake", new IntakeDeploy(intake));
@@ -362,6 +377,7 @@ public class RobotContainer {
         autoChooser.addOption("Sprite Haluchi (Right Trench)", new SequentialCommandGroup(new PathPlannerAuto("shoot Rtrench, mid, shoot"), new InstantCommand(() -> drive.setGyro(180))));
         autoChooser.addOption("Baha Blast (Left Trench)", new PathPlannerAuto("shoot Ltrench, mid, shoot"));
         autoChooser.addOption("Straight to (Right Trench)", new SequentialCommandGroup(new PathPlannerAuto("Rtrench, mid, shoot"), new InstantCommand(() -> drive.setGyro(180))));
+        autoChooser.addOption("left climb (left trench)", new SequentialCommandGroup(new PathPlannerAuto("LGrimp")));
         
         // autoChooser.addOption("autoaim", new );
 

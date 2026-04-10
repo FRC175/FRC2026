@@ -65,7 +65,7 @@ public class AimDutyCycleAuto extends Command {
    
     
 
-  setpoint = .62;
+  setpoint = .405;
 
   
 

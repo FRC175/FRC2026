@@ -64,7 +64,7 @@ public class AimDutyCycleTrench extends Command {
    
     
 
-  setpoint = .62;
+  setpoint = .405;
 
   
 
