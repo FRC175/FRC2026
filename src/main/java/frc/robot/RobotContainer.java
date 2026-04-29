@@ -26,7 +26,7 @@ import frc.robot.commands.shooter.AimDutyCycleAuto;
 import frc.robot.commands.shooter.AimDutyCycleTrench;
 import frc.robot.commands.shooter.AimThenShoot;
 import frc.robot.commands.shooter.Shoot;
-
+import frc.robot.commands.shooter.ShootHub;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Shooter;
 
@@ -191,12 +191,36 @@ public class RobotContainer {
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
                         new InstantCommand(() -> intake.setRollerSpeed(0)));
 
+        new Trigger(() -> operatorController.getPOV() == 90).whileTrue(
+                new InstantCommand(() -> intake.setRollerSpeed(-IntakeConstants.intakeSpeed))).whileFalse(
+                        new InstantCommand(() -> intake.setRollerSpeed(0)));
+        
+
         // ** Left Trigger - Shoot from Hub */
         new Trigger(() -> operatorController.getLeftTriggerAxis() == 1).whileTrue(
                 new SequentialCommandGroup(
+                        new ParallelCommandGroup(
                         //new InstantCommand(() -> shooter.setHoodNeo(.01)),
-                        new Shoot(shooter, limelight),
-                        new InstantCommand(() -> hopper.run())))
+                        new AimDutyCycle(shooter, limelight),
+                        new ShootHub(shooter, limelight)
+                        ,
+                          new SequentialCommandGroup(
+                //new AimDutyCycle(shooter, limelight),
+                                new WaitCommand(2),
+                                new InstantCommand(() -> hopper.run()),
+                                new WaitCommand(3
+                                ),
+                                new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
+                                new WaitCommand(.3),
+                                new InstantCommand(() -> intake.setRollerSpeed(0)),
+                                new IntakeTravel(intake),
+                                new WaitCommand(.3),
+                                new IntakeDeploy(intake),
+                                new WaitCommand(.3),
+                                new IntakeTravel(intake),
+                                new WaitCommand(.3),
+                                new IntakeDeploy(intake)
+                ))))
                 .onFalse(
                         new ParallelCommandGroup(
                                 new InstantCommand(() -> shooter.stop()),
@@ -220,7 +244,7 @@ public class RobotContainer {
                 //new AimDutyCycle(shooter, limelight),
                 new WaitCommand(.2),
                 new InstantCommand(() -> hopper.run()),
-                new WaitCommand(3
+                new WaitCommand(2
                 ),
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
                 new WaitCommand(.3),
@@ -261,9 +285,25 @@ public class RobotContainer {
 
         //** D-Pad Left - Agitate Intake (Subject to Change) */
         new Trigger(() -> operatorController.getPOV() == 270).whileTrue(
-                 new SequentialCommandGroup(
+                 new ParallelCommandGroup(
                         new AimDutyCycleTrench(shooter),
-                        new InstantCommand(() -> hopper.run())
+                         new SequentialCommandGroup(
+                //new AimDutyCycle(shooter, limelight),
+                new WaitCommand(.2),
+                new InstantCommand(() -> hopper.run()),
+                new WaitCommand(2
+                ),
+                new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
+                new WaitCommand(.3),
+                new InstantCommand(() -> intake.setRollerSpeed(0)),
+                new IntakeTravel(intake),
+                new WaitCommand(.3),
+                new IntakeDeploy(intake),
+                new WaitCommand(.3),
+                new IntakeTravel(intake),
+                new WaitCommand(.3),
+                new IntakeDeploy(intake)
+                )
                         )).onFalse(
                             new SequentialCommandGroup(
                             new InstantCommand(() -> hopper.stop())));
@@ -378,7 +418,7 @@ public class RobotContainer {
         autoChooser.addOption("Baha Blast (Left Trench)", new PathPlannerAuto("shoot Ltrench, mid, shoot"));
         autoChooser.addOption("Straight to (Right Trench)", new SequentialCommandGroup(new PathPlannerAuto("Rtrench, mid, shoot"), new InstantCommand(() -> drive.setGyro(180))));
         autoChooser.addOption("left climb (left trench)", new SequentialCommandGroup(new PathPlannerAuto("LGrimp")));
-        
+        autoChooser.addOption("Shoot to depo(Damon attempt)", new PathPlannerAuto(("shoot Ltrench go depo")));
         // autoChooser.addOption("autoaim", new );
 
         SmartDashboard.putData(autoChooser);

@@ -82,8 +82,8 @@ public class SwerveJoystick extends Command {
         turnSpeed = turnLimiter.calculate(turnSpeed) * 1.2* Math.PI ;
 
         currentAngle = limelight.getTx();
-        double effort = aimController.calculate(currentAngle, 0);
-
+        double effort = aimController.calculate(currentAngle, -.1);
+ 
         if(aimLockOn.get()) {
             turnSpeed = -effort*Math.PI;
             SmartDashboard.putNumber("Aim Turn Effort", effort);

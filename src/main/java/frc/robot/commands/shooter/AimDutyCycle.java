@@ -73,27 +73,16 @@ public class AimDutyCycle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // currHoodPose = shooter.getHoodPose();
-    // heading = shooter.getHeading();
-    // distance = limelight.getZtoHub(heading);
-    
-  
-    // if(distance == -9999) {
-    //   setpoint = currHoodPose;
-    // } else {
-    //   setpoint = (.1183 * distance * distance) - (.2596 * distance) + .3708;
-     // setpoint =.40;
-      
-    //   if (setpoint < ShooterConstants.maxHoodExtension) {
-    //   if (currHoodPose < setpoint - .001) {
-    //     shooter.setHoodVe
-    //     locity(.2);
-    //   } else if(currHoodPose > setpoint + .001){
-    //     shooter.setHoodVelocity(-.2);
-    //   } else shooter.setHoodVelocity(0);
-    // }
 
-   // setpoint = .5;
+  double targetHoodSetpoint = .115;
+   double voltage = shooter.hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint); //Calculate voltage output from PID
+
+    if (setpoint < ShooterConstants.maxHoodExtension) {
+      shooter.setHoodVoltage(voltage);
+      SmartDashboard.putBoolean("toofar", false);
+    } else {
+      SmartDashboard.putBoolean("toofar", true);
+    }
     
 
   
@@ -117,6 +106,6 @@ public class AimDutyCycle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (currHoodPose <= setpoint + .01 && currHoodPose >= setpoint - .01);
+    return (false);
   }
 }

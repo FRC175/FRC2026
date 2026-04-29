@@ -48,7 +48,7 @@ public final class Constants {
     public static final double maxSpeed = 5;
     public static final double maxTeleopSpeed = maxSpeed *.75;
     public static final double maxDriveAcceleration = 3;
-    public static final double maxAngularVelocity = Math.PI;
+    public static final double maxAngularVelocity = Math.PI * 1.25;
     public static final double maxTeleopAngularSpeed = maxAngularVelocity / 4;
     public static final double maxAngularAcceleration = 3;
 
@@ -121,7 +121,8 @@ public final class Constants {
 
     public static final double FrontHubAngle = 0;
 
-    public static final double baseVelocity = 3500;
+    public static final double baseVelocity = 3480;
+    public static final double formerVelocity = 3500;
     public static final double cornerVelocity = 3800;
     public static final double baseEffort = .45; 
 

@@ -1,0 +1,64 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.shooter;
+
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Limelight;
+import frc.robot.Constants.ShooterConstants;
+
+/** An example command that uses an example subsystem. */
+public class ShootHub extends Command  {
+  @SuppressWarnings("PMD.UnusedPrivateField")
+  private final Shooter shooter;
+  private final Limelight limelight;
+ 
+
+  /**
+   * Shoots balls by revving flywheel speed to a desired setpoint
+   *
+   * @param shooter an instance of the Shooter Subsystem
+   * @param setpoint the desired rpm of the flywheel motors
+   */
+  public ShootHub(Shooter shooter, Limelight limelight) {
+    this.shooter = shooter;
+    this.limelight = limelight;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shooter);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    shooter.velocityController.reset();
+    
+      shooter.currentSetpoint = ShooterConstants.FrontHubSpeed;
+    
+    //shooter.velocityController.setSetpoint(setpoint);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    shooter.run();
+    SmartDashboard.putBoolean("SHOOTING", true);
+    //SmartDashboard.putBoolean("atSetpoint", shooter)
+  }
+  //0 is just a placeholder//
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("SHOOTING", false);
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return (shooter.velocityController.atSetpoint());
+  }
+}
+//19 is a placeholder//

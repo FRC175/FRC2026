@@ -171,27 +171,32 @@ public class Limelight extends SubsystemBase {
    */
 
   public double getZ() {
+    double findZ = -9999;
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
-      double findZ = d3Location[2];
-      //findZ = 0.1636 * findZ - 0.02290;
-      //findZ = 1.005 * findZ + 0.04104;
-      return findZ;
-    } else
-      return -9999;
+      if (d3Location != null && d3Location.length > 2) {
+        findZ = d3Location[2];
+        //findZ = 0.1636 * findZ - 0.02290;
+        //findZ = 1.005 * findZ + 0.04104;
+      }
+
+    } 
+    return findZ;
   }
 
   public double getZtoHub(double shooterHeading) {
+    double findZ = -9999;
     if (foundTarget()) {
       double[] d3Location = findAprilTag3D();
-      double findZ = d3Location[2];
+      if(d3Location != null && d3Location.length > 2) {
+      findZ = d3Location[2];
       //findZ = 0.1636 * findZ - 0.02290;
       //findZ = 1.005 * findZ + 0.04104;
       SmartDashboard.putNumber("limelighht to hub", findZ + getAprilToHub(shooterHeading));
-      return findZ + getAprilToHub(shooterHeading);
+      }
 
-    } else
-      return -9999;
+    }
+    return findZ;
   }
 
   private double getYaw() {

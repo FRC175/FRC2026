@@ -5,11 +5,9 @@
 package frc.robot.commands.shooter;
 
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
-
-import javax.print.attribute.SetOfIntegerSyntax;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,12 +19,12 @@ public class AimDutyCycleTrench extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
 
-
   private double distance;
+  private double hoodPosition;
   private double heading;
   private double setpoint;
-  private double currHoodPose;
- 
+
+  private Timer timer;
 
   // private final PIDController hoodController;
   /**
@@ -36,22 +34,16 @@ public class AimDutyCycleTrench extends Command {
    */
   public AimDutyCycleTrench(Shooter shooter) {
     this.shooter = shooter;
-   
-
+    timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
-    
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    currHoodPose = shooter.getHoodPose();
-
-    // SmartDashboard.putString("RUNNI", "init");
-
-
-  setpoint = .62;
+    setpoint = .374;
+    SmartDashboard.putString("hood state", "running");
 
 
   }
@@ -59,39 +51,31 @@ public class AimDutyCycleTrench extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currHoodPose = shooter.getHoodPose();
-    heading = shooter.getHeading();
-   
+
+    //Find the distance 
+
+    double targetHoodSetpoint = .374; //Calculate hood position
     
+    double voltage = shooter.hoodController.calculate(shooter.getHoodPose(), targetHoodSetpoint); //Calculate voltage output from PID
 
-  setpoint = .405;
-
-  
-
-   // SmartDashboard.putNumber("disttohub", distance);
-
-    //SmartDashboard.putString("RUNNI", "AAAAAAAAAAAAAAAAAAA");
     if (setpoint < ShooterConstants.maxHoodExtension) {
-      if (currHoodPose < setpoint - .01) {
-        shooter.setHoodVelocity(.2);
-      } else if(currHoodPose > setpoint + .01){
-        shooter.setHoodVelocity(-.2);
-      } else shooter.setHoodVelocity(0);
-    }}
+      shooter.setHoodVoltage(voltage);
+      SmartDashboard.putBoolean("toofar", false);
+    } else {
+      SmartDashboard.putBoolean("toofar", true);
+    }
 
-  
+  }
 
-  // 0 is just a placeholder//
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setHoodVelocity(0);
-    //SmartDashboard.putBoolean("INTERUPPTED", interrupted);
+    shooter.setHoodVoltage(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (currHoodPose <= setpoint + .01 && currHoodPose >= setpoint - .01);
+    return false ;
   }
 }
