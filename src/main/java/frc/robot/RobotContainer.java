@@ -93,19 +93,20 @@ public class RobotContainer {
         NamedCommands.registerCommand("Stop Shooter", new InstantCommand(() -> shooter.stop()));
         NamedCommands.registerCommand("Spindexer", new InstantCommand(() -> hopper.run()));
         NamedCommands.registerCommand("Ag the tate",   new SequentialCommandGroup(
-                new InstantCommand(() -> hopper.run()),
-                new WaitCommand(3
-                ),
-                new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
-                new WaitCommand(.3),
-                new InstantCommand(() -> intake.setRollerSpeed(0)),
-                new IntakeTravel(intake),
-                new WaitCommand(.3),
-                new IntakeDeploy(intake),
-                new WaitCommand(.3),
-                new IntakeTravel(intake),
-                new WaitCommand(.3),
-                new IntakeDeploy(intake)
+                                new WaitCommand(2),
+                                new InstantCommand(() -> hopper.run()),
+                                new WaitCommand(3
+                                ),
+                                new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)),
+                                new WaitCommand(.3),
+                                new InstantCommand(() -> intake.setRollerSpeed(0)),
+                                new IntakeTravel(intake),
+                                new WaitCommand(.3),
+                                new IntakeDeploy(intake),
+                                new WaitCommand(.3),
+                                new IntakeTravel(intake),
+                                new WaitCommand(.3),
+                                new IntakeDeploy(intake)
                 ));
         NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed)));
         NamedCommands.registerCommand("Stop Spindexer", new InstantCommand(() -> hopper.stop()));
@@ -118,6 +119,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Climb Down", new ClimbDown(climb));
         NamedCommands.registerCommand("Angle to Lime", new AngleToLime(drive, limelight));
         NamedCommands.registerCommand("Aim Trench Auto", new AimDutyCycleAuto(shooter, limelight));
+        NamedCommands.registerCommand("autoaim", new InstantCommand(() -> drive.setAutoAiming(true)));
+        NamedCommands.registerCommand("stop autoaim", new InstantCommand(() -> drive.setAutoAiming(true)));
 
         /**
          * Setting default commands for each subsystem that
@@ -136,6 +139,7 @@ public class RobotContainer {
                 () -> -driverController.getRightX(),
                 () -> !driverController.getAButton(),
                 () -> driverController.getRightBumperButton(),
+                () -> drive.autoAiming(),
                 () -> (driverController.getRightTriggerAxis() >= .75)));
         intake.setDefaultCommand(new MaintainPosition(intake));
 

@@ -6,6 +6,8 @@ package frc.robot.subsystems.Drive;
 
 import frc.robot.Constants.DriveConstants;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -44,6 +46,7 @@ public class Swerve extends SubsystemBase {
     private final Pigeon2 gyro = new Pigeon2(10);
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(0), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()} );
 
+    private boolean autoaim;
     /** Creates a new Swerve System. */
     public Swerve() {
 
@@ -104,6 +107,14 @@ public class Swerve extends SubsystemBase {
       instance = new Swerve();
     }
     return instance;
+  }
+
+  public boolean autoAiming() {
+    return autoaim;
+  }
+
+  public void setAutoAiming(boolean aiming) {
+    autoaim = true;
   }
 
     /**
@@ -202,6 +213,7 @@ public class Swerve extends SubsystemBase {
         odometer.update(getRotation2d(), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()});
        SmartDashboard.putNumberArray("moudle ",new double[] {frontLeft.getPosition().angle.getDegrees(), frontRight.getPosition().angle.getDegrees(), backLeft.getPosition().angle.getDegrees(), backRight.getPosition().angle.getDegrees()});
        SmartDashboard.putString("pose", getPose().toString());
+       SmartDashboard.putBoolean("aiming in auto?", autoaim);
     }
 
     @Override

@@ -53,6 +53,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Deploy Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run Intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Copy of Rtrench to mid"
@@ -68,66 +80,6 @@
           "type": "path",
           "data": {
             "pathName": "Copy of mid to Rshoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoaim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Aim Trench Auto"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Prep Shooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Start Shooter"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Spindexer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Spindexer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Shooter"
           }
         }
       ]

@@ -20,13 +20,13 @@ public class SwerveJoystick extends Command {
     private final Limelight limelight;
     private final Shooter shooter;
     private final Supplier<Double> xSpeedFunction, ySpeedFunction, turnSpeedFunction;
-    private final Supplier<Boolean> fieldOrientedFunction, aimLockOn, strafeLockOn;
+    private final Supplier<Boolean> fieldOrientedFunction, aimLockOn, strafeLockOn, autoAiming;
     private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
     private final PIDController aimController, xController;
     private double currentAngle;
 
     public SwerveJoystick(Swerve swerve, Limelight limelight, Shooter shooter, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction,
-            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> aimLockOn, Supplier<Boolean> strafeLockOn) {
+            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> aimLockOn, Supplier<Boolean> autoAiming, Supplier<Boolean> strafeLockOn) {
         //Swerve subsystem
         this.swerve = swerve;
         this.limelight = limelight;
@@ -39,6 +39,7 @@ public class SwerveJoystick extends Command {
         this.fieldOrientedFunction = fieldOrientedFunction;
         this.aimLockOn = aimLockOn;
         this.strafeLockOn = strafeLockOn;
+        this.autoAiming = autoAiming;
 
         //Rate Limiters
         this.xLimiter = new SlewRateLimiter(DriveConstants.maxDriveAcceleration);
@@ -84,7 +85,10 @@ public class SwerveJoystick extends Command {
         currentAngle = limelight.getTx();
         double effort = aimController.calculate(currentAngle, -.1);
  
-        if(aimLockOn.get()) {
+        if(aimLockOn.get() || autoAiming.get()) {
+            if (aimLockOn.get() && autoAiming.get()) {
+                swerve.setAutoAiming(false);
+            }
             turnSpeed = -effort*Math.PI;
             SmartDashboard.putNumber("Aim Turn Effort", effort);
             if (strafeLockOn.get()) {

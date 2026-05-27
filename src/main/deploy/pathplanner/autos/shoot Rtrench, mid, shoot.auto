@@ -113,6 +113,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Ag the tate"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 2.0

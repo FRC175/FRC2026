@@ -47,7 +47,7 @@ public class Limelight extends SubsystemBase {
    */
   public double getTx() {
     
-      return -Math.toRadians(table.getEntry("tx").getDouble(0.0));
+      return -Math.toRadians(table.getEntry("tx").getDouble(-1));
     
     
   }
