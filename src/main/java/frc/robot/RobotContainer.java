@@ -5,8 +5,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AimThenShoot;
-import frc.robot.commands.Autos;
 import frc.robot.subsystems.Climb;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,15 +34,11 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Hopperfeeder hopper;
   private final Intake intake;
-  private final Limelight limelight;
+  
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController m_driverController =
       new XboxController(OperatorConstants.driverControllerPort);
 
-  private final Climb climb;
-  private final Shooter shooter;
-  private static Hopperfeeder hopper;
-  private static Intake intake;
 
   private final XboxController driverController = new XboxController(OperatorConstants.driverControllerPort);
   private final XboxController operatorController = new XboxController(OperatorConstants.operatorControllerPort);
@@ -58,7 +52,7 @@ public class RobotContainer {
     this.hopper = Hopperfeeder.getInstance();
     this.intake = Intake.getInstance();
     // Configure the trigger bindings
-    m_limelight = new Limelight();
+
     configureBindings();
   }
 
@@ -107,11 +101,7 @@ public class RobotContainer {
     //Hold B: Climb motor at 6.25% speed
     
     //Hold A: To set shooter velocity at 5.50% clockwise
-   new Trigger(() -> m_driverController.getAButton()).whileTrue(
-      new InstantCommand(() -> shooter.setShooterVelocity( .0550 )) 
-    ).whileFalse(
-    new InstantCommand(() -> shooter.setShooterVelocity( 0))
-    );
+  
 
     //Hold Y: To set Hopperfeeder velocity at 5.50% clockwise
     new Trigger(() -> m_driverController.getYButton()).whileTrue(
@@ -142,16 +132,12 @@ new Trigger(() -> m_driverController.getPOV() ==90).whileTrue(
     );
     // when setRotaryVelocity() is called outside of shoot command, shooter motors are run instead of feeder,
     // Aim then shoot only runs shoot motors, actuator does not actuate
-    new Trigger(() -> m_driverController.getAButton()).whileTrue (
-      new AimThenShoot(shooter, limelight, hopper)
-      //new InstantCommand(() -> hopper.setRotaryVelocity(.4))
-    ).onFalse(
-      new SequentialCommandGroup(
-        new InstantCommand(() -> shooter.flywheelAtSpeed(0)),
-      new InstantCommand(() -> hopper.setHopperVelocity(0)))
-      
+   
+   new Trigger(() -> m_driverController.getAButton()).whileTrue(
+      new InstantCommand(() -> intake.setDeployVelocity( .1500 )) 
+    ).whileFalse(
+    new InstantCommand(() -> intake.setDeployVelocity( 0))
     );
-    
   }
 
   // public Command getAutonomousCommand() {

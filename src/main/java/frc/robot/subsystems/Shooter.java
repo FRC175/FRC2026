@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkParameters;
@@ -16,11 +17,11 @@ import com.revrobotics.ResetMode;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ShooterConstants;
-
+//import frc.robot.Constants.DriveConstants;
 public class Shooter extends SubsystemBase {
   private static Shooter instance;
-  private final SparkFlex shooterLeader;
-  private final SparkFlex shooterFollower;
+  private final SparkMax shooterLeader;
+  private final SparkMax shooterFollower;
   private final RelativeEncoder leaderEncoder;
   private final RelativeEncoder followerEncoder;
   private final Servo leftServoHood;
@@ -30,8 +31,8 @@ public class Shooter extends SubsystemBase {
    * Creates a new Shooter Subsystem 
    * */
   public Shooter() {
-    shooterLeader = new SparkFlex(ShooterConstants.shooterLeaderID, MotorType.kBrushless);
-    shooterFollower = new SparkFlex(ShooterConstants.shooterFollowID, MotorType.kBrushless);
+    shooterLeader = new SparkMax(ShooterConstants.shooterLeaderID, MotorType.kBrushless);
+    shooterFollower = new SparkMax(ShooterConstants.shooterFollowID, MotorType.kBrushless);
 
     leaderEncoder = shooterLeader.getEncoder();
     followerEncoder = shooterFollower.getEncoder();
@@ -94,12 +95,12 @@ public class Shooter extends SubsystemBase {
     setShooterVelocity(speed);
   }
   public double getServoPose() {
-    return servoHood.getAngle();
+    return rightServoHood.getAngle();
   }
 
   public void configureFlexes() {
     SparkFlexConfig followConfig = new SparkFlexConfig();
-    followConfig.follow(DriveConstants.shooterLeaderID, true);
+    followConfig.follow(ShooterConstants.shooterLeaderID, true);
     
     shooterFollower.configure(followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }

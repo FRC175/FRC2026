@@ -12,23 +12,20 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.HopperConstants;
 
 public class Hopperfeeder extends SubsystemBase {
-    private final Hopperfeeder instance;
-    private final SparkFlex rotary, feederWheel;
-    private final RelativeEncoder rotaryEncoder, feederTrackEncoder, feederWheelEncoder;
+    private static Hopperfeeder instance;
+    private final RelativeEncoder  feederTrackEncoder;
     private final SparkMax feederTrack;
 
   /**
    * Creates a new Hopperfeeder Subsystem
    */
   public Hopperfeeder() {
-    rotary = new SparkFlex(HopperConstants.spinDexerID, MotorType.kBrushless);
-    rotaryEncoder = rotary.getEncoder();
+    
 
     feederTrack = new SparkMax(HopperConstants.feederTrackID, MotorType.kBrushless);
     feederTrackEncoder = feederTrack.getEncoder();
 
-    feederWheel = new SparkFlex(HopperConstants.feederWheelID, MotorType.kBrushless);
-    feederWheelEncoder = feederWheel.getEncoder();
+    
   }
 
   /**
@@ -44,9 +41,9 @@ public class Hopperfeeder extends SubsystemBase {
 
  //Sets speed for rotary
   public void setHopperVelocity(double speed){
-    rotary.set(speed);
+    
     feederTrack.set(speed);
-    feederWheel.set(speed);
+    
   }  
   @Override
   public void periodic() {
