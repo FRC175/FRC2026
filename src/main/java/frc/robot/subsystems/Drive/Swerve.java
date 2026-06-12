@@ -197,6 +197,17 @@ public class Swerve extends SubsystemBase {
          setModuleStates(moduleStates);
     }
 
+    /**
+     * Sets the swerve base into 'X-Lock Mode' where all wheels point to the center 
+     * forming an x, increasing traction to avoid movement.
+     */
+    public void setXLock() {
+      frontLeft.lockModule(Math.PI / 4);
+      frontRight.lockModule(-Math.PI / 4);
+      backLeft.lockModule(-Math.PI / 4);
+      backRight.lockModule(Math.PI / 4);
+    }
+
     
     
 
