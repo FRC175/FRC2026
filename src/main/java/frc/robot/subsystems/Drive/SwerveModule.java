@@ -209,6 +209,18 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
+     * Holds the module at given angle
+     * 
+     * @param angle Angle in radians to set the module to (0 radians is straight forward)
+     */
+    public void lockModule(double angle) {
+
+        driveMotor.set(0);
+        turnMotor.set(turnPID.calculate(getAbsoluteEncoderRad(), angle));
+
+    }
+
+    /**
      * Stops both motors in the module
      */
     public void stop() {

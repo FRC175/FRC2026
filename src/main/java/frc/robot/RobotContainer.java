@@ -16,6 +16,7 @@ import frc.robot.commands.climb.ClimbUp;
 import frc.robot.commands.drive.AngleToLime;
 import frc.robot.commands.drive.LockMode;
 import frc.robot.commands.drive.SwerveJoystick;
+import frc.robot.commands.drive.XLock;
 import frc.robot.commands.intake.Agitate;
 import frc.robot.commands.intake.IntakeDeploy;
 import frc.robot.commands.intake.IntakeTravel;
@@ -190,7 +191,13 @@ public class RobotContainer {
          * Left Bumper - Reset Bot Orientation (Intake Facing Away From Driver Station)
          */
         new Trigger(() -> driverController.getLeftBumperButton()).onTrue(
-                new InstantCommand(() -> drive.setGyro(0)));
+                new InstantCommand(() -> drive.setGyro(0))
+        );
+        
+        // ** X Button - Set drive to lock mode, when resisting defensive movement
+        new Trigger(() -> driverController.getXButton()).whileTrue(
+                new XLock(drive)
+        );
 
         // OPERATOR CONTROLLER BINDINGS
         // ** Right Trigger - Run Intake */
@@ -198,6 +205,7 @@ public class RobotContainer {
                 new InstantCommand(() -> intake.setRollerSpeed(IntakeConstants.intakeSpeed))).onFalse(
                         new InstantCommand(() -> intake.setRollerSpeed(0)));
 
+        // ** Right D-Pad - Reverse Intake */
         new Trigger(() -> operatorController.getPOV() == 90).whileTrue(
                 new InstantCommand(() -> intake.setRollerSpeed(-IntakeConstants.intakeSpeed))).whileFalse(
                         new InstantCommand(() -> intake.setRollerSpeed(0)));
