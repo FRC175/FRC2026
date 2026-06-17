@@ -24,7 +24,6 @@ public class Climb extends SubsystemBase {
    */
   public Climb() {
     climbMotor = new SparkMax(ClimbConstants.climbID, MotorType.kBrushless);
-    
     climbEncoder = climbMotor.getEncoder();
     zeroEncoder();
   }
@@ -85,6 +84,8 @@ public class Climb extends SubsystemBase {
       setSpeed(-speed);
     else if(!up && !(getPosition() >= ClimbConstants.climbMin))
       setSpeed(speed);
+    else
+      setSpeed(0);
   }
 
   

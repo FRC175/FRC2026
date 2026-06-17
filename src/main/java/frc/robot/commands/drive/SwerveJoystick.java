@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,13 +21,13 @@ public class SwerveJoystick extends Command {
     private final Limelight limelight;
     private final Shooter shooter;
     private final Supplier<Double> xSpeedFunction, ySpeedFunction, turnSpeedFunction;
-    private final Supplier<Boolean> fieldOrientedFunction, aimLockOn, strafeLockOn, autoAiming;
+    private final Supplier<Boolean> fieldOrientedFunction, aimLockOn, strafeLockOn, autoAiming, lockPose;
     private final SlewRateLimiter xLimiter, yLimiter, turnLimiter;
     private final PIDController aimController, xController;
     private double currentAngle;
 
     public SwerveJoystick(Swerve swerve, Limelight limelight, Shooter shooter, Supplier<Double> xSpeedFunction, Supplier<Double> ySpeedFunction,
-            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> aimLockOn, Supplier<Boolean> autoAiming, Supplier<Boolean> strafeLockOn) {
+            Supplier<Double> turnSpeedFunction, Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> aimLockOn, Supplier<Boolean> autoAiming, Supplier<Boolean> strafeLockOn, Supplier<Boolean> lockPose) {
         //Swerve subsystem
         this.swerve = swerve;
         this.limelight = limelight;
@@ -40,6 +41,7 @@ public class SwerveJoystick extends Command {
         this.aimLockOn = aimLockOn;
         this.strafeLockOn = strafeLockOn;
         this.autoAiming = autoAiming;
+        this.lockPose = lockPose;
 
         //Rate Limiters
         this.xLimiter = new SlewRateLimiter(DriveConstants.maxDriveAcceleration);
@@ -82,6 +84,7 @@ public class SwerveJoystick extends Command {
         SmartDashboard.putNumber("Converted Y Speed", ySpeed);
         turnSpeed = turnLimiter.calculate(turnSpeed) * 1.2* Math.PI ;
 
+        
         currentAngle = limelight.getTx();
         double effort = aimController.calculate(currentAngle, -.1);
  
@@ -94,6 +97,11 @@ public class SwerveJoystick extends Command {
             if (strafeLockOn.get()) {
                 double xEffort = MathUtil.clamp(xController.calculate(shooter.getHeading(), 0), -1, 1) * DriveConstants.maxTeleopSpeed;
 
+            }
+            if (lockPose.get()) {{
+                
+            }} else {
+               
             }
         } else SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
 
@@ -113,7 +121,8 @@ public class SwerveJoystick extends Command {
         //ChassisSpeeds.discretize(chassisSpeeds, .02);
 
         //Convert to array of module states
-        SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] moduleStates = {null, null, null, null};
+            moduleStates = DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds);
            
         //SmartDashboard.putNumber("desiredWangle", moduleStates[3].angle.getRadians());
           

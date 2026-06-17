@@ -14,6 +14,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
 import frc.robot.commands.drive.AngleToLime;
+import frc.robot.commands.drive.LockMode;
 import frc.robot.commands.drive.SwerveJoystick;
 import frc.robot.commands.intake.Agitate;
 import frc.robot.commands.intake.IntakeDeploy;
@@ -140,7 +141,9 @@ public class RobotContainer {
                 () -> !driverController.getAButton(),
                 () -> driverController.getRightBumperButton(),
                 () -> drive.autoAiming(),
-                () -> (driverController.getRightTriggerAxis() >= .75)));
+                () -> (driverController.getRightTriggerAxis() >= .75),
+                () -> driverController.getYButton()));
+                
         intake.setDefaultCommand(new MaintainPosition(intake));
 
         configureBindings();
@@ -166,7 +169,7 @@ public class RobotContainer {
 
         /**
          * Button Binding Templates **
-         * 
+         * \\
          * //Press Button: Do action once when the button is pressed
          * new Trigger(() -> driverController.getAButton()).onTrue(
          * new InstantCommand(() -> m_subsystem.method())
@@ -276,13 +279,13 @@ public class RobotContainer {
                 new IntakeTravel(intake));
 
         // ** D-Pad Up - Climb Up */
-        new Trigger(() -> operatorController.getPOV() == 0).onTrue(
+        new Trigger(() -> operatorController.getPOV() == 0).whileTrue(
                 // new ClimbUp(climb, .1));
                 new InstantCommand(() -> climb.climbSpeed(true, .4))).onFalse(
                         new InstantCommand(() -> climb.setSpeed(0)));
 
         // ** D-Pad Down - Climb Down */
-        new Trigger(() -> operatorController.getPOV() == 180).onTrue(
+        new Trigger(() -> operatorController.getPOV() == 180).whileTrue(
                 // new ClimbDown(climb, .1));
                 new InstantCommand(() -> climb.climbSpeed(false, .4))).onFalse(
                         new InstantCommand(() -> climb.setSpeed(0)));
@@ -386,6 +389,10 @@ public class RobotContainer {
         new Trigger(() -> driverController.getAButton()).onTrue(
                 new InstantCommand(() -> drive.resetDistModules()));
 
+        new Trigger(() -> driverController.getYButton()).whileTrue(
+                new LockMode(drive));
+
+
         // new Trigger(() -> climbController.getYButton()).onTrue(
         // new IntakeBackwards(intake)
         // );
@@ -423,6 +430,8 @@ public class RobotContainer {
         autoChooser.addOption("Straight to (Right Trench)", new SequentialCommandGroup(new PathPlannerAuto("Rtrench, mid, shoot"), new InstantCommand(() -> drive.setGyro(180))));
         autoChooser.addOption("left climb (left trench)", new SequentialCommandGroup(new PathPlannerAuto("LGrimp")));
         autoChooser.addOption("Shoot to depo(Damon attempt)", new PathPlannerAuto(("shoot Ltrench go depo")));
+        autoChooser.addOption("Ltrench WPI Dot", new PathPlannerAuto("Ltrench WPI Dot"));
+        autoChooser.addOption("Rtrench WPI Dot", new PathPlannerAuto("Rtrench WPI Dot"));
         // autoChooser.addOption("autoaim", new );
 
         SmartDashboard.putData(autoChooser);

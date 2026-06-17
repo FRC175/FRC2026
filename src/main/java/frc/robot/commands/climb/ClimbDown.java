@@ -38,7 +38,6 @@ public class ClimbDown extends Command {
   @Override
   public void execute() {
     SmartDashboard.putBoolean("climbng?", true);
-    
     m_Climb.climbSpeed(false, .3);
 
   }

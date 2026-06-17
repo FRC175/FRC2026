@@ -33,10 +33,10 @@ public class Swerve extends SubsystemBase {
 
     private static Swerve instance;
 
-    private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, true, true,  true);
-    private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, true, true,  true);
-    private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, true, true, true);
-    private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, true, true,  true);
+    private final SwerveModule frontLeft = new SwerveModule(DriveConstants.flDriveID, DriveConstants.flTurnID, true, true,  true, false);
+    private final SwerveModule frontRight = new SwerveModule(DriveConstants.frDriveID, DriveConstants.frTurnID, true, true,  true, false);
+    private final SwerveModule backLeft = new SwerveModule(DriveConstants.blDriveID, DriveConstants.blTurnID, true, true, true, false);
+    private final SwerveModule backRight = new SwerveModule(DriveConstants.brDriveID, DriveConstants.brTurnID, true, true,  true, false);
 
     public ChassisSpeeds chassisSpeeds;
 
@@ -47,6 +47,8 @@ public class Swerve extends SubsystemBase {
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(0), new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()} );
 
     private boolean autoaim;
+
+    private boolean swerveLocked;
     /** Creates a new Swerve System. */
     public Swerve() {
 
@@ -116,6 +118,8 @@ public class Swerve extends SubsystemBase {
   public void setAutoAiming(boolean aiming) {
     autoaim = true;
   }
+
+
 
     /**
      * Offsets the Gyro by 90 degrees to the left (adjust for mounting)
