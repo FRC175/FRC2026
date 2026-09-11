@@ -206,7 +206,9 @@ public class Swerve extends SubsystemBase {
      * forming an x, increasing traction to avoid movement.
      */
     public void setXLock() {
-      frontLeft.lockModule(Math.PI / 4);
+      double angle = Math.PI / 4;
+      frontLeft.lockModule(angle);
+      SmartDashboard.putNumber("Angle Go TO", angle);
       frontRight.lockModule(-Math.PI / 4);
       backLeft.lockModule(-Math.PI / 4);
       backRight.lockModule(Math.PI / 4);

@@ -98,11 +98,6 @@ public class SwerveJoystick extends Command {
                 double xEffort = MathUtil.clamp(xController.calculate(shooter.getHeading(), 0), -1, 1) * DriveConstants.maxTeleopSpeed;
 
             }
-            if (lockPose.get()) {{
-                
-            }} else {
-               
-            }
         } else SmartDashboard.putNumber("Converted Turn Speed", turnSpeed);
 
         //Create chassis speeds
@@ -126,9 +121,13 @@ public class SwerveJoystick extends Command {
            
         //SmartDashboard.putNumber("desiredWangle", moduleStates[3].angle.getRadians());
           
-       
-        //Send states to modules
-        swerve.setModuleStates(moduleStates);
+        SmartDashboard.putBoolean("Are We Lock?", lockPose.get());
+        //Send states to modules unless we are in lock mode
+        if(lockPose.get()) {
+            swerve.setXLock();
+        }else {
+            swerve.setModuleStates(moduleStates);
+        }
     }
 
     @Override

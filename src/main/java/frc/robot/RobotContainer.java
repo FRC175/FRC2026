@@ -143,7 +143,7 @@ public class RobotContainer {
                 () -> driverController.getRightBumperButton(),
                 () -> drive.autoAiming(),
                 () -> (driverController.getRightTriggerAxis() >= .75),
-                () -> driverController.getYButton()));
+                () -> driverController.getXButton()));
                 
         intake.setDefaultCommand(new MaintainPosition(intake));
 

@@ -216,6 +216,7 @@ public class SwerveModule extends SubsystemBase {
     public void lockModule(double angle) {
 
         driveMotor.set(0);
+        SmartDashboard.putNumber("Angle Go TO", angle);
         turnMotor.set(turnPID.calculate(getAbsoluteEncoderRad(), angle));
 
     }
